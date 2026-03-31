@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI驯龙之路</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            overscroll-behavior: none;
+            user-select: none;
+        }
+        h1, h2, h3, .game-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        
+        /* 3D Card Flip */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes slideUpFade {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slideUpFade 0.5s ease-out forwards;
+        }
+
+        .animate-bounce-slight {
+            animation: bounce-slight 2s ease-in-out infinite;
+        }
+        @keyframes bounce-slight {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes floatCloud {
+            from { transform: translateX(-150%); }
+            to { transform: translateX(400%); }
+        }
+        .animate-float-cloud {
+            animation: floatCloud 25s linear infinite;
+        }
+        .animate-float-cloud-slow {
+            animation: floatCloud 45s linear infinite;
+        }
+
+        @keyframes dragonShadow {
+            0% { transform: translate(-100%, -100%) rotate(45deg) scale(2); opacity: 0; }
+            20% { opacity: 0.1; }
+            80% { opacity: 0.1; }
+            100% { transform: translate(300%, 300%) rotate(45deg) scale(2); opacity: 0; }
+        }
+        .animate-dragon-shadow {
+            animation: dragonShadow 15s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .animate-twinkle {
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        /* Confetti Bloom Animation */
+        @keyframes confetti-burst {
+            0% {
+                transform: translate(var(--start-x), var(--start-y)) scale(0);
+                opacity: 1;
+            }
+            15% {
+                transform: translate(var(--mid-x), var(--mid-y)) scale(1.2) rotate(var(--rotate));
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--end-x), var(--end-y)) scale(0.5) rotate(calc(var(--rotate) * 3));
+                opacity: 0;
+            }
+        }
+        .confetti-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            will-change: transform, opacity;
+            animation: confetti-burst var(--duration) cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        .map-grid {
+            background-image: radial-gradient(#ffffff22 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .btn-press {
+            border-bottom-width: 4px;
+            transition: all 0.1s;
+        }
+        .btn-press:active {
+            border-bottom-width: 0px;
+            transform: translateY(4px);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.33.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
