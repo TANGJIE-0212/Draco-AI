@@ -85,64 +85,11 @@ export const day1Data: DayContent = {
       options: ["远慢于摩尔定律", "基本符合摩尔定律", "远超摩尔定律 (指数级爆炸)"],
       correct: 2
     },
-    {
-      type: 'quiz',
-      question: "11. 【术语】什么是 LLM (Large Language Model)？",
-      options: ["一种超大型的翻译字典", "基于海量文本训练的大型语言模型", "一种专门用来画画的 AI"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "12. 【原理】LLM 的核心工作原理通常被描述为？",
-      options: ["逻辑推理", "概率预测下一个词", "查阅百科全书"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "13. 【应用】以下哪个不是生成式 AI 的典型应用？",
-      options: ["写代码", "生成图像", "计算圆周率到第10亿位"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "14. 【局限】AI 产生‘幻觉’的主要原因是？",
-      options: ["它太聪明了在开玩笑", "它只是在预测概率，并不真正理解事实", "它的服务器过热了"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "15. 【安全】为什么要对 AI 进行‘对齐 (Alignment)’？",
-      options: ["让它的文字排版更整齐", "确保 AI 的价值观与人类安全利益一致", "让它运行得更快"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "16. 【交互】什么是‘提示词工程 (Prompt Engineering)’？",
-      options: ["修理 AI 服务器的工程", "通过优化输入指令来获得更好的 AI 输出", "编写 AI 底层代码"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "17. 【多模态】如果一个 AI 既能看图又能说话，它被称为？",
-      options: ["单模态 AI", "多模态 AI", "全能 AI"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "18. 【算力】目前训练顶级 AI 模型主要依赖哪种硬件？",
-      options: ["CPU (中央处理器)", "GPU (图形处理器)", "硬盘"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "19. 【未来】AGI (通用人工智能) 的定义大致是？",
-      options: ["只会下棋的 AI", "在所有智力任务上都能达到或超过人类水平的 AI", "会做饭的机器人"],
-      correct: 1
-    },
+ 
     {
       type: 'match',
       isBoss: true,
-      question: "20. 【终极回顾】不同时代的 AI 像什么？",
+      question: "11. 【终极回顾】不同时代的 AI 像什么？",
       pairs: [
         { left: "符号主义 (旧 AI)", right: "查字典/按照说明书做事" },
         { left: "深度学习 (新 AI)", right: "像大脑一样从经验中学习" },

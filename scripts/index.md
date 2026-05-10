@@ -1,0 +1,55 @@
+# Draco AI 视频脚本索引
+
+按顺序复制每一天脚本到 NotebookLM，生成对应课程视频。
+
+| Week | Day | 脚本 |
+| --- | --- | --- |
+| 1 | 1 | [week1/day1.md](week1/day1.md) |
+| 1 | 2 | [week1/day2.md](week1/day2.md) |
+| 1 | 3 | [week1/day3.md](week1/day3.md) |
+| 1 | 4 | [week1/day4.md](week1/day4.md) |
+| 1 | 5 | [week1/day5.md](week1/day5.md) |
+| 1 | 6 | [week1/day6.md](week1/day6.md) |
+| 1 | 7 | [week1/day7.md](week1/day7.md) |
+| 2 | 1 | [week2/day1.md](week2/day1.md) |
+| 2 | 2 | [week2/day2.md](week2/day2.md) |
+| 2 | 3 | [week2/day3.md](week2/day3.md) |
+| 2 | 4 | [week2/day4.md](week2/day4.md) |
+| 2 | 5 | [week2/day5.md](week2/day5.md) |
+| 2 | 6 | [week2/day6.md](week2/day6.md) |
+| 2 | 7 | [week2/day7.md](week2/day7.md) |
+| 3 | 1 | [week3/day1.md](week3/day1.md) |
+| 3 | 2 | [week3/day2.md](week3/day2.md) |
+| 3 | 3 | [week3/day3.md](week3/day3.md) |
+| 3 | 4 | [week3/day4.md](week3/day4.md) |
+| 3 | 5 | [week3/day5.md](week3/day5.md) |
+| 3 | 6 | [week3/day6.md](week3/day6.md) |
+| 3 | 7 | [week3/day7.md](week3/day7.md) |
+| 4 | 1 | [week4/day1.md](week4/day1.md) |
+| 4 | 2 | [week4/day2.md](week4/day2.md) |
+| 4 | 3 | [week4/day3.md](week4/day3.md) |
+| 4 | 4 | [week4/day4.md](week4/day4.md) |
+| 4 | 5 | [week4/day5.md](week4/day5.md) |
+| 4 | 6 | [week4/day6.md](week4/day6.md) |
+| 4 | 7 | [week4/day7.md](week4/day7.md) |
+| 5 | 1 | [week5/day1.md](week5/day1.md) |
+| 5 | 2 | [week5/day2.md](week5/day2.md) |
+| 5 | 3 | [week5/day3.md](week5/day3.md) |
+| 5 | 4 | [week5/day4.md](week5/day4.md) |
+| 5 | 5 | [week5/day5.md](week5/day5.md) |
+| 5 | 6 | [week5/day6.md](week5/day6.md) |
+| 5 | 7 | [week5/day7.md](week5/day7.md) |
+| 6 | 1 | [week6/day1.md](week6/day1.md) |
+| 6 | 2 | [week6/day2.md](week6/day2.md) |
+| 6 | 3 | [week6/day3.md](week6/day3.md) |
+| 6 | 4 | [week6/day4.md](week6/day4.md) |
+| 6 | 5 | [week6/day5.md](week6/day5.md) |
+| 6 | 6 | [week6/day6.md](week6/day6.md) |
+| 6 | 7 | [week6/day7.md](week6/day7.md) |
+| 7 | 1 | [week7/day1.md](week7/day1.md) |
+| 7 | 2 | [week7/day2.md](week7/day2.md) |
+| 7 | 3 | [week7/day3.md](week7/day3.md) |
+| 7 | 4 | [week7/day4.md](week7/day4.md) |
+| 7 | 5 | [week7/day5.md](week7/day5.md) |
+| 7 | 6 | [week7/day6.md](week7/day6.md) |
+| 7 | 7 | [week7/day7.md](week7/day7.md) |
