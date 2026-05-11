@@ -15,9 +15,9 @@ export const day7Data: DayContent = {
       question: "【选型顾问】请为以下客户推荐方案",
       pairs: [
         { left: "瑞士银行：数据绝对不能出内网", right: "本地部署开源模型 (Self-hosted)" },
-        { left: "独立开发者：快速验证创意，没钱买显卡", right: "调用闭源 API (SaaS)" },
-        { left: "科研人员：需要研究模型底层架构", right: "下载开源模型权重" },
-        { left: "企业客服：需要极高的稳定性且不想招运维", right: "闭源 API" }
+        { left: "独立开发者：快速验证创意，没钱买显卡", right: "云端 API 按量付费（如 OpenAI / Anthropic）" },
+        { left: "科研人员：需要研究模型底层架构", right: "下载开源模型权重自行研究" },
+        { left: "企业客服：需要极高的稳定性且不想招运维", right: "签带 SLA 保障的企业级闭源 API 合约" }
       ]
     },
     {

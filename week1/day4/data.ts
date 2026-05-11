@@ -23,10 +23,10 @@ export const day4Data: DayContent = {
     },
     {
       type: 'fill',
-      question: "【原理】如果去掉了位置编码，Transformer 处理 'Alice hit Bob' 和 'Bob hit Alice' 时，会认为它们...",
-      parts: ["会认为它们的语义是", "___", "的。"],
-      options: ["完全相同", "截然不同", "部分相似"],
-      correct: "完全相同"
+      question: "【原理】如果去掉了位置编码，Transformer 处理语言时唯一能依赖的线索只剩下词语本身的 ___，无法感知词序。",
+      parts: ["去掉位置编码后，模型只能依赖词语本身的", "___", "，词序信息完全丢失。"],
+      options: ["语义（Embedding 向量）", "字母数量", "出现频率"],
+      correct: "语义（Embedding 向量）"
     },
     {
       type: 'quiz',
@@ -68,10 +68,10 @@ export const day4Data: DayContent = {
     },
     {
       type: 'fill',
-      question: "【流程】原始分数经过 Softmax 层后，所有分数的总和必然等于...",
-      parts: ["经过 Softmax 后，总和等于", "___", "。"],
-      options: ["1", "100", "0"],
-      correct: "1"
+      question: "【Softmax 效果】原始分数中 Token A 得 100 分、Token B 得 10 分。经过 Softmax 后，Token A 被选中的概率会比线性比例（100/110 ≈ 91%）___。",
+      parts: ["经过 Softmax 后，高分词被选中的概率会比线性比例", "___", "（因为指数函数放大了差距）。"],
+      options: ["更高（指数放大，接近 100%）", "更低（Softmax 会压制强者）", "完全相同"],
+      correct: "更高（指数放大，接近 100%）"
     },
     { 
       type: 'theory', 

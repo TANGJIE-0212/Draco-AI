@@ -58,12 +58,12 @@ export const day3Data: DayContent = {
     },
     {
       type: 'match',
-      question: "🧩 **概念连线**：建立直觉",
+      question: "🧩 **概念连线**：每个技术缺失时会导致什么问题？",
       pairs: [
-        { left: "Tokenizer", right: "把文本切碎成 ID" },
-        { left: "Embedding", right: "把 ID 变成空间坐标" },
-        { left: "向量维度", right: "描述语义的特征数量" },
-        { left: "空间距离", right: "词义的相似程度" }
+        { left: "Tokenizer", right: "AI 数不清 'Strawberry' 里有几个 r 的根源" },
+        { left: "Embedding", right: "没有它，'猫'和'狗'在数学上和'猫'与'汽车'一样远" },
+        { left: "向量维度", right: "越大语义越细腻，但显存消耗与之成正比" },
+        { left: "空间距离", right: "RAG 检索时判断"哪段文档最相关"的依据" }
       ]
     },
     { 
@@ -112,12 +112,12 @@ export const day3Data: DayContent = {
     {
       type: 'match',
       isBoss: true,
-      question: "🏆 **最终试炼：从输入到理解的全过程**",
+      question: "🏆 **最终试炼：从输入到理解的全过程**\n\n把每个处理阶段连到它真正在做的事（注意：顺序已打乱）",
       pairs: [
-        { left: "1. 输入文本", right: "User: 'Hello AI'" },
-        { left: "2. Tokenization", right: "[15496, 9552]" },
-        { left: "3. Embedding", right: "[[0.1, -0.5...], [0.8, 0.2...]]" },
-        { left: "4. Attention", right: "理解 Token 之间的关联" }
+        { left: "Tokenization", right: "把原始文本切成整数 ID 序列，AI 真正'看到'的输入" },
+        { left: "Embedding", right: "把离散 ID 映射到高维空间坐标，赋予语义距离意义" },
+        { left: "Attention", right: "让每个 Token 吸收其他相关 Token 的信息，生成带语境的向量" },
+        { left: "输入文本", right: "流水线的起点，还没被模型处理的原始人类语言" }
       ]
     },
     {

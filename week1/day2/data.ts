@@ -65,10 +65,10 @@ export const day2Data: DayContent = {
     },
     {
       type: 'fill',
-      question: "7. 【机制】这种“自己生成的输出，变成下一次的输入”的模式，被称为 ___ (Autoregressive)。",
-      parts: ["LLM 是典型的", "___", "模型。"],
-      options: ["自回归", "自编码", "随机森林"],
-      correct: "自回归"
+      question: “7. 【机制】由于 LLM 是自回归（Autoregressive）模型，生成第 N 个词时，必须先拿到 ___ 作为输入，才能进行下一步预测。”,
+      parts: [“因为自回归特性，AI 生成第 N 个词时必须先拿到”, “___”, “作为输入。”],
+      options: [“前 N-1 个词的输出结果”, “整篇文章的最终版本”, “随机的初始种子”],
+      correct: “前 N-1 个词的输出结果”
     },
     {
       type: 'quiz',
@@ -116,12 +116,12 @@ export const day2Data: DayContent = {
     },
     {
       type: 'match',
-      question: "14. 【术语自查】",
+      question: "14. 【术语自查】把每个术语连到它在实际使用中最典型的表现",
       pairs: [
-        { left: "Inference (推理)", right: "模型使用训练好的权重生成答案的过程" },
-        { left: "Training (训练)", right: "模型学习海量数据调整权重的过程" },
-        { left: "Hallucination (幻觉)", right: "一本正经地胡说八道" },
-        { left: "Context (上下文)", right: "模型用来预测下一个词的依据" }
+        { left: "Inference (推理)", right: "API 计费时扣的就是这个阶段的算力" },
+        { left: "Training (训练)", right: "需要大量 GPU 小时 + 标注数据，模型权重发生更新" },
+        { left: "Hallucination (幻觉)", right: "输出了听起来通顺但实际不存在的数字或引文" },
+        { left: "Context (上下文)", right: "超过上限后，最早输入的内容会被强制丢弃" }
       ]
     },
     {
@@ -129,10 +129,10 @@ export const day2Data: DayContent = {
       isBoss: true,
       question: "15. 【终极总结】LLM 的一生",
       pairs: [
-        { left: "出生", right: "阅读互联网海量文本" },
-        { left: "本能", right: "预测下一个 Token" },
-        { left: "性格", right: "由概率分布决定" },
-        { left: "缺陷", right: "容易产生幻觉" }
+        { left: "出生", right: "梯度下降反复迭代，参数从随机初始化收敛为固定权重" },
+        { left: "本能", right: "$P(w_t | w_0...w_{t-1})$" },
+        { left: "性格", right: "Temperature 参数直接作用于此处的概率分布" },
+        { left: "缺陷", right: "统计上通顺 ≠ 事实上正确" }
       ]
     },
     {

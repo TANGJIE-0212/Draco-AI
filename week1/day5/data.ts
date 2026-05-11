@@ -61,12 +61,12 @@ export const day5Data: DayContent = {
     },
     {
       type: 'match',
-      question: "【RAG 流程排序】请将 RAG 的执行步骤按顺序排列",
+      question: "【RAG 流程排序】RAG 的 4 个执行步骤，请把每个动作连到它在流程中的位置（顺序已打乱）",
       pairs: [
-        { left: "Step 1", right: "用户提问 (Query)" },
-        { left: "Step 2", right: "在数据库中检索相关片段 (Retrieve)" },
-        { left: "Step 3", right: "将片段和问题拼接成 Prompt (Augment)" },
-        { left: "Step 4", right: "AI 生成答案 (Generate)" }
+        { left: "第一步", right: "用户提出问题" },
+        { left: "第二步", right: "在向量数据库中找出最相关的文档片段" },
+        { left: "第三步", right: "把检索到的片段和用户问题一起拼入 Prompt" },
+        { left: "第四步", right: "模型基于拼好的 Prompt 生成最终回答" }
       ]
     },
     {

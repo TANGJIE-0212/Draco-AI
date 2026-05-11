@@ -94,7 +94,7 @@ export const day1Data: DayContent = {
         { left: "符号主义 (旧 AI)", right: "查字典/按照说明书做事" },
         { left: "深度学习 (新 AI)", right: "像大脑一样从经验中学习" },
         { left: "生成式 AI (现在)", right: "举一反三，创造新内容" },
-        { left: "AGI (未来)", right: "通用人工智能 (像人一样全能)" }
+        { left: "AGI (未来)", right: "无需专项训练，面对全新任务也能自主推理解决" }
       ]
     },
     {
