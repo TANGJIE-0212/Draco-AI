@@ -37,14 +37,14 @@ export const day5Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "【场景模拟】你给 AI 发了一篇 1 万字的论文（占满了窗口），要求它“详细扩写”这篇论文。结果 AI 写了一半就断了（Truncated）。原因是？",
-      options: ["AI 懒得写了", "Input 占用了太多空间，剩余的 Context 不足以容纳完整的 Output", "网络连接中断"],
+      question: “【场景模拟】你给 AI 发了一篇 1 万字的论文（占满了窗口），要求它”详细扩写”这篇论文。结果 AI 写了一半就断了（Truncated）。原因是？”,
+      options: [“AI 判断论文质量不够好，自动停止了扩写”, “Input 占用了太多 Context 空间，留给 Output 的额度不足以容纳完整的扩写内容”, “扩写任务太复杂，模型能力不够”],
       correct: 1
     },
     {
       type: 'quiz',
       question: "【Debug】用户反馈：“我和 AI 聊了 1 小时，它突然忘了我最开始设定的名字。” 最合理的解释是？",
-      options: ["模型出现了 Bug", "初始 Prompt 已经被挤出了滑动窗口的范围", "AI 觉得这个名字不好听，自动忽略了"],
+      options: ["模型内部状态出现了混乱，导致早期记忆被随机清除", "初始 Prompt 已经被挤出了滑动窗口的范围", "AI 对靠前位置的信息关注度低，'迷失在中间'效应导致了遗忘"],
       correct: 1
     },
     {
@@ -88,19 +88,19 @@ export const day5Data: DayContent = {
     {
       type: 'quiz',
       question: "【陷阱】有了 100万 Token 的超大窗口模型（如 Gemini 1.5 Pro），RAG 就会彻底消亡吗？",
-      options: ["会，RAG 没有任何存在的意义了", "不会，RAG 在成本、速度和私有权限控制上仍有优势", "会，因为大窗口模型完全免费"],
+      options: ["会，RAG 没有任何存在的意义了", "不会，RAG 在成本、速度和私有权限控制上仍有优势", "不会，但只有处理超过 100 万 Token 的文档时 RAG 才有必要"],
       correct: 1
     },
     {
       type: 'quiz',
-      question: "【计算】假设 1000 Token = $0.01。每次都把整本《红楼梦》（约100万 Token）丢给 AI 提问，和用 RAG 每次只检索 2000 Token 相比，成本差异大约是？",
-      options: ["成本差不多", "前者成本是后者的 500 倍", "RAG 更贵，因为要维护数据库"],
+      question: "【计算】假设 1000 Token = $0.01。每次都把整本《红楼梦》（约 80 万汉字，按汉字≈1.5 Token 估算约 120 万 Token）丢给 AI 提问，和用 RAG 每次只检索 2000 Token 相比，成本差异大约是？",
+      options: ["成本差不多", "前者成本是后者的约 600 倍", "RAG 更贵，因为要维护数据库"],
       correct: 1
     },
     {
       type: 'quiz',
       question: "【Debug】使用了 RAG 后，AI 回答：“根据提供的文档，我不知道答案。” 这说明？",
-      options: ["RAG 系统故障了", "这是正常的，说明检索到的文档里确实没有相关信息，AI 诚实地回答了", "AI 变笨了"],
+      options: ["检索阶段出了问题，导致返回了错误的文档片段", "这是正常的，说明检索到的文档里确实没有相关信息，AI 诚实地回答了", "AI 的生成能力下降了，应该换回不用 RAG 的方式"],
       correct: 1
     },
     {
@@ -114,7 +114,7 @@ export const day5Data: DayContent = {
     {
       type: 'match',
       isBoss: true,
-      question: "🏆 **Day 4 概念连连看**",
+      question: "🏆 **Day 5 概念连连看**",
       pairs: [
         { left: "Context Window", right: "昂贵的短期工作台 (RAM)" },
         { left: "Sliding Window", right: "处理超长对话的妥协机制" },
@@ -125,7 +125,7 @@ export const day5Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🎉 **Day 4 完成！**\n记住：Context 是金贵的内存，不要把无关的废话都塞进去。善用 RAG。\n明天，我们将学习如何控制 AI 的“性格”：**Temperature**。"
+      content: “🎉 **Day 5 完成！**\n记住：Context 是金贵的内存，不要把无关的废话都塞进去。善用 RAG。\n明天，我们将学习如何控制 AI 的”性格”：**Temperature**。”
     }
   ]
 };

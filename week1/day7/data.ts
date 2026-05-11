@@ -23,7 +23,7 @@ export const day7Data: DayContent = {
     {
       type: 'quiz',
       question: "【误区】开源模型意味着完全免费吗？",
-      options: ["是的，一分钱不花", "不是，虽然软件免费，但你需要支付昂贵的 GPU 推理成本（电费/算力租用）", "只有周日免费"],
+      options: ["是的，一分钱不花", "不是，虽然软件免费，但你需要支付昂贵的 GPU 推理成本（电费/算力租用）", "只有非商业用途才免费，商用需要购买授权"],
       correct: 1
     },
 
@@ -41,7 +41,7 @@ export const day7Data: DayContent = {
     {
       type: 'quiz',
       question: "【硬件】你想在自己的 24G 显存的显卡上跑一个 70B 的模型（通常需要 140G 显存），唯一可行的方法是？",
-      options: ["超频显卡", "使用极高程度的量化 (Quantization) 或 内存卸载 (Offloading)", "多买几个风扇"],
+      options: ["超频显卡", "使用极高程度的量化 (Quantization) 或 内存卸载 (Offloading)", "将模型按层拆分，分别存到多张 24G 显卡上同时推理"],
       correct: 1
     },
 
@@ -61,7 +61,7 @@ export const day7Data: DayContent = {
     {
       type: 'fill',
       question: "2. 【核心】Transformer 区别于 RNN 的最大优势是它可以 ___ (Parallel) 计算，并且捕捉长距离依赖。",
-      parts: ["Transformer 可以", "___", "处理整个序列。", "___"],
+      parts: ["Transformer 可以", "___", "处理整个序列。"],
       options: ["并行 (Parallel)", "串行", "随机"],
       correct: "并行 (Parallel)"
     },
@@ -70,7 +70,7 @@ export const day7Data: DayContent = {
     {
       type: 'quiz',
       question: "3. 【Embedding】为什么 '国王 - 男人 + 女人' 能算出 '女王'？",
-      options: ["因为 AI 懂得皇室礼仪", "因为在 Embedding 空间中，语义特征被编码成了向量方向，可以进行代数运算", "巧合"],
+      options: ["因为这些词的汉字笔画数相近，模型把它们归到了同一类", "因为在 Embedding 空间中，语义特征被编码成了向量方向，可以进行代数运算", "因为模型在训练数据中见过太多皇室故事，强行记住了这条规律"],
       correct: 1
     },
     {
@@ -88,7 +88,7 @@ export const day7Data: DayContent = {
     {
       type: 'quiz',
       question: "5. 【Context】当 Output Token 达到上限时，通常会发生什么？",
-      options: ["模型会自动帮我充值", "句子会突然中断 (Truncated)", "模型会删掉前面的对话腾出空间"],
+      options: ["AI 会自动压缩并总结之前的对话，无缝续写", "句子会突然中断 (Truncated)", "模型会删掉前面的对话腾出空间"],
       correct: 1
     },
     {
@@ -114,7 +114,7 @@ export const day7Data: DayContent = {
     {
       type: 'fill',
       question: "9. 【Prompt】Few-Shot 是指在 Prompt 中提供",
-      parts: ["Few-Shot 是指提供", "___", "让模型模仿。", "___"],
+      parts: ["Few-Shot 是指提供", "___", "让模型模仿。"],
       options: ["示例 (Examples)", "指令", "金钱"],
       correct: "示例 (Examples)"
     },
@@ -122,8 +122,8 @@ export const day7Data: DayContent = {
     // Level 5: 综合应用 (Scenario)
     {
       type: 'quiz',
-      question: "10. 【终极应用】你要开发一个“法律文书助手”。\n要求：严谨、引用法条准确、不用最新的网络新闻。\n最佳技术栈组合是？",
-      options: ["Temp=1.0 + 纯 Prompt", "Temp=0.1 + RAG (挂载法条库) + System Role ('你是资深律师')", "Temp=0.5 + GPT-3.5"],
+      question: “10. 【终极应用】你要开发一个”法律文书助手”。\n要求：严谨、引用法条准确、不编造内容。\n最佳技术栈组合是？”,
+      options: [“Temp=1.0 + 纯 Prompt（让 AI 自由发挥）”, “Temp=0.1 + RAG（挂载法条库）+ System Role（'你是资深律师'）”, “Temp=0.5 + 不给任何约束（模型自己判断）”],
       correct: 1
     },
     {
@@ -139,7 +139,7 @@ export const day7Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🎉 **Week 1 完美通关！**\n\n你已经完成了从 AI 萌新到“原理懂王”的蜕变。\n你不仅知道怎么用，还知道**为什么**要这么用。\n\n**下周预告**：我们将离开纯理论，开始动手写代码 (Python & API)，打造你的第一个 AI 应用！"
+      content: “🎉 **Week 1 完美通关！**\n\n你已经完成了从 AI 萌新到”原理懂王”的蜕变。\n你不仅知道怎么用，还知道**为什么**要这么用。\n\n**下周预告**：我们将离开纯理论，开始学习**Prompt Engineering（提示工程）**——如何把指令说清楚，用例子教 AI，让它按你想要的格式输出！”
     }
   ]
 };

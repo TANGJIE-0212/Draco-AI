@@ -14,7 +14,7 @@ export const day4Data: DayContent = {
     {
       type: 'quiz',
       question: "【对比】相比于旧的 RNN 模型，Transformer 最大的优势是？",
-      options: ["内存占用更小", "可以并行训练，速度极快且能捕捉长距离依赖", "生成的废话更少"],
+      options: ["参数量更少，在同等算力下能训练更大的数据集", "可以并行处理整个序列，速度极快且能捕捉长距离依赖", "使用了更复杂的循环结构，记忆能力更强"],
       correct: 1
     },
     { 
@@ -30,8 +30,8 @@ export const day4Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "【直觉】为什么位置编码是直接“加”在词向量上，而不是拼接在后面？",
-      options: ["为了节省内存空间", "为了破坏原始语义", "为了让向量变长"],
+      question: “【直觉】为什么位置编码是直接”加”在词向量上，而不是拼接在后面？”,
+      options: [“为了保持向量维度不变，同时让位置信息融入到语义向量里”, “为了破坏原始语义”, “为了让向量变长”],
       correct: 0
     },
 
@@ -86,14 +86,14 @@ export const day4Data: DayContent = {
     {
       type: 'quiz',
       question: "【概念】经过 Self-Attention 层处理后，每个单词的向量发生了什么变化？",
-      options: ["没有任何变化", "它融合了上下文其他词的信息（变成了 Contextual Embedding）", "它被删除了"],
+      options: ["维度变大了，因为融入了其他词的信息", "它融合了上下文其他词的信息，变成了带语境的向量（Contextual Embedding）", "向量值被平均了，所有词的向量变得越来越接近"],
       correct: 1
     },
 
     // --- 模块四：指代消解挑战 ---
     {
       type: 'theory',
-      content: "⚔️ **实战：它 (It) 是谁？**\n\nAttention 最强的能力是理解上下文。\n请看句 A：'The animal didn't cross the street because **it** was too tired.'\n请看句 B：'The animal didn't cross the street because **it** was too wide.'"
+      content: "⚔️ **实战：它 (It) 是谁？**\n\nAttention 最强的能力是理解上下文。\n请看句 A：'The animal didn't cross the street because **it** was too tired.'（动物没有过街，因为**它**太累了。）\n请看句 B：'The animal didn't cross the street because **it** was too wide.'（动物没有过街，因为**它**太宽了。）\n\n两句里的"it"，A 句指动物，B 句指街道。Attention 能通过上下文自动判断。"
     },
     {
       type: 'quiz',
@@ -121,8 +121,8 @@ export const day4Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "【后果】如果没有 Mask，GPT 在训练时会发生什么？",
-      options: ["它会直接“看到”答案，学不到任何预测能力", "它的运行速度会变慢", "它会变得更聪明"],
+      question: “【后果】如果没有 Mask，GPT 在训练时会发生什么？”,
+      options: [“它会直接看到后面的词（答案），相当于开卷考试，学不到真正的预测能力”, “训练速度会大幅变慢，因为需要处理更多信息”, “模型会过拟合，在训练集上表现完美但泛化能力差”],
       correct: 0
     },
 
@@ -152,14 +152,14 @@ export const day4Data: DayContent = {
     // --- 模块七：综合复习 ---
     {
       type: 'quiz',
-      question: "【Context Window】Context Window (上下文窗口) 的大小瓶颈主要来自？",
-      options: ["硬盘大小", "Attention 矩阵计算的复杂度 (它是序列长度的平方级增长)", "网速"],
+      question: "【Context Window】Context Window（上下文窗口）的大小瓶颈主要来自？",
+      options: ["模型权重文件的大小，参数越多占用空间越大", "Attention 矩阵的计算量随序列长度平方级增长，长度翻倍，计算量变 4 倍", "硬盘读写速度，长文本需要更多 I/O 操作"],
       correct: 1
     },
     {
       type: 'match',
       isBoss: true,
-      question: "🏆 **Day 3 终极排序：数据流转图**",
+      question: "🏆 **Day 4 终极排序：数据流转图**",
       pairs: [
         { left: "1. 入口", right: "Input Embedding + Positional Encoding" },
         { left: "2. 聚合", right: "Masked Multi-Head Attention" },
@@ -169,7 +169,7 @@ export const day4Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🎉 **Day 3 完美通关！**\n你不仅懂了 QKV，还搞懂了 Softmax 和 Mask 的作用。现在你已经理解了 GPT 大脑最核心的运作机制。\n明天见！"
+      content: "🎉 **Day 4 完美通关！**\n你不仅懂了 QKV，还搞懂了 Softmax 和 Mask 的作用。现在你已经理解了 GPT 大脑最核心的运作机制。\n明天见！"
     }
   ]
 };

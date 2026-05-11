@@ -1,8 +1,8 @@
 import { DayContent } from '../../types';
 
 export const day3Data: DayContent = {
-  day: 3, // 虽然图片是Day2，但为了配合你的代码结构保持为1，内容是 Token & Embedding
-  title: "魔法基石：Token 切分与 Embedding 星图",
+  day: 3,
+  title: "Day 3: 魔法基石 —— Token 切分与 Embedding 星图",
   shards: 1,
   steps: [
     // ------------------------------------------------------------------
@@ -45,7 +45,7 @@ export const day3Data: DayContent = {
     {
       type: 'quiz',
       question: "💼 **我是老板**：假设 API 价格是 $0.002 / 1k Tokens。你要处理一篇 5000 个单词的英文论文，大概需要支付多少钱？",
-      options: ["约 $0.01 (5000 * 1.3 / 1000 * 0.002)", "约 $0.002", "约 $100"],
+      options: ["约 $0.013（5000 单词 × 1.3 ÷ 1000 × $0.002，不到一毛钱）", "约 $2（按单词直接算）", "约 $100（AI 调用很贵）"],
       correct: 0
     },
 
@@ -122,7 +122,7 @@ export const day3Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🎉 **Day 1 达成！**\n你现在明白了 AI 不识字，它只认“数字积木”和“空间坐标”。\n\n明天我们将进入更核心的引擎：**Transformer 与 Attention 机制**（AI 如何在一堆 Token 中找到重点）。"
+      content: “🎉 **Day 3 达成！**\n你现在明白了 AI 不识字，它只认”数字积木”和”空间坐标”。\n\n明天我们将进入更核心的引擎：**Transformer 与 Attention 机制**（AI 如何在一堆 Token 中找到重点）。”
     }
   ]
 };

@@ -19,7 +19,7 @@ export const day6Data: DayContent = {
     {
       type: 'fill',
       question: "【原理】为了让 AI 像人一样说话，我们需要引入 ___ (Sampling)，即不一定选概率最高的词，而是按概率随机抽取。",
-      parts: ["引入", "___", "策略，让低概率的词也有机会被选中。", "___"],
+      parts: ["引入", "___", "策略，让低概率的词也有机会被选中。"],
       options: ["采样 (Sampling)", "排序 (Sorting)", "过滤 (Filtering)"],
       correct: "采样 (Sampling)"
     },
@@ -48,7 +48,7 @@ export const day6Data: DayContent = {
     {
       type: 'quiz',
       question: "【陷阱】把 Temperature 调高到 1.5 甚至 2.0，最可能发生什么？",
-      options: ["AI 变得超级聪明，写出诺贝尔奖级别的文章", "AI 开始胡言乱语，语法混乱，甚至生造单词", "AI 运行速度变快"],
+      options: ["AI 变得超级聪明，写出诺贝尔奖级别的文章", "AI 开始胡言乱语，语法混乱，甚至生造单词", "AI 的回答变得非常简短，以节省算力"],
       correct: 1
     },
 
@@ -60,13 +60,13 @@ export const day6Data: DayContent = {
     {
       type: 'quiz',
       question: "【辨析】为什么 Top-P 通常比 Top-K 效果更好？",
-      options: ["因为 P 代表 Python，代码写起来容易", "因为 Top-P 是动态调整候选数量的，能适应不同确信度的语境", "Top-K 计算量太大"],
+      options: ["因为 Top-P 会在采样前先对概率排序，速度比 Top-K 更快", "因为 Top-P 是动态调整候选数量的，能适应不同确信度的语境", "Top-K 的候选词数量固定，在模型非常自信时会保留太多无用的低概率词"],
       correct: 1
     },
     {
       type: 'quiz',
-      question: "【实战】如果同时设置 Top-K=1 和 Temperature=1，实际起作用的是？",
-      options: ["Temperature (因为它是基础)", "Top-K=1 (因为候选池被缩减到只剩 1 个，怎么随机都没用)", "两者混合"],
+      question: "【实战】如果同时设置 Top-K=1（候选池只留 1 个词）和 Temperature=1（随机采样），实际起作用的是？",
+      options: ["Temperature（因为它是基础设置）", "Top-K=1（候选池只有 1 个词时，无论怎么随机都只能选那 1 个，温度失效）", "两者混合叠加"],
       correct: 1
     },
 
@@ -93,7 +93,7 @@ export const day6Data: DayContent = {
     {
       type: 'quiz',
       question: "【种子】即使参数一样，为什么 OpenAI 有时还是会输出不同的结果？",
-      options: ["因为 GPU 硬件层面的浮点数运算存在微小的非确定性", "因为 OpenAI 在后台偷偷改了你的参数", "因为 AI 有自由意志"],
+      options: ["因为 GPU 硬件层面的浮点数运算存在微小的非确定性", "因为 OpenAI 在后台偷偷改了你的参数", "因为服务器负载不同时，模型会动态调整输出精度"],
       correct: 0
     },
 
@@ -101,7 +101,7 @@ export const day6Data: DayContent = {
     {
       type: 'match',
       isBoss: true,
-      question: "🏆 **Day 5 调参大师认证**",
+      question: "🏆 **Day 6 调参大师认证**",
       pairs: [
         { left: "Temperature", right: "概率分布的平滑度调节" },
         { left: "Top-P", right: "动态截断尾部垃圾词" },
@@ -112,7 +112,7 @@ export const day6Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🎉 **Day 5 完成！**\n你现在掌握了 AI 的“情绪旋钮”。\n明天，我们将进入目前最实用、最能拉开差距的技能：**Prompt Engineering (提示工程)**。"
+      content: “🎉 **Day 6 完成！**\n你现在掌握了 AI 的”情绪旋钮”。\n明天，我们将进入目前最实用、最能拉开差距的技能：**Prompt Engineering (提示工程)**。”
     }
   ]
 };
