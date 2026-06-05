@@ -25,12 +25,7 @@ import { w3d5Data } from './archive_v1/week3/day5/data';
 import { w3d6Data } from './archive_v1/week3/day6/data';
 import { w3d7Data } from './archive_v1/week3/day7/data';
 
-// W4 旧多模态：D3-D7 暂时沿用 v1 归档（D1/D2 已被新 Agent 内容替代）
-import { w4d3Data } from './archive_v1/week4/day3/data';
-import { w4d4Data } from './archive_v1/week4/day4/data';
-import { w4d5Data } from './archive_v1/week4/day5/data';
-import { w4d6Data } from './archive_v1/week4/day6/data';
-import { w4d7Data } from './archive_v1/week4/day7/data';
+// W4 D3-D7 已升级为 v2 Agent 实战路线（小白 · 用现成 Agent）
 
 import { w5d1Data } from './archive_v1/week5/day1/data';
 import { w5d2Data } from './archive_v1/week5/day2/data';
@@ -59,6 +54,11 @@ import { w7d7Data } from './archive_v1/week7/day7/data';
 // === v2 新内容：W4 召唤分身术 (Agent) ===
 import { w4d1Data } from './week4/day1/data';
 import { w4d2Data } from './week4/day2/data';
+import { w4d3Data } from './week4/day3/data';
+import { w4d4Data } from './week4/day4/data';
+import { w4d5Data } from './week4/day5/data';
+import { w4d6Data } from './week4/day6/data';
+import { w4d7Data } from './week4/day7/data';
 
 export const WEEKS: WeekInfo[] = [
   { id: 1, title: "第一周：巨龙解剖学", color: "from-orange-400 to-red-500", icon: "fa-magnifying-glass", description: "LLM Fundamentals" },
