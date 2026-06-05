@@ -17,13 +17,13 @@ import { w2d5Data } from './archive_v1/week2/day5/data';
 import { w2d6Data } from './archive_v1/week2/day6/data';
 import { w2d7Data } from './archive_v1/week2/day7/data';
 
-import { w3d1Data } from './archive_v1/week3/day1/data';
-import { w3d2Data } from './archive_v1/week3/day2/data';
-import { w3d3Data } from './archive_v1/week3/day3/data';
-import { w3d4Data } from './archive_v1/week3/day4/data';
-import { w3d5Data } from './archive_v1/week3/day5/data';
-import { w3d6Data } from './archive_v1/week3/day6/data';
-import { w3d7Data } from './archive_v1/week3/day7/data';
+import { w3d1Data } from './week3/day1/data';
+import { w3d2Data } from './week3/day2/data';
+import { w3d3Data } from './week3/day3/data';
+import { w3d4Data } from './week3/day4/data';
+import { w3d5Data } from './week3/day5/data';
+import { w3d6Data } from './week3/day6/data';
+import { w3d7Data } from './week3/day7/data';
 
 // W4 D3-D7 已升级为 v2 Agent 实战路线（小白 · 用现成 Agent）
 
@@ -63,7 +63,7 @@ import { w4d7Data } from './week4/day7/data';
 export const WEEKS: WeekInfo[] = [
   { id: 1, title: "第一周：巨龙解剖学", color: "from-orange-400 to-red-500", icon: "fa-magnifying-glass", description: "LLM Fundamentals" },
   { id: 2, title: "第二周：咒语魔法师", color: "from-blue-400 to-indigo-500", icon: "fa-wand-magic-sparkles", description: "Prompt Engineering" },
-  { id: 3, title: "第三周：信息&数据炼金术", color: "from-purple-400 to-pink-500", icon: "fa-flask", description: "Information & Data Alchemy" },
+  { id: 3, title: "第三周：龙之七巧手", color: "from-purple-400 to-pink-500", icon: "fa-briefcase", description: "Workplace AI Deliverables" },
   { id: 4, title: "第四周：召唤分身术 (Agent)", color: "from-green-400 to-emerald-600", icon: "fa-robot", description: "Agents & Harness" },
   { id: 5, title: "第五周：龙之记忆术", color: "from-yellow-400 to-orange-500", icon: "fa-database", description: "RAG" },
   { id: 6, title: "第六周：龙族流水线", color: "from-cyan-400 to-blue-600", icon: "fa-gears", description: "Workflow Automation" },
