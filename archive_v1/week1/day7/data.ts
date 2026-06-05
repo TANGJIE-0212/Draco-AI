@@ -1,4 +1,4 @@
-import { DayContent } from '../../types';
+﻿import { DayContent } from '../../types';
 
 export const day7Data: DayContent = {
   day: 7,
@@ -34,7 +34,7 @@ export const day7Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "【应用】如果你的任务是“从一段文本中提取人名”，你会选择？",
+      question: "【应用】如果你的任务是「从一段文本中提取人名」，你会选择？",
       options: ["GPT-4 (最强模型)", "Llama-8B (小模型)", "训练一个新的大模型"],
       correct: 1
     },
@@ -122,8 +122,8 @@ export const day7Data: DayContent = {
     // Level 5: 综合应用 (Scenario)
     {
       type: 'quiz',
-      question: “10. 【终极应用】你要开发一个”法律文书助手”。\n要求：严谨、引用法条准确、不编造内容。\n最佳技术栈组合是？”,
-      options: [“Temp=1.0 + 纯 Prompt（让 AI 自由发挥）”, “Temp=0.1 + RAG（挂载法条库）+ System Role（'你是资深律师'）”, “Temp=0.5 + 不给任何约束（模型自己判断）”],
+      question: "10. 【终极应用】你要开发一个「法律文书助手」。\n要求：严谨、引用法条准确、不编造内容。\n最佳技术栈组合是？",
+      options: ["Temp=1.0 + 纯 Prompt（让 AI 自由发挥）", "Temp=0.1 + RAG（挂载法条库）+ System Role（'你是资深律师'）", "Temp=0.5 + 不给任何约束（模型自己判断）"],
       correct: 1
     },
     {
@@ -139,7 +139,7 @@ export const day7Data: DayContent = {
     },
     {
       type: 'theory',
-      content: “🎉 **Week 1 完美通关！**\n\n你已经完成了从 AI 萌新到”原理懂王”的蜕变。\n你不仅知道怎么用，还知道**为什么**要这么用。\n\n**下周预告**：我们将离开纯理论，开始学习**Prompt Engineering（提示工程）**——如何把指令说清楚，用例子教 AI，让它按你想要的格式输出！”
+      content: "🎉 **Week 1 完美通关！**\n\n你已经完成了从 AI 萌新到「原理懂王」的蜕变。\n你不仅知道怎么用，还知道**为什么**要这么用。\n\n**下周预告**：我们将离开纯理论，开始学习**Prompt Engineering（提示工程）**——如何把指令说清楚，用例子教 AI，让它按你想要的格式输出！"
     }
   ]
 };

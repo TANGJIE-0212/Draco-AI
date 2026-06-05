@@ -1,4 +1,4 @@
-import { DayContent } from '../../types';
+﻿import { DayContent } from '../../types';
 
 export const day6Data: DayContent = {
   day: 6,
@@ -27,7 +27,7 @@ export const day6Data: DayContent = {
     // --- 模块二：Temperature (温度) ---
     { 
       type: 'theory', 
-      content: "🌡️ **第二章：Temperature 的数学本质**\n\nTemperature 并不改变模型本身，它只是改变了**Softmax 之前的概率分布形态**。\n\n- **T < 1 (低温)**: 概率分布变“尖”。强者恒强（80% -> 99%），弱者更弱。AI 变得**保守、确定**。\n- **T > 1 (高温)**: 概率分布变“平”。贫富差距缩小。低概率词被选中的机会大增。AI 变得**疯狂、跳跃**。" 
+      content: "🌡️ **第二章：Temperature 的数学本质**\n\nTemperature 并不改变模型本身，它只是改变了**Softmax 之前的概率分布形态**。\n\n- **T < 1 (低温)**: 概率分布变「尖」。强者恒强（80% -> 99%），弱者更弱。AI 变得**保守、确定**。\n- **T > 1 (高温)**: 概率分布变「平」。贫富差距缩小。低概率词被选中的机会大增。AI 变得**疯狂、跳跃**。" 
     },
     {
       type: 'quiz',
@@ -55,7 +55,7 @@ export const day6Data: DayContent = {
     // --- 模块三：Top-K 与 Top-P (Nucleus) ---
     { 
       type: 'theory', 
-      content: "🎯 **第三章：掐头去尾 (Top-K & Top-P)**\n\n除了调温度，我们还必须把那些概率极低、极不靠谱的词（比如“我吃... 汽车”）直接切掉。\n\n- **Top-K**: 永远只看前 K 个词（比如前 10 名）。\n- **Top-P (核采样)**: 更智能。它只取累加概率达到 P (如 0.9) 的词。如果前两个词概率就占了 0.9，那候选名单就只有 2 个；如果前 50 个词加起来才 0.9，名单就有 50 个。" 
+      content: "🎯 **第三章：掐头去尾 (Top-K & Top-P)**\n\n除了调温度，我们还必须把那些概率极低、极不靠谱的词（比如「我吃... 汽车」）直接切掉。\n\n- **Top-K**: 永远只看前 K 个词（比如前 10 名）。\n- **Top-P (核采样)**: 更智能。它只取累加概率达到 P (如 0.9) 的词。如果前两个词概率就占了 0.9，那候选名单就只有 2 个；如果前 50 个词加起来才 0.9，名单就有 50 个。" 
     },
     {
       type: 'quiz',
@@ -73,13 +73,13 @@ export const day6Data: DayContent = {
     // --- 模块四：实战 Scenario ---
     {
       type: 'quiz',
-      question: "【Debug】用户：“我用 API 写了一个自动回复邮件的机器人，但它有时候回复的内容太跳脱，甚至有点不礼貌。” 你的建议是？",
+      question: "【Debug】用户：「我用 API 写了一个自动回复邮件的机器人，但它有时候回复的内容太跳脱，甚至有点不礼貌。」 你的建议是？",
       options: ["调高 Temperature", "调低 Temperature，并检查 Prompt 的语气约束", "增加 Top-P 值"],
       correct: 1
     },
     {
       type: 'quiz',
-      question: "【Debug】用户：“我让 AI 生成 10 个不同的营销标题，结果它生成的 10 个看起来都差不多。” 你的建议是？",
+      question: "【Debug】用户：「我让 AI 生成 10 个不同的营销标题，结果它生成的 10 个看起来都差不多。」 你的建议是？",
       options: ["调低 Temperature", "调高 Temperature 以增加多样性", "减少 Prompt 长度"],
       correct: 1
     },
@@ -112,7 +112,7 @@ export const day6Data: DayContent = {
     },
     {
       type: 'theory',
-      content: “🎉 **Day 6 完成！**\n你现在掌握了 AI 的”情绪旋钮”。\n明天，我们将进入目前最实用、最能拉开差距的技能：**Prompt Engineering (提示工程)**。”
+      content: "🎉 **Day 6 完成！**\n你现在掌握了 AI 的「情绪旋钮」。\n明天，我们将进入目前最实用、最能拉开差距的技能：**Prompt Engineering (提示工程)**。"
     }
   ]
 };

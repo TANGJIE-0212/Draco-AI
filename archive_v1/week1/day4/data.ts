@@ -1,4 +1,4 @@
-
+﻿
 import { DayContent } from '../../types';
 
 export const day4Data: DayContent = {
@@ -19,7 +19,7 @@ export const day4Data: DayContent = {
     },
     { 
       type: 'theory', 
-      content: "📍 **位置编码 (Positional Encoding)**\n\n既然是“一眼看完”，“我爱你”和“你爱我”对 Transformer 来说只是三个一样的词。它没有时间概念。\n\n所以，我们必须给每个词的向量**加上**一个代表位置的数值（位置编码），就像给每个学生贴上座位号。" 
+      content: "📍 **位置编码 (Positional Encoding)**\n\n既然是「一眼看完」，「我爱你」和「你爱我」对 Transformer 来说只是三个一样的词。它没有时间概念。\n\n所以，我们必须给每个词的向量**加上**一个代表位置的数值（位置编码），就像给每个学生贴上座位号。" 
     },
     {
       type: 'fill',
@@ -30,15 +30,15 @@ export const day4Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: “【直觉】为什么位置编码是直接”加”在词向量上，而不是拼接在后面？”,
-      options: [“为了保持向量维度不变，同时让位置信息融入到语义向量里”, “为了破坏原始语义”, “为了让向量变长”],
+      question: "【直觉】为什么位置编码是直接「加」在词向量上，而不是拼接在后面？",
+      options: ["为了保持向量维度不变，同时让位置信息融入到语义向量里", "为了破坏原始语义", "为了让向量变长"],
       correct: 0
     },
 
     // --- 模块二：Self-Attention 机制 (QKV) ---
     { 
       type: 'theory', 
-      content: "💡 **第二章：Q, K, V 三位一体**\n\n这是注意力的灵魂。想象你在**图书馆**找资料：\n- **Q (Query)**: 你手里的**借书单**（我想找关于“量子力学”的书）。\n- **K (Key)**: 书脊上的**分类标签**（这本书是“物理”，那本是“烹饪”）。\n- **V (Value)**: 书里的**实际内容**。" 
+      content: "💡 **第二章：Q, K, V 三位一体**\n\n这是注意力的灵魂。想象你在**图书馆**找资料：\n- **Q (Query)**: 你手里的**借书单**（我想找关于「量子力学」的书）。\n- **K (Key)**: 书脊上的**分类标签**（这本书是「物理」，那本是「烹饪」）。\n- **V (Value)**: 书里的**实际内容**。" 
     },
     {
       type: 'match',
@@ -75,7 +75,7 @@ export const day4Data: DayContent = {
     },
     { 
       type: 'theory', 
-      content: "🍹 **关键动作 3：混合 (Weighted Sum)**\n\nAttention 的最终输出不是“只选一个词”，而是“把所有相关词的信息混合在一起”。\n\n就像调鸡尾酒：\n- 80% 的 'cat' (V)\n- 15% 的 'mat' (V)\n- 5% 的其他词 (V)\n\n这让 'sat' 这个词吸收了主语和宾语的信息，变得更丰富。" 
+      content: "🍹 **关键动作 3：混合 (Weighted Sum)**\n\nAttention 的最终输出不是「只选一个词」，而是「把所有相关词的信息混合在一起」。\n\n就像调鸡尾酒：\n- 80% 的 'cat' (V)\n- 15% 的 'mat' (V)\n- 5% 的其他词 (V)\n\n这让 'sat' 这个词吸收了主语和宾语的信息，变得更丰富。" 
     },
     {
       type: 'quiz',
@@ -93,7 +93,7 @@ export const day4Data: DayContent = {
     // --- 模块四：指代消解挑战 ---
     {
       type: 'theory',
-      content: "⚔️ **实战：它 (It) 是谁？**\n\nAttention 最强的能力是理解上下文。\n请看句 A：'The animal didn't cross the street because **it** was too tired.'（动物没有过街，因为**它**太累了。）\n请看句 B：'The animal didn't cross the street because **it** was too wide.'（动物没有过街，因为**它**太宽了。）\n\n两句里的"it"，A 句指动物，B 句指街道。Attention 能通过上下文自动判断。"
+      content: "⚔️ **实战：它 (It) 是谁？**\n\nAttention 最强的能力是理解上下文。\n请看句 A：'The animal didn't cross the street because **it** was too tired.'（动物没有过街，因为**它**太累了。）\n请看句 B：'The animal didn't cross the street because **it** was too wide.'（动物没有过街，因为**它**太宽了。）\n\n两句里的「it」，A 句指动物，B 句指街道。Attention 能通过上下文自动判断。"
     },
     {
       type: 'quiz',
@@ -121,15 +121,15 @@ export const day4Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: “【后果】如果没有 Mask，GPT 在训练时会发生什么？”,
-      options: [“它会直接看到后面的词（答案），相当于开卷考试，学不到真正的预测能力”, “训练速度会大幅变慢，因为需要处理更多信息”, “模型会过拟合，在训练集上表现完美但泛化能力差”],
+      question: "【后果】如果没有 Mask，GPT 在训练时会发生什么？",
+      options: ["它会直接看到后面的词（答案），相当于开卷考试，学不到真正的预测能力", "训练速度会大幅变慢，因为需要处理更多信息", "模型会过拟合，在训练集上表现完美但泛化能力差"],
       correct: 0
     },
 
     // --- 模块六：Multi-Head & FFN ---
     { 
       type: 'theory', 
-      content: "🐙 **第四章：多头注意力 (Multi-Head)**\n\n为什么模型要有几十个“头”？因为理解需要多视角。\n- 1号头看语法（主谓）\n- 2号头看指代（它=谁）\n- 3号头看情绪...\n\n最后把所有头的结果 **Concat (拼接)** 起来。" 
+      content: "🐙 **第四章：多头注意力 (Multi-Head)**\n\n为什么模型要有几十个「头」？因为理解需要多视角。\n- 1号头看语法（主谓）\n- 2号头看指代（它=谁）\n- 3号头看情绪...\n\n最后把所有头的结果 **Concat (拼接)** 起来。" 
     },
     {
       type: 'quiz',
@@ -139,7 +139,7 @@ export const day4Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🧠 **第五章：Feed Forward Network (FFN)**\n\nAttention 只是负责“收集信息”（把相关的词找出来）。\n真正负责“消化、思考”这些信息的是后面的 **FFN (前馈神经网络)** 层。它通常包含大部分的模型参数。"
+      content: "🧠 **第五章：Feed Forward Network (FFN)**\n\nAttention 只是负责「收集信息」（把相关的词找出来）。\n真正负责「消化、思考」这些信息的是后面的 **FFN (前馈神经网络)** 层。它通常包含大部分的模型参数。"
     },
     {
       type: 'fill',
@@ -173,3 +173,4 @@ export const day4Data: DayContent = {
     }
   ]
 };
+

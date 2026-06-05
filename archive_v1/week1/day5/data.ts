@@ -1,4 +1,4 @@
-import { DayContent } from '../../types';
+﻿import { DayContent } from '../../types';
 
 export const day5Data: DayContent = {
   day: 5,
@@ -12,7 +12,7 @@ export const day5Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "【概念辨析】关于“训练数据”和“Context”，以下说法正确的是？",
+      question: "【概念辨析】关于「训练数据」和「Context」，以下说法正确的是？",
       options: ["我们在对话框里发给 AI 的内容，会实时更新它的训练数据，让它变聪明", "Context 是临时的，一刷新网页或开启新对话，之前的 Context 就消失了", "训练数据就是 Context，两者是一回事"],
       correct: 1
     },
@@ -25,7 +25,7 @@ export const day5Data: DayContent = {
     {
       type: 'fill',
       question: "【术语】当对话长度超过了模型限制，最早的信息会被强制丢弃，这种机制通常被称为 ___ (Sliding Window)。",
-      parts: ["这种“旧的不去，新的不来”的机制叫", "___", "窗口。"],
+      parts: ["这种「旧的不去，新的不来」的机制叫", "___", "窗口。"],
       options: ["滑动 (Sliding)", "压缩 (Zipping)", "跳跃 (Hopping)"],
       correct: "滑动 (Sliding)"
     },
@@ -37,19 +37,19 @@ export const day5Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: “【场景模拟】你给 AI 发了一篇 1 万字的论文（占满了窗口），要求它”详细扩写”这篇论文。结果 AI 写了一半就断了（Truncated）。原因是？”,
-      options: [“AI 判断论文质量不够好，自动停止了扩写”, “Input 占用了太多 Context 空间，留给 Output 的额度不足以容纳完整的扩写内容”, “扩写任务太复杂，模型能力不够”],
+      question: "【场景模拟】你给 AI 发了一篇 1 万字的论文（占满了窗口），要求它「详细扩写」这篇论文。结果 AI 写了一半就断了（Truncated）。原因是？",
+      options: ["AI 判断论文质量不够好，自动停止了扩写", "Input 占用了太多 Context 空间，留给 Output 的额度不足以容纳完整的扩写内容", "扩写任务太复杂，模型能力不够"],
       correct: 1
     },
     {
       type: 'quiz',
-      question: "【Debug】用户反馈：“我和 AI 聊了 1 小时，它突然忘了我最开始设定的名字。” 最合理的解释是？",
+      question: "【Debug】用户反馈：「我和 AI 聊了 1 小时，它突然忘了我最开始设定的名字。」 最合理的解释是？",
       options: ["模型内部状态出现了混乱，导致早期记忆被随机清除", "初始 Prompt 已经被挤出了滑动窗口的范围", "AI 对靠前位置的信息关注度低，'迷失在中间'效应导致了遗忘"],
       correct: 1
     },
     {
       type: 'quiz',
-      question: "【策略】为了缓解“迷失在中间”现象，重要的指令（Instruction）最好放在 Prompt 的哪个位置？",
+      question: "【策略】为了缓解「迷失在中间」现象，重要的指令（Instruction）最好放在 Prompt 的哪个位置？",
       options: ["最开头或最结尾", "正中间，为了平衡", "随机位置"],
       correct: 0
     },
@@ -99,7 +99,7 @@ export const day5Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "【Debug】使用了 RAG 后，AI 回答：“根据提供的文档，我不知道答案。” 这说明？",
+      question: "【Debug】使用了 RAG 后，AI 回答：「根据提供的文档，我不知道答案。」 这说明？",
       options: ["检索阶段出了问题，导致返回了错误的文档片段", "这是正常的，说明检索到的文档里确实没有相关信息，AI 诚实地回答了", "AI 的生成能力下降了，应该换回不用 RAG 的方式"],
       correct: 1
     },
@@ -125,7 +125,7 @@ export const day5Data: DayContent = {
     },
     {
       type: 'theory',
-      content: “🎉 **Day 5 完成！**\n记住：Context 是金贵的内存，不要把无关的废话都塞进去。善用 RAG。\n明天，我们将学习如何控制 AI 的”性格”：**Temperature**。”
+      content: "🎉 **Day 5 完成！**\n记住：Context 是金贵的内存，不要把无关的废话都塞进去。善用 RAG。\n明天，我们将学习如何控制 AI 的「性格」：**Temperature**。"
     }
   ]
 };

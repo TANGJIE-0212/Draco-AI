@@ -1,4 +1,4 @@
-import { DayContent } from '../../types';
+﻿import { DayContent } from '../../types';
 
 export const day3Data: DayContent = {
   day: 3,
@@ -10,7 +10,7 @@ export const day3Data: DayContent = {
     // ------------------------------------------------------------------
     { 
       type: 'theory', 
-      content: "🔮 **第一章：AI 的视觉 - Token (词元)**\n\nAI 并不是直接“阅读”单词，而是先用一把剪刀将文本切碎。这把剪刀叫 **Tokenizer**。切出来的碎片就是 **Token**。\n\n⚠️ **关键点**：Token 不等于单词。常见的词（如 'apple'）是一个 Token，但生僻词或复杂组合会被切成多个。" 
+      content: "🔮 **第一章：AI 的视觉 - Token (词元)**\n\nAI 并不是直接「阅读」单词，而是先用一把剪刀将文本切碎。这把剪刀叫 **Tokenizer**。切出来的碎片就是 **Token**。\n\n⚠️ **关键点**：Token 不等于单词。常见的词（如 'apple'）是一个 Token，但生僻词或复杂组合会被切成多个。" 
     },
     {
       type: 'quiz',
@@ -54,7 +54,7 @@ export const day3Data: DayContent = {
     // ------------------------------------------------------------------
     { 
       type: 'theory', 
-      content: "🌌 **第二章：AI 的大脑 - Embedding (嵌入)**\n\n切好的 Token 只是死板的数字 ID。我们需要把它们变成**有意义的坐标**。\n\n**Embedding** 就是把 Token 扔到一个几千维的“语义宇宙”中。在这里：\n1. 每个词都是一个坐标点（向量）。\n2. **意思越近，距离越近**。" 
+      content: "🌌 **第二章：AI 的大脑 - Embedding (嵌入)**\n\n切好的 Token 只是死板的数字 ID。我们需要把它们变成**有意义的坐标**。\n\n**Embedding** 就是把 Token 扔到一个几千维的「语义宇宙」中。在这里：\n1. 每个词都是一个坐标点（向量）。\n2. **意思越近，距离越近**。" 
     },
     {
       type: 'match',
@@ -63,12 +63,12 @@ export const day3Data: DayContent = {
         { left: "Tokenizer", right: "AI 数不清 'Strawberry' 里有几个 r 的根源" },
         { left: "Embedding", right: "没有它，'猫'和'狗'在数学上和'猫'与'汽车'一样远" },
         { left: "向量维度", right: "越大语义越细腻，但显存消耗与之成正比" },
-        { left: "空间距离", right: "RAG 检索时判断"哪段文档最相关"的依据" }
+        { left: "空间距离", right: "RAG 检索时判断「哪段文档最相关」的依据" }
       ]
     },
     { 
       type: 'theory', 
-      content: "📐 **深入原理：余弦相似度 (Cosine Similarity)**\n\nAI 怎么知道“猫”和“狗”很像？它计算两个向量在空间中的**夹角**。\n\n- 夹角接近 0 度（方向一致）：意思极度相似。\n- 夹角 90 度（垂直）：毫无关系。\n- 夹角 180 度（相反）：意思相反。" 
+      content: "📐 **深入原理：余弦相似度 (Cosine Similarity)**\n\nAI 怎么知道「猫」和「狗」很像？它计算两个向量在空间中的**夹角**。\n\n- 夹角接近 0 度（方向一致）：意思极度相似。\n- 夹角 90 度（垂直）：毫无关系。\n- 夹角 180 度（相反）：意思相反。" 
     },
     // 活学活用 4：空间直觉
     {
@@ -95,7 +95,7 @@ export const day3Data: DayContent = {
     // ------------------------------------------------------------------
     { 
       type: 'theory', 
-      content: "✨ **见证奇迹：国王减去男人**\n\nEmbedding 最神奇的特性是**语义代数**。因为它们是数字向量，我们可以直接做加减法！\n\n经典的公式：\n$$Vector(国王) - Vector(男人) + Vector(女人) \\approx Vector(女王)$$\n\n这说明 AI 在空间中理解了“性别”这个维度的方向。" 
+      content: "✨ **见证奇迹：国王减去男人**\n\nEmbedding 最神奇的特性是**语义代数**。因为它们是数字向量，我们可以直接做加减法！\n\n经典的公式：\n$$Vector(国王) - Vector(男人) + Vector(女人) \\approx Vector(女王)$$\n\n这说明 AI 在空间中理解了「性别」这个维度的方向。" 
     },
     // 活学活用 6：向量推理
     {
@@ -107,7 +107,7 @@ export const day3Data: DayContent = {
     // 活学活用 7：RAG (检索增强) 预热
     {
       type: 'theory', 
-      content: "💡 **应用场景：AI 为什么能搜到答案？**\n\n当你问“怎么做番茄炒蛋？”时，AI 会把你的问题变成向量，然后去数据库里找**距离最近**的文档向量。\n这就是 **RAG (检索增强生成)** 的核心原理——**向量搜索**。" 
+      content: "💡 **应用场景：AI 为什么能搜到答案？**\n\n当你问「怎么做番茄炒蛋？」时，AI 会把你的问题变成向量，然后去数据库里找**距离最近**的文档向量。\n这就是 **RAG (检索增强生成)** 的核心原理——**向量搜索**。" 
     },
     {
       type: 'match',
@@ -122,7 +122,7 @@ export const day3Data: DayContent = {
     },
     {
       type: 'theory',
-      content: “🎉 **Day 3 达成！**\n你现在明白了 AI 不识字，它只认”数字积木”和”空间坐标”。\n\n明天我们将进入更核心的引擎：**Transformer 与 Attention 机制**（AI 如何在一堆 Token 中找到重点）。”
+      content: "🎉 **Day 3 达成！**\n你现在明白了 AI 不识字，它只认「数字积木」和「空间坐标」。\n\n明天我们将进入更核心的引擎：**Transformer 与 Attention 机制**（AI 如何在一堆 Token 中找到重点）。"
     }
   ]
 };
