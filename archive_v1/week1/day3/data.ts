@@ -84,10 +84,10 @@ export const day3Data: DayContent = {
     },
     {
       type: 'fill',
-      question: "🧠 **语境感知**：",
-      parts: ["在 'The apple fell from the tree' 这句话中，'apple' 的向量会远离", "___", "相关的区域。"],
-      options: ["科技/电子产品", "植物/水果", "重力/物理"],
-      correct: "科技/电子产品"
+      question: "🧠 **语境感知**：在 'The apple fell from the tree' 这句话中，因为上下文是"树"和"掉落"，'apple' 的向量会**远离** ___ 相关的语义区域，而靠近水果/植物区域。",
+      parts: ["'apple' 在这句话里，向量会远离", "___", "的语义区域（因为上下文是树和掉落，不是手机）。"],
+      options: ["苹果公司产品 / 消费电子（iPhone、Mac）", "植物 / 果实", "重力 / 物理运动"],
+      correct: "苹果公司产品 / 消费电子（iPhone、Mac）"
     },
 
     // ------------------------------------------------------------------

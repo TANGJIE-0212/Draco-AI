@@ -31,7 +31,7 @@ export const w4d2Data: DayContent = {
     ], correct: 2 },
 
     // ===== Fill 1：3 个提问技巧 =====
-    { type: 'fill', question: "复习提问公式：好的 Agent 提问 = 明确______ + 要求带______ + 指定输出______。", placeholder: "答案用「/」隔开，如「a / b / c」", correct: "使用场景 / 引用 / 形态" },
+    { type: 'fill', question: "下面这道填空练习提问公式：好的 Agent 提问 = 明确「___」+ 要求带引用 + 指定输出形态。", parts: ["好的 Agent 提问：明确「", "___", "」+ 要求带引用 + 指定输出形态。"], options: ["使用场景（我要拿这个干什么）", "关键词（尽量用专业术语）", "字数限制（越精简越好）"], correct: "使用场景（我要拿这个干什么）" },
 
     // ===== Practice 1：陌生话题调研 =====
     { type: 'practice', task: "【陌生话题调研】打开 **秘塔 AI 搜索**（metaso.cn），挑一个你完全不懂的概念问它。\n\n推荐（也可自己换）：「USDT 稳定币是什么？普通中国人会接触到吗？」\n\n» 一句话告诉我：**它给了你几个引用源 + 你看完大概多少分钟搞懂了？**", rubric: "给出引用源数字 + 大致时间数字即可。", placeholder: "引用源 __ 个，大概 __ 分钟搞懂了。", minLength: 10, referenceAnswer: "引用源 18 个，大概 3 分钟搞懂了。" },
@@ -54,7 +54,7 @@ export const w4d2Data: DayContent = {
     { type: 'theory', content: "⚖️ **Chapter 4：让 Agent 帮你「货比三家」**\n\n以前买东西做决定，你得自己开 5 个标签页对比。现在让 Agent 干：\n\n**适合 Agent 对比的场景**：\n- 手机 / 电脑 / 家电 / 车这种规格密集型产品\n- 同一类服务的几家供应商（云服务、SaaS 工具、培训机构）\n- 多个城市 / 多个公司 / 多个学校的并列对比\n\n**怎么问最有效**：\n\n```\n我要对比 [产品 A] [产品 B] [产品 C] 在 [维度1] [维度2] [维度3] 上的差异，请用表格输出，并列出信息来源。\n```\n\n推荐工具：**Kimi 探索版** 或 **秘塔深度研究**。" },
 
     // ===== Match 1：任务 vs 推荐工具 =====
-    { type: 'match', pairs: [
+    { type: 'match', question: "【任务 → 工具】把下面 4 个信息类任务连到最合适的工具：", pairs: [
       { left: "对比 3 款手机参数", right: "Kimi 探索版" },
       { left: "读懂一份 50 页 PDF", right: "Kimi 文档对话" },
       { left: "做一份 1000 字行业报告", right: "秘塔深度研究" },

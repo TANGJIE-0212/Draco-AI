@@ -24,7 +24,7 @@ export const w2d5Data: DayContent = {
       "JSON 数组，每条包含 id / text / sentiment / score 等字段",
       "纯数字串"
     ], correct: 1 },
-    { type: 'fill', question: "3. 【API】OpenAI 等主流 API 强制返回合法 JSON 的参数 response_format 应该设为 ___。", parts: ["response_format 设为", "___", "可强制返回合法 JSON。"], options: ["json_object", "text", "markdown"], correct: "json_object" },
+    { type: 'fill', question: "3. 【API】OpenAI 等主流 API 支持在请求参数里加 `response_format: { type: '___ ' }` 来强制返回合法 JSON —— 这是 Prompt 之外的 API 层兜底，两道防线缺一不可。", parts: ["response_format: \\{ type: '", "___", "' \\} 可在 API 层强制返回合法 JSON。"], options: ["json_object（专门的 JSON 模式标识符）", "plain_text（纯文本模式）", "markdown_output（Markdown 格式输出）"], correct: "json_object（专门的 JSON 模式标识符）" },
     { type: 'fill', question: "4. 【强约束】要让 AI 不在 JSON 前面多输出“以下是结果：”，必须明确写一句：「___ JSON，不要任何前后说明文字」。", parts: ["必须写：「", "___", "JSON，不要任何前后说明文字」。"], options: ["只输出", "请输出", "请认真输出"], correct: "只输出" },
     { type: 'match', question: "5. 【格式选型】把不同格式连到最适合的场景：", pairs: [
       { left: "JSON", right: "接入前端 / 后端程序 API" },

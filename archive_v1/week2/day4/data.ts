@@ -25,7 +25,7 @@ export const w2d4Data: DayContent = {
       "提取一段话里出现的所有人名"
     ], correct: 1 },
     { type: 'fill', question: "3. 【咒语】Zero-shot CoT 最经典的一句话是「Let's think ___」。", parts: ["最经典的一句话是 Let's think", "___", "。"], options: ["step by step", "very fast", "in English"], correct: "step by step" },
-    { type: 'fill', question: "4. 【判断标准】判断一道题要不要让 AI 用 CoT，最简单的法则是：人类自己做这题，需不需要先 ___ ？", parts: ["人类做这题需不需要先", "___", "？需要的话就该用 CoT。"], options: ["打草稿", "查字典", "睡一觉"], correct: "打草稿" },
+    { type: 'fill', question: "4. 【判断标准】判断一道题要不要让 AI 用 CoT，最简单的法则是：人类自己做这题，需不需要先 ___ ——需要就用，不需要就不用。", parts: ["人类做这题需不需要先", "___", "？需要的话就该用 CoT。"], options: ["打草稿（列中间步骤）", "查字典", "重复读题三遍"], correct: "打草稿（列中间步骤）" },
     { type: 'match', question: "5. 【场景匹配】判断下列任务该不该用 CoT：", pairs: [
       { left: "“水池每分钟进 5 升、出 3 升，几分钟装满 100 升？”", right: "✅ 适合用 CoT" },
       { left: "“把 hello world 翻成中文”", right: "❌ 不需要 CoT" },

@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# NotebookLM automation artifacts
+tools/.nlm-profile/
+tools/__pycache__/
+tools/*.flag
+tools/*.pid
+tools/*.out.log
+tools/*.err.log
+tools/_*.py
+# debug screenshots
+tools/*.png
+verify-day*.png
+final-day*.png
+vo-*.png
+check-day*.png
+day*-state.png
+nlm-*.png

@@ -102,13 +102,17 @@ export const day7Data: DayContent = {
     {
       type: 'quiz',
       question: "7. 【Temperature】你在做一个自动写代码的插件，为了保证代码能运行（不瞎编函数名），Temperature 应设为？",
-      options: ["0.0 (Greedy)", "0.9 (Creative)", "2.0 (Chaos)"],
+      options: ["0.0 或 0.1（贪心或接近贪心，每次选最高概率词，代码最确定性强）", "0.9（发散创意，让函数名更有创造力）", "2.0（完全随机，代码风格百变）"],
       correct: 0
     },
     {
       type: 'quiz',
-      question: "8. 【Prompt】Let's think step by step 是为了激活模型的什么能力？",
-      options: ["Chain of Thought (CoT)", "RAG", "Multimodal"],
+      question: "8. 【Prompt】「Let's think step by step」是为了激活模型的什么能力？",
+      options: [
+        "Chain of Thought（思维链）—— 让模型先输出推理过程，把中间步骤作为下一个 Token 的上下文，再给最终答案",
+        "RAG（检索增强）—— 让模型去外部数据库搜资料",
+        "Multimodal（多模态）—— 让模型同时处理图片和文字"
+      ],
       correct: 0
     },
     {
