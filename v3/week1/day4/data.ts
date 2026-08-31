@@ -9,36 +9,36 @@ export const v3w1d4Data: DayContent = {
     // --- 模块一：架构革命 ---
     { 
       type: 'theory', 
-      content: "🐉 **巨龙解剖档案**\n\n🚀 **第一章：暴力美学 Transformer**\n\nTransformer 彻底改变了 AI。在它之前，AI 只能按顺序一个字一个字读（RNN），就像读长篇小说容易忘开头。\n\nTransformer 的超能力是 **Parallelism (并行计算)** —— 它能一眼看完整篇文章，同时处理所有单词。" 
+      content: "🐉 **AI 小侦探档案**\n\n🚀 **第一章：Transformer**\n\nTransformer 是许多现代语言模型的基础。训练时，它能同时处理一句话中的多个位置，并用“注意力”把相关信息联系起来。生成回答时，它仍会按顺序产出后续内容。"
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【对比】相比于旧的 RNN 模型，Transformer 最大的优势是？",
-      options: ["参数量更少，在同等算力下能训练更大的数据集", "可以并行处理整个序列，速度极快且能捕捉长距离依赖", "使用了更复杂的循环结构，记忆能力更强"],
-      correct: 1
+      question: "🐉【识破 AI 魔法】【对比】Transformer 的重要特点是什么？",
+      options: ["靠固定规则表判断每个词的意思", "只能从第一个字依次读到最后一个字", "训练时可同时处理多个位置并建立远近联系"],
+      correct: 2
     },
     { 
       type: 'theory', 
-      content: "🐉 **巨龙解剖档案**\n\n📍 **位置编码 (Positional Encoding)**\n\n既然是「一眼看完」，「我爱你」和「你爱我」对 Transformer 来说只是三个一样的词。它没有时间概念。\n\n所以，我们必须给每个词的向量**加上**一个代表位置的数值（位置编码），就像给每个学生贴上座位号。" 
+      content: "🐉 **AI 小侦探档案**\n\n📍 **位置线索**\n\n“猫追狗”和“狗追猫”用的是同一批词，意思却不同。Transformer 需要位置编码这类线索，才能知道每个词在句子中的先后位置。"
     },
     {
       type: 'fill',
-      question: "🐉【识破 AI 魔法】【原理】如果去掉了位置编码，Transformer 处理语言时唯一能依赖的线索只剩下词语本身的 ___，无法感知词序。",
-      parts: ["去掉位置编码后，模型只能依赖词语本身的", "___", "，词序信息完全丢失。"],
-      options: ["语义（Embedding 向量）", "字母数量", "出现频率"],
-      correct: "语义（Embedding 向量）"
+      question: "🐉【识破 AI 魔法】【原理】没有位置线索时，模型最难区分“猫追狗”和“狗追猫”的哪项差别？",
+      parts: ["没有位置线索时，模型最难理解词语的", "___", "。"],
+      options: ["先后顺序", "笔画多少", "屏幕颜色"],
+      correct: "先后顺序"
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【直觉】为什么位置编码是直接「加」在词向量上，而不是拼接在后面？",
-      options: ["为了保持向量维度不变，同时让位置信息融入到语义向量里", "为了破坏原始语义", "为了让向量变长"],
-      correct: 0
+      question: "🐉【识破 AI 魔法】【直觉】位置编码最重要的作用是？",
+      options: ["把所有词变成同一个词", "告诉模型词在句中的位置", "删除句中重复出现的词"],
+      correct: 1
     },
 
     // --- 模块二：Self-Attention 机制 (QKV) ---
     { 
       type: 'theory', 
-      content: "🐉 **巨龙解剖档案**\n\n💡 **第二章：Q, K, V 三位一体**\n\n这是注意力的灵魂。想象你在**图书馆**找资料：\n- **Q (Query)**: 你手里的**借书单**（我想找关于「量子力学」的书）。\n- **K (Key)**: 书脊上的**分类标签**（这本书是「物理」，那本是「烹饪」）。\n- **V (Value)**: 书里的**实际内容**。" 
+      content: "🐉 **AI 小侦探档案**\n\n💡 **第二章：注意力像找资料**\n\n可以把注意力想成在图书馆找资料：Q 是你要找什么，K 是每本书的索引线索，V 是书中可取用的内容。模型用它们判断该多关注哪些内容。"
     },
     {
       type: 'match',
@@ -52,26 +52,26 @@ export const v3w1d4Data: DayContent = {
     },
     { 
       type: 'theory', 
-      content: "🐉 **巨龙解剖档案**\n\n🔥 **关键动作 1：点积 (Dot Product)**\n\nAI 怎么知道 Q 和 K 配不配？\n它计算 Q 和 K 向量的**点积**。结果越大，代表夹角越小，相关度越高（关注度高）。" 
+      content: "🐉 **AI 小侦探档案**\n\n🔥 **关键动作：比较相关度**\n\n模型会比较“正在找什么”和“各处提供的线索”，得到相关度分数。分数只是模型的内部判断，不等于事实的可信度。"
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【直觉】在处理句子 'The cat sat on the mat' 时，当 Query 是 'sat' (坐) 时，它应该给哪个词的 Key 最高的关注度？",
-      options: ["'The' (因为离得近)", "'cat' (因为要知道是谁坐)", "'on' (介词)"],
-      correct: 1
+      question: "🐉【识破 AI 魔法】【直觉】在简化句 “The cat sat on the mat” 中，要判断“谁坐着”，最该关联哪个词？",
+      options: ["cat", "The", "on"],
+      correct: 0
     },
 
     // --- 模块三：Softmax 与 加权求和 ---
     {
       type: 'theory',
-      content: "🐉 **巨龙解剖档案**\n\n📊 **关键动作 2：Softmax (归一化)**\n\n点积算出来的分数可能是任意数字（如 100, -50）。但我们需要的是**概率**（百分比），让它们加起来等于 1 (100%)。\n\n**Softmax** 层的作用就是：把绝对数值变成概率分布。高分会变得更高（更加关注），低分趋近于 0（忽略）。"
+      content: "🐉 **AI 小侦探档案**\n\n📊 **关键动作：分配注意力**\n\n相关度分数需要转换成一组“关注比例”，让所有比例加起来为 1。Softmax 是常用的转换方式：分数较高的内容通常会获得更大的关注份额。"
     },
     {
       type: 'fill',
-      question: "🐉【识破 AI 魔法】【Softmax 效果】原始分数中 Token A 得 100 分、Token B 得 10 分。经过 Softmax 后，Token A 被选中的概率会比线性比例（100/110 ≈ 91%）___。",
-      parts: ["经过 Softmax 后，高分词被选中的概率会比线性比例", "___", "（因为指数函数放大了差距）。"],
-      options: ["更高（指数放大，接近 100%）", "更低（Softmax 会压制强者）", "完全相同"],
-      correct: "更高（指数放大，接近 100%）"
+      question: "🐉【识破 AI 魔法】【注意力比例】如果 A 的相关度明显高于 B，经过 Softmax 后通常会怎样？",
+      parts: ["A 通常会获得", "___", "的关注份额。"],
+      options: ["更大", "相同", "更小"],
+      correct: "更大"
     },
     { 
       type: 'theory', 
@@ -79,14 +79,14 @@ export const v3w1d4Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】🧮 **计算题：我是模型**\n假设 V(cat) 的数值是 10，V(mat) 的数值是 5。\n经过 Softmax，AI 给 cat 分配了 0.8 的注意力权重、给 mat 分配了 0.2。\n**加权求和**（每个词的数值 × 它的权重，再相加）结果是多少？",
-      options: ["15（直接把两个数值相加）", "9.0（0.8×10 + 0.2×5，加权求和）", "7.5（两个数值取平均）"],
-      correct: 1
+      question: "🐉【识破 AI 魔法】🧮 **计算题：混合信息**\n数值 10 的权重是 0.8，数值 5 的权重是 0.2。把“数值×权重”相加，结果是多少？",
+      options: ["15", "7.5", "9.0"],
+      correct: 2
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【概念】经过 Self-Attention 层处理后，每个单词的向量发生了什么变化？",
-      options: ["维度变大了，因为融入了其他词的信息", "它融合了上下文其他词的信息，变成了带语境的向量（Contextual Embedding）", "向量值被平均了，所有词的向量变得越来越接近"],
+      question: "🐉【识破 AI 魔法】【概念】经过注意力处理后，一个词的表示有什么变化？",
+      options: ["它和所有词变得完全相同", "它结合了其他相关词提供的语境", "它变成了一个更长的单词"],
       correct: 1
     },
 
@@ -97,13 +97,13 @@ export const v3w1d4Data: DayContent = {
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【推理】在句 A (tired) 中，Token 'it' 关注度最高的词应该是？",
+      question: "🐉【识破 AI 魔法】【推理】在句 A（tired）中，it 最自然指谁？",
       options: ["animal", "street", "cross"],
       correct: 0
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【推理】在句 B (wide) 中，Token 'it' 关注度最高的词应该是？",
+      question: "🐉【识破 AI 魔法】【推理】在句 B（wide）中，it 最自然指谁？",
       options: ["animal", "street", "cross"],
       correct: 1
     },
@@ -111,35 +111,35 @@ export const v3w1d4Data: DayContent = {
     // --- 模块五：GPT 的特殊机制 (Masked Attention) ---
     {
       type: 'theory',
-      content: "🐉 **巨龙解剖档案**\n\n🙈 **特殊的 Attention：Mask (面具)**\n\n对于 GPT 这种生成式模型，它在预测下一个词时，**绝不能偷看后面**的词。\n\n所以，我们会给 Attention 矩阵盖上一层 **Mask（掩码）**，把当前词**之后**的位置全部遮住（分数设为负无穷，Softmax 后变成 0）。"
+      content: "🐉 **AI 小侦探档案**\n\n🙈 **不偷看答案的遮挡**\n\n生成式模型训练“预测下一个词”时，不能先看到后面的正确答案。Mask（遮挡）会把后面的位置盖住，让模型只能依据前面的内容学习预测。"
     },
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【原理】Masked Attention 主要用于 Transformer 的哪个部分？",
-      options: ["Encoder (编码器，如 BERT)", "Decoder (解码器，如 GPT)", "Input Layer"],
+      question: "🐉【识破 AI 魔法】【原理】这种“不看后文”的遮挡，主要帮助哪类模型生成文本？",
+      options: ["理解整句的模型", "像 GPT 一样续写的模型", "只负责显示文字的界面"],
       correct: 1
     },
     {
       type: 'quiz',
       question: "🐉【识破 AI 魔法】【后果】如果没有 Mask，GPT 在训练时会发生什么？",
-      options: ["它会直接看到后面的词（答案），相当于开卷考试，学不到真正的预测能力", "训练速度会大幅变慢，因为需要处理更多信息", "模型会过拟合，在训练集上表现完美但泛化能力差"],
+      options: ["后面的词会泄露答案，模型学不好预测", "模型会因此完全无法处理文字", "模型只会忘记开头的词"],
       correct: 0
     },
 
     // --- 模块六：Multi-Head & FFN ---
     { 
       type: 'theory', 
-      content: "🐉 **巨龙解剖档案**\n\n🐙 **第四章：多头注意力 (Multi-Head)**\n\n为什么模型要有几十个「头」？因为理解需要多视角。\n- 1号头看语法（主谓）\n- 2号头看指代（它=谁）\n- 3号头看情绪...\n\n最后把所有头的结果 **Concat (拼接)** 起来。" 
+      content: "🐉 **AI 小侦探档案**\n\n🐙 **多种关注角度**\n\n一句话里可能同时要看主语、指代和语气。多头注意力让模型从多种角度寻找关联，再综合这些线索；每个“头”不一定固定只负责一种语言任务。"
     },
     {
       type: 'quiz',
       question: "🐉【识破 AI 魔法】【类比】多头注意力就像...",
-      options: ["你需要同时关注：剧情、演技、配乐、特效等多个维度", "你需要把电影看 10 遍", "你需要 10 个人一起写"],
+      options: ["同时关注剧情、演技、配乐和特效", "把电影从头到尾看十遍", "让十个人轮流写同一段话"],
       correct: 0
     },
     {
       type: 'theory',
-      content: "🐉 **巨龙解剖档案**\n\n🧠 **第五章：Feed Forward Network (FFN)**\n\nAttention 只是负责「收集信息」（把相关的词找出来）。\n真正负责「消化、思考」这些信息的是后面的 **FFN (前馈神经网络)** 层。它通常包含大部分的模型参数。"
+      content: "🐉 **AI 小侦探档案**\n\n🧠 **整理信息**\n\n注意力负责找出并汇集相关线索，后面的前馈网络会进一步转换这些信息。把它们想成“先找资料，再整理资料”即可。"
     },
     {
       type: 'fill',
@@ -152,9 +152,9 @@ export const v3w1d4Data: DayContent = {
     // --- 模块七：综合复习 ---
     {
       type: 'quiz',
-      question: "🐉【识破 AI 魔法】【Context Window】Context Window（上下文窗口）的大小瓶颈主要来自？",
-      options: ["模型权重文件的大小，参数越多占用空间越大", "Attention 矩阵的计算量随序列长度平方级增长，长度翻倍，计算量变 4 倍", "硬盘读写速度，长文本需要更多 I/O 操作"],
-      correct: 1
+      question: "🐉【识破 AI 魔法】【Context Window】为什么超长上下文会更难、更贵处理？",
+      options: ["模型需要比较和处理更多内容之间的关系", "长文本会自动变成更短的文本", "因为硬盘只能存放一篇文章"],
+      correct: 0
     },
     {
       type: 'match',
@@ -169,8 +169,7 @@ export const v3w1d4Data: DayContent = {
     },
     {
       type: 'theory',
-      content: "🐉 **巨龙解剖档案**\n\n🎉 **Day 4 完美通关！**\n你不仅懂了 QKV，还搞懂了 Softmax 和 Mask 的作用。现在你已经理解了 GPT 大脑最核心的运作机制。\n明天见！"
+      content: "🐉 **AI 小侦探档案**\n\n🎉 **Day 4 完成！**\n你知道 Transformer 会结合位置和上下文来找重点。明天看看它的“短期工作台”为什么有限，以及怎样借助资料回答问题。"
     }
   ]
 };
-

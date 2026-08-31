@@ -9,15 +9,15 @@ export const v3w2d5Data: DayContent = {
     { type: 'video', url: '', content: '后续视频：用四个旋钮控制同一份科学社分享稿。' },
     { type: 'theory', content: '四个输出旋钮：**长度**（100 字、3 点）、**结构**（标题—要点—行动）、**受众**（给新生或给老师）、**禁止事项**（不剧透、不编资料、不用术语堆砌）。不要只说“简洁”“高级”，改成能数、能看、能核对的规则。' },
     { type: 'theory', content: 'JSON 是一种机器易读取的格式，可以作为“小彩蛋”认识：它适合程序传递数据，但不是今天的核心。日常课堂分享、创作和研究，更常用的是清楚的段落、列表和表格。' },
-    { type: 'quiz', question: '1. “给五年级同学听”主要在控制什么？', options: ['受众', '文件大小', '资料来源'], correct: 0 },
-    { type: 'fill', question: '2. “不超过 120 字”是在控制输出的 ___。', parts: ['是在控制输出的', '___', '。'], options: ['长度', '背景', '角色'], correct: '长度' },
+    { type: 'quiz', question: '1. “把术语解释给五年级同学听”主要在控制什么？', options: ['资料只能来自五年级课本', '用词难度与受众', '每段必须写五个句子'], correct: 1 },
+    { type: 'fill', question: '2. 要在一分钟内读完的分享稿写“不得超过 120 字”，是在控制输出的 ___。', parts: ['是在控制输出的', '___', '。'], options: ['长度', '背景', '角色'], correct: '长度' },
     { type: 'match', question: '3. 控制项和例子连线：', pairs: [
       { left: '长度', right: '80—100 字' },
       { left: '结构', right: '标题加 3 个要点' },
       { left: '受众', right: '面向刚入学的新生' },
       { left: '禁止事项', right: '不透露故事结局' }
     ] },
-    { type: 'quiz', question: '4. 哪个要求最可检查？', options: ['写得很有水平', '语言优美一些', '写 3 条建议，每条 20 字以内'], correct: 2 },
+    { type: 'quiz', question: '4. 为社团招新稿设要求，哪个最容易在完成后核对？', options: ['读起来很有水平', '语言尽量优美一些', '写 3 条建议，每条 20 字以内'], correct: 2 },
     { type: 'fill', question: '5. “先给结论，再列两条证据”规定的是输出 ___。', parts: ['规定的是输出', '___', '。'], options: ['结构', '音量', '日期'], correct: '结构' },
     { type: 'match', question: '6. 场景与合理限制连线：', pairs: [
       { left: '课堂一分钟分享', right: '90 字内，三段式' },
@@ -25,7 +25,7 @@ export const v3w2d5Data: DayContent = {
       { left: '故事接龙开头', right: '不替后续同学写结局' },
       { left: '研究摘要', right: '不把猜想写成事实' }
     ] },
-    { type: 'quiz', question: '7. “禁止事项”最适合解决什么问题？', options: ['明确不希望出现的内容或做法', '让标题更长', '替代全部任务说明'], correct: 0 },
+    { type: 'quiz', question: '7. 给书评写作助手加“禁止事项”，主要是为了什么？', options: ['明确不希望出现的内容或做法', '规定每个标题都更长', '替代主题、受众和输出形式'], correct: 0 },
     { type: 'fill', question: '8. “不要使用网络热梗”属于 ___ 事项。', parts: ['属于', '___', '事项。'], options: ['禁止', '长度', '受众'], correct: '禁止' },
     { type: 'match', question: '9. 模糊要求如何改写？', pairs: [
       { left: '短一点', right: '控制在 4 句话内' },
@@ -33,10 +33,10 @@ export const v3w2d5Data: DayContent = {
       { left: '有条理', right: '按“问题—办法—提醒”输出' },
       { left: '别乱编', right: '未提供的信息写“待核实”' }
     ] },
-    { type: 'quiz', question: '10. 想让 AI 给社团海报写标题，哪条约束最有用？', options: ['标题有一点感觉', '给 5 个标题，每个不超过 12 字，避免夸大承诺', '写得尽量长'], correct: 1 },
+    { type: 'quiz', question: '10. 想让 AI 给社团海报写标题，哪条约束最能直接使用？', options: ['标题要有一点吸引力', '给 5 个标题，每个不超过 12 字，避免夸大承诺', '标题越长越能说明活动丰富'], correct: 1 },
     { type: 'fill', question: '11. 面向不同年龄的读者调整词汇，是在控制 ___。', parts: ['是在控制', '___', '。'], options: ['受众', '结构', '资料范围'], correct: '受众' },
-    { type: 'quiz', question: '12. 要在课堂上对比两种兴趣活动，最适合要求 AI 用什么形式输出？', options: ['表格，列出相同点和不同点', '一段没有分行的长文字', 'JSON，且不解释字段'], correct: 0 },
-    { type: 'quiz', question: '13. 为什么 JSON 不是本课所有任务的核心格式？', options: ['JSON 不能写中文', '它适合机器处理，而日常表达常需要列表、段落或表格', 'JSON 会自动验证事实'], correct: 1 },
+    { type: 'quiz', question: '12. 要在课堂上快速对比两种兴趣活动，最适合要求 AI 用什么形式输出？', options: ['表格，列出相同点和不同点', '一段不分行的长文字', '只列活动名称，不写比较角度'], correct: 0 },
+    { type: 'quiz', question: '13. 为什么 JSON 不是本课所有任务的核心格式？', options: ['JSON 只能保存英文，不能写中文', 'JSON 会自动检查每个事实是否真实', '它适合机器处理，而日常表达常需要列表、段落或表格'], correct: 2 },
     { type: 'fill', question: '14. “不要剧透结局”能帮助保护故事的 ___。', parts: ['能帮助保护故事的', '___', '。'], options: ['阅读体验', '叙述人称', '段落结构'], correct: '阅读体验' },
     { type: 'match', question: '15. 输出控制检查卡：', pairs: [
       { left: '多少内容', right: '长度' },

@@ -9,15 +9,15 @@ export const v3w2d2Data: DayContent = {
     { type: 'video', url: '', content: '后续视频：用两组课堂笔记示例，让 AI 学会同一种整理方式。' },
     { type: 'theory', content: 'Few-shot 就是在正式任务前放 2—5 组示例。每组格式一致、答案正确，还要覆盖不同情况。最后再放真正要处理的输入，AI 才知道该续写什么模式。' },
     { type: 'theory', content: '示例：\n输入：社团活动“观测月亮”\n输出：类型：实践｜准备：双筒镜、记录表｜提醒：注意天气\n\n输入：社团活动“阅读星图”\n输出：类型：学习｜准备：星图、铅笔｜提醒：标出看不懂处\n\n示例教的是**格式和判断标准**，不是让 AI 原样复制内容。' },
-    { type: 'quiz', question: '1. Few-shot 的核心做法是？', options: ['重复发送同一句问题', '先给若干输入→输出示例，再给新输入', '让 AI 随机生成很多答案'], correct: 1 },
-    { type: 'fill', question: '2. 不给示例、直接下指令的方式称为 ___-shot。', parts: ['不提供示例叫', '___', '-shot。'], options: ['Zero', 'Few', 'Many'], correct: 'Zero' },
+    { type: 'quiz', question: '1. 想让 AI 按班级标签整理活动，Few-shot 的核心做法是？', options: ['反复发送同一句分类要求，直到它猜中', '只提供新活动名称，让 AI 自己决定标签规则', '先给若干“活动→标签”示例，再给新活动'], correct: 2 },
+    { type: 'fill', question: '2. 不给示例、只说明“把活动按班级标签整理”的方式称为 ___-shot。', parts: ['不提供示例叫', '___', '-shot。'], options: ['Zero', 'Few', 'Many'], correct: 'Zero' },
     { type: 'match', question: '3. 示例质量检查连线：', pairs: [
       { left: '格式一致', right: '每组都用“输入：/ 输出：”' },
       { left: '覆盖多样', right: '有成功、失败或不同类别的情况' },
       { left: '答案正确', right: '示例不能把事实或标签标错' },
       { left: '贴近任务', right: '示例和待处理内容是同类任务' }
     ] },
-    { type: 'quiz', question: '4. 想让 AI 按你的“观察日记”语气写一段，最适合加什么？', options: ['两三段你写过的短日记示例', '更多“写得生动”的要求', '一串无关的百科资料'], correct: 0 },
+    { type: 'quiz', question: '4. 想让 AI 按你的“观察日记”语气写一段，最适合加什么？', options: ['两三段你认可的短日记示例，并保留原有格式', '一张与日记无关的动物百科截图', '“一定要特别生动”的重复提醒'], correct: 0 },
     { type: 'fill', question: '5. 示例中“输入”和“输出”的标记最好保持 ___。', parts: ['每组标记最好保持', '___', '。'], options: ['一致', '按主题变化', '只在最后一组标记'], correct: '一致' },
     { type: 'match', question: '6. 为“图书分类”匹配合理示例：', pairs: [
       { left: '小说《海边的信》', right: '文学' },
@@ -25,7 +25,7 @@ export const v3w2d2Data: DayContent = {
       { left: '《古城地图集》', right: '历史地理' },
       { left: '《校园辩论入门》', right: '技能实践' }
     ] },
-    { type: 'quiz', question: '7. 三个情绪分类示例全是“开心”，最大的风险是？', options: ['AI 可能误以为大部分输入都应归为开心', 'AI 会忘记中文', '示例数量自动变成零'], correct: 0 },
+    { type: 'quiz', question: '7. 三个情绪分类示例全是“开心”，最大的风险是？', options: ['AI 会把示例中的文字逐字复制到新留言', 'AI 可能误以为新留言大多也该归为“开心”', 'AI 会认为分类任务不需要任何输出格式'], correct: 1 },
     { type: 'fill', question: '8. Few-shot 通常给 ___ 组高质量示例就够用。', parts: ['通常给', '___', '组高质量示例就够用。'], options: ['2—5', '1', '8—10'], correct: '2—5' },
     { type: 'match', question: '9. 下列现象对应什么问题？', pairs: [
       { left: 'AI 把所有留言都判“赞同”', right: '示例类别失衡' },
@@ -33,9 +33,9 @@ export const v3w2d2Data: DayContent = {
       { left: 'AI 模仿到错误日期', right: '示例答案有误' },
       { left: 'AI 把诗歌任务当成分类', right: '示例与任务不贴近' }
     ] },
-    { type: 'quiz', question: '10. 下面哪组示例最能教 AI 整理实验记录？', options: ['两组都只有实验标题', '一组记录“成功”，一组记录“失败原因”，格式相同', '一组是实验，一组是电影影评'], correct: 1 },
+    { type: 'quiz', question: '10. 下面哪组示例最能教 AI 整理实验记录？', options: ['两组只有实验标题，没有过程或结果', '一组记录成功结果，另一组只列器材名称', '一组记录“成功”，一组记录“失败原因”，格式相同'], correct: 2 },
     { type: 'fill', question: '11. 真正待处理的内容应放在示例 ___。', parts: ['待处理内容通常放在示例', '___', '。'], options: ['之后', '之前', '之间'], correct: '之后' },
-    { type: 'quiz', question: '12. 下列任务最值得使用示例的是？', options: ['把“library”翻成中文', '按班级约定格式把活动通知改成三行', '随意聊聊周末兴趣'], correct: 1 },
+    { type: 'quiz', question: '12. 下列任务最值得使用示例的是？', options: ['把一个常见英文单词翻成中文', '按班级约定格式把活动通知改成三行', '问 AI 推荐一个周末兴趣'], correct: 1 },
     { type: 'fill', question: '13. 示例不是越多越好；无关示例会占用 ___。', parts: ['无关示例会占用上下文', '___', '，还可能干扰任务。'], options: ['空间', '颜色', '音量'], correct: '空间' },
     { type: 'match', question: '14. 为“故事标题风格”选示例原则：', pairs: [
       { left: '要学短标题', right: '示例标题都控制在 8 字内' },
@@ -43,7 +43,7 @@ export const v3w2d2Data: DayContent = {
       { left: '要学校园题材', right: '示例发生在校园或社团' },
       { left: '要学克制语气', right: '示例避免夸张承诺' }
     ] },
-    { type: 'quiz', question: '15. 给 AI 示例的正确顺序是？', options: ['新任务→示例→规则', '规则→示例→请处理的新输入', '示例答案→无关聊天→新任务'], correct: 1 },
+    { type: 'quiz', question: '15. 要让 AI 学会活动分类格式，哪种顺序最清晰？', options: ['规则→示例→请处理的新输入', '新输入→示例→再补分类规则', '示例答案→无关聊天→请猜新输入'], correct: 0 },
     { type: 'theory', content: '🐉 **龙族能力卡：示范咒语组件**\n\n收集 2—3 个你认可的“输入→输出”范例，并确认它们**格式一致、覆盖不同情况、答案正确**。它们就是你教 AI 的小教材。' }
   ]
 };
