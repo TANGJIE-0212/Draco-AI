@@ -1,130 +1,44 @@
 import { DayContent } from '../../../types';
 
+const graded: DayContent['steps'] = [
+  { type: 'quiz', question: '1. 模型准备接下一块文字时，Logits 最像什么？', options: ['给所有候选 Token 的原始评分', '经过核验的事实清单', 'Tokenizer 切出的字符数量'], correct: 0 },
+  { type: 'quiz', question: '2. Softmax 的主要作用是什么？', options: ['把原始评分转换成总和为 1 的概率', '把错误事实自动删除', '把中文翻译成英文'], correct: 0 },
+  { type: 'fill', question: '3. 所有候选 Token 经过 Softmax 后，概率总和为 ___。', parts: ['概率总和为', '___', '。'], options: ['1', '10', '候选数量'], correct: '1' },
+  { type: 'quiz', question: '4. Temperature 降低后，概率分布通常怎样变化？', options: ['高分候选优势更明显，分布更集中', '所有候选概率完全相同', '模型自动学到新知识'], correct: 0 },
+  { type: 'quiz', question: '5. Temperature 升高后，最可能发生什么？', options: ['低分候选也更有机会被选中，输出更多样', '输出一定更真实', '模型不再使用 Softmax'], correct: 0 },
+  { type: 'match', question: '6. 【任务与冒险程度】', pairs: [
+    { left: '按固定字段提取日期', right: '偏低温度，重视稳定' },
+    { left: '想十种奇幻角色设定', right: '可适当提高温度，增加多样性' },
+    { left: '精确计算预算', right: '使用计算工具，不能只调温度' },
+    { left: '核实历史事实', right: '查可靠来源，温度不能替代证据' }
+  ] },
+  { type: 'quiz', question: '7. Greedy decoding 每一步怎样选择？', options: ['总选当前概率最高的候选', '在全部候选中平均抽签', '先上网搜索再选择'], correct: 0 },
+  { type: 'quiz', question: '8. Top-k=3 表示什么？', options: ['每一步只在概率最高的 3 个候选 Token 中继续选择', '每一步把排名前 3 的 Token 一次性全部输出', '从第 3 名开始选择，并排除前两名候选'], correct: 0 },
+  { type: 'quiz', question: '9. Top-p 与 Top-k 的关键区别是什么？', options: ['Top-p 按累计概率阈值动态决定候选数，Top-k 保留固定数量', 'Top-p 固定保留 p 个候选，Top-k 则按累计概率动态变化', '两者都会保留固定数量的候选，只是参数名字不同'], correct: 0 },
+  { type: 'fill', question: '10. 总是选择当前最高概率候选的策略叫 ___ 选择。', parts: ['这种策略叫', '___', '选择。'], options: ['贪心', '向量', '检索'], correct: '贪心' },
+  { type: 'quiz', question: '11. 把 Temperature 调到很低，日期回答是否就一定正确？', options: ['是，稳定就等于真实', '不一定，它只改变选择分布，事实仍需核查', '是，只要答案重复两次'], correct: 1 },
+  { type: 'match', question: '12. 【采样工具箱】', pairs: [
+    { left: 'Logits', right: '候选 Token 的原始评分' },
+    { left: 'Softmax', right: '把评分转换为概率分布' },
+    { left: 'Temperature', right: '调节概率的集中或平缓程度' },
+    { left: 'Top-k / Top-p', right: '缩小参与选择的候选池' }
+  ] },
+  { type: 'quiz', question: '13. 同一 Prompt 多次生成不同结尾，最合理的解释是？', options: ['采样时可能选择了不同的合理候选', '第一次生成永久修改了模型', '较长结尾一定更准确'], correct: 0 },
+  { type: 'quiz', question: '14. 怎样公平测试 Temperature 的影响？', options: ['保持模型、Prompt 和其他参数相同，只改变 Temperature', '同时换模型、主题和长度', '每组只挑自己最喜欢的一次'], correct: 0 },
+  { type: 'practice', task: '15. 【冒险旋钮实验】假设“周末我们去公园___”有四个候选：散步 60%、野餐 25%、写作业 10%、开飞船 5%。分别预测低温和高温时哪些候选更容易被选中，并为“活动通知”和“奇幻故事”选择设置。', rubric: '应说明低温使概率更集中于高概率候选，高温使较低概率候选机会增加；活动通知偏稳定，奇幻故事可更开放；必须指出高温或低温都不保证事实正确。', placeholder: '低温时：……\n高温时：……\n活动通知：……\n奇幻故事：……\n事实正确性：……', minLength: 70, referenceAnswer: '低温时更可能稳定选择“散步”；高温时“野餐、写作业”甚至“开飞船”的机会会增加。活动通知应偏低温，奇幻故事可用较高温度。温度只改变选择分布，不能保证公园活动事实正确。' }
+];
+
 export const v3w1d5Data: DayContent = {
   day: 5,
-  title: "Day 5: Dragon Memory Limits - Context Window and RAG",
+  title: '冒险旋钮——从 Logits、Softmax 到采样',
   shards: 1,
   steps: [
-    // --- 模块一：短期记忆的物理极限 ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n🧠 **第一章：有限的工作台**\n\n模型训练时学到的模式保存在模型中；当前对话、指令和资料会作为这一次任务的上下文。Context Window（上下文窗口）就是这张临时工作台的容量。\n\n内容越长，模型要处理的关系越多，速度和成本通常也会上升。因此工具会设置容量限制。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【概念辨析】关于训练和上下文，哪种说法正确？",
-      options: ["对话内容会立刻变成模型训练数据", "训练数据和当前聊天记录完全是一回事", "上下文是当前任务提供的信息，是否保存由产品决定"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【使用直觉】为什么产品不会把上下文窗口无限加大？",
-      options: ["更长内容通常需要更多计算、时间和费用", "长内容会让文字失去颜色", "模型只能记住十个单词"],
-      correct: 0
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】【术语】一些系统超出容量后会移出较早内容，这类做法常称为 ___ 窗口。",
-      parts: ["这种做法常称为", "___", "窗口。"],
-      options: ["滑动 (Sliding)", "压缩 (Zipping)", "跳跃 (Hopping)"],
-      correct: "滑动 (Sliding)"
-    },
-
-    // --- 模块二：遗忘的艺术 ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n📉 **长内容也要安排重点**\n\n窗口够大不代表模型一定用好了每条信息。处理长资料时，把任务要求写清楚、分段提供材料，并要求引用具体位置，比把一整本书塞进去更可靠。输入资料和模型输出通常都要占用同一份容量。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【场景模拟】你给 AI 发了很长的论文，又要求详细扩写，回答中途停止。较可能的原因是？",
-      options: ["论文质量不好，系统拒绝阅读", "AI 不允许写超过三个段落", "输入占太多容量，留给输出的空间不足"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【Debug】聊天很久后，AI 忘了最初设定的名字。较合理的解释是？",
-      options: ["模型随机清除了一个记忆", "最早的内容可能已不在当前上下文中", "AI 只能记住一个人的名字"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【策略】处理很长的资料时，怎样做更可靠？",
-      options: ["把关键要求藏在无关段落中", "只给标题，不给任务要求", "把关键要求重复写清，并分段检查"],
-      correct: 2
-    },
-
-    // --- 模块三：RAG (检索增强生成) ---
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n💾 **先找资料，再回答：RAG**\n\n面对一大堆资料，不必全部放进对话。RAG（检索增强生成）会先从允许使用的资料中找出可能相关的片段，再让模型基于这些片段回答。它能帮助回答有依据，但仍要检查资料质量和引用是否对应问题。"
-    },
-    {
-      type: 'match',
-      question: "🐉【识破 AI 魔法】【RAG 流程排序】RAG 的 4 个执行步骤，请把每个动作连到它在流程中的位置（顺序已打乱）",
-      pairs: [
-        { left: "第一步", right: "用户提出问题" },
-        { left: "第二步", right: "从资料中找出可能相关的片段" },
-        { left: "第三步", right: "把检索到的片段和用户问题一起拼入 Prompt" },
-        { left: "第四步", right: "模型基于拼好的 Prompt 生成最终回答" }
-      ]
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【选型】什么情况特别适合使用 RAG？",
-      options: ["查询会变化的校内资料并标出来源", "了解广为人知的历史常识", "把一句话改得更有趣"],
-      correct: 0
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】【原理】RAG 的第一步是从资料中进行 ___。",
-      parts: ["RAG 会先进行资料", "___", "，再生成回答。"],
-      options: ["检索", "训练", "删除"],
-      correct: "检索"
-    },
-
-    // --- 模块四：实战判断 ---
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【陷阱】窗口变大后，RAG 还有用吗？",
-      options: ["完全没用，所有资料都应一次塞入", "只在资料超过固定字数时才有用", "有用，仍可帮助聚焦资料、控制权限和标明依据"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【成本】同一个问题，每次都上传整本书与只取相关几段相比，通常会怎样？",
-      options: ["成本和速度一定完全相同", "取相关片段通常更省资源，也更聚焦", "整本书一定更便宜，因为字更多"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【Debug】资料确实没有答案时，好的 RAG 助手应怎样回答？",
-      options: ["编一个看起来完整的答案", "假装已经引用了不存在的段落", "说明资料未覆盖问题，并建议查哪里"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【核查】RAG 对错误信息有什么帮助？",
-      options: ["只要有资料，就不必再核对", "相关且可靠的资料可减少乱编，但仍须核查", "RAG 会自动让所有资料变成事实"],
-      correct: 1
-    },
-
-    // --- 模块五：总结 ---
-    {
-      type: 'match',
-      isBoss: true,
-      question: "🐉【识破 AI 魔法】🏆 **Day 5 概念连连看**",
-      pairs: [
-        { left: "Context Window", right: "当前任务可处理的信息容量" },
-        { left: "Sliding Window", right: "过长时移出较早内容的一种做法" },
-        { left: "RAG", right: "先搜索，再回答" },
-        { left: "资料库", right: "供 RAG 查找相关片段的来源" },
-        { left: "引用核查", right: "确认回答是否真的有资料支持" }
-      ]
-    },
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n🎉 **Day 5 完成！**\n长资料要分段、聚焦和核查。RAG 是“先找资料、再回答”的帮手，不是免检通行证。明天学习怎样调整回答的稳定性和变化程度。"
-    }
+    { type: 'theory', content: '🐉 **第一章：候选词排行榜**\n\nAttention 整理好上下文后，模型会给词表里的候选 Token 打一组原始分数，这叫 Logits。它像接龙选手的候选答案排行榜：分数越高，表示模型在当前上下文中越偏向这个候选，但这不是事实正确率。' },
+    { type: 'interactive', interactiveKind: 'temperature', interactiveTitle: 'Temperature 实验室：拖动冒险旋钮' },
+    { type: 'theory', content: '🐉 **第二章：Softmax 把分数变成概率**\n\nLogits 可以大于零、等于零或小于零，不方便直接当概率。Softmax 会把它们转换成 0 到 1 之间、总和为 1 的概率。你只需先理解它像一个“公平换算器”，复杂公式放到进阶内容。' },
+    { type: 'theory', content: '🐉 **第三章：Temperature 是冒险旋钮**\n\n低温会让高分候选更突出，输出通常稳定；高温会把差距拉平，让冷门候选也有机会，输出更多样。Temperature 不会增加知识，也不是“正确率旋钮”。' },
+    { type: 'theory', content: '🐉 **第四章：先缩小候选池**\n\nTop-k 只保留固定数量的高分候选；Top-p 从高到低累加概率，达到阈值就停，所以候选数量会随场景变化。Greedy 总拿第一名，Sampling 则在保留的候选中按概率选择。' },
+    ...graded,
+    { type: 'theory', content: '🐉 **Day 5 完成**\n\n你已经串起 Logits → Softmax → Temperature → Top-k/Top-p → Sampling。明天追问一个更重要的问题：为什么这套生成机器能说得如此流畅，却仍可能自信地说错？' }
   ]
 };

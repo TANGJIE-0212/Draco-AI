@@ -2,21 +2,44 @@ import type { DayContent } from '../../../types';
 
 export const v3w4d3Data: DayContent = {
   "day": 3,
-  "title": "召唤分身术 · Day 3 龙之兵器库—工具和资料选择",
+  "title": "召唤分身术 · Day 3 Function Calling 与 Tool Schema",
   "shards": 30,
   "steps": [
     {
       "type": "theory",
-      "content": "⚔️ **龙之兵器库：工具和资料选择**\n\n搜索、读允许资料、整理表格、生成草稿都是 Agent 的兵器。只选完成目标必需、风险最低的工具。核心模型：**目标 → 规划 → 工具 → 执行 → 检查 → 修改或停止**。"
+      "content": "⚔️ **先认识两个专业词**\n\n想象你让 AI 查天气：AI 自己不知道实时天气，只能按规定填写“城市”和“日期”，再请天气工具查询。这个动作叫 **Function Calling（函数调用）**：Function 是可执行的工具功能，Calling 是发出调用请求。\n\n工具旁边还要有一张“使用说明表”，写清必填项目、数据类型和允许值。这张表叫 **Schema（结构规则）**。例如 day 只能填 today 或 tomorrow；少填、填错都应先提示用户，不能让 AI 猜。"
     },
     {
-      "type": "video",
-      "url": "",
-      "content": "视频：本日概念与安全操作演示"
+      "type": "interactive",
+      "interactiveKind": "diagnose",
+      "interactiveTitle": "工具调用故障诊断",
+      "interactiveInstruction": "找出真正会导致系统失败的故障信号；至少同时识别参数、权限或返回结构错误，别把正常信息当故障。",
+      "interactiveItems": [
+        {
+          "label": "request.day='weekend'",
+          "detail": "使用说明表规定 day 只允许 today/tomorrow，这叫枚举范围。weekend 不在范围内，因此 Schema 校验会拦住它。",
+          "correct": true
+        },
+        {
+          "label": "httpStatus=403",
+          "detail": "HTTP 403 表示服务器理解请求，但拒绝授权。系统应明确报告“权限不足”，并停止当前调用。",
+          "correct": true
+        },
+        {
+          "label": "status='success' 但 data 缺主字段",
+          "detail": "返回值结构不完整，语义上仍是失败，需要走恢复或报错分支。",
+          "correct": true
+        },
+        {
+          "label": "request.day='today' 且 city='Shanghai'",
+          "detail": "参数类型与枚举都合法，本身不是故障信号。",
+          "correct": false
+        }
+      ]
     },
     {
       "type": "theory",
-      "content": "🧰 **理论卡｜最小工具原则**\n写植物角介绍卡只需要公开植物资料和文本工具，不需要通讯录、相册定位、支付或删除权限。每多一个工具，多一份误用风险。"
+      "content": "🧰 **理论卡｜Schema 先行**\n工具调用前先看字段类型、必填参数、枚举值；缺参或类型错要返回可恢复错误，而不是硬猜。"
     },
     {
       "type": "theory",
@@ -142,120 +165,108 @@ export const v3w4d3Data: DayContent = {
       "correct": "可靠来源"
     },
     {
-      "type": "fill",
-      "question": "10. 联系方式、定位和账号凭据属于 ___ 信息。",
-      "parts": [
-        "填写：",
-        "___",
-        "。"
-      ],
+      "type": "quiz",
+      "question": "10. Agent 为植物角写介绍时请求读取整个相册。哪种回应最合适？",
       "options": [
-        "敏感个人",
-        "任务背景",
-        "公开素材"
+        "拒绝整相册权限，改为只提供选中的植物照片或公开资料",
+        "授予临时整相册权限，任务后再考虑删除",
+        "允许读取，但要求它不要描述私人照片"
       ],
-      "correct": "敏感个人"
+      "correct": 0
     },
     {
-      "type": "fill",
-      "question": "11. 用少量公开资料先运行一次，是为了同时验证工具边界和 ___。",
-      "parts": [
-        "填写：",
-        "___",
-        "。"
-      ],
-      "options": [
-        "输出质量",
-        "内容篇幅",
-        "界面样式"
-      ],
-      "correct": "输出质量"
+      "type": "practice",
+      "task": "11. 【给工具填表】天气工具只需要“城市”和“今天/明天”。写一份正确请求，再写一份信息不全的请求。工具遇到信息不全时应该问什么，而不是自己猜？",
+      "rubric": "正确请求包含城市和日期范围；错误请求明确缺一项；补问准确；不要求写代码或 JSON。",
+      "placeholder": "正确请求：……\n信息不全的请求：……\n工具应该追问：……",
+      "minLength": 40,
+      "referenceAnswer": "正确请求：查询上海明天的天气。信息不全：查询明天的天气。工具应追问“你想查询哪个城市？”，不能自己猜城市。"
     },
     {
       "type": "match",
-      "question": "12. 将任务与合适的最小工具组合配对：",
+      "question": "12. 把工具遇到的问题和正确做法连起来：",
       "pairs": [
         {
-          "left": "把图书馆目录整理成书单草稿",
-          "right": "目录资料+文本工具"
+          "left": "没有填写城市",
+          "right": "先追问城市，不要自己猜"
         },
         {
-          "left": "统计匿名报名人数变化",
-          "right": "匿名表格+表格工具"
+          "left": "把日期填成一张图片",
+          "right": "说明格式不对并请用户重填"
         },
         {
-          "left": "写植物介绍卡",
-          "right": "公开自然资料+文本工具"
+          "left": "工具没有读取资料的权限",
+          "right": "停止并说明需要授权"
         },
         {
-          "left": "准备观星提醒",
-          "right": "天文机构资料+草稿工具"
+          "left": "工具暂时没有回应",
+          "right": "有限重试或改用允许的工具"
         }
       ]
     },
     {
       "type": "match",
-      "question": "13. 将资料情况与处理方式配对：",
+      "question": "13. 一份清楚的工具结果应该告诉我们什么？",
       "pairs": [
         {
-          "left": "图书馆公开目录",
-          "right": "可使用并保留出处"
+          "left": "是否成功",
+          "right": "这次工具有没有完成任务"
         },
         {
-          "left": "老师指定的活动材料",
-          "right": "只按约定用途使用"
+          "left": "查到的内容",
+          "right": "成功时给出的真实结果"
         },
         {
-          "left": "同学私密聊天截图",
-          "right": "不上传，不作为资料"
+          "left": "失败原因",
+          "right": "没有完成是因为缺信息、无权限还是超时"
         },
         {
-          "left": "无来源的转发消息",
-          "right": "先找独立可靠来源核对"
+          "left": "下一步",
+          "right": "接下来应该补充、重试还是停止"
         }
       ]
     },
     {
       "type": "match",
-      "question": "14. 将权限设计与风险控制配对：",
+      "question": "14. 将真实误解与纠正配对：",
       "pairs": [
         {
-          "left": "限定只读一个文件夹",
-          "right": "避免误改无关文件"
+          "left": "“参数错了也先调用，工具会自己猜”",
+          "right": "先做本地校验，失败不调用工具"
         },
         {
-          "left": "活动结束后撤销访问",
-          "right": "避免长期保留权限"
+          "left": "“403 就当没查到结果”",
+          "right": "权限错误要显式返回并记录"
         },
         {
-          "left": "不连接通讯录",
-          "right": "避免接触无关个人资料"
+          "left": "“结构化返回太麻烦，用一句话就行”",
+          "right": "结构化便于前端和恢复流程处理"
         },
         {
-          "left": "不启用支付功能",
-          "right": "避免未经确认消费"
+          "left": "“失败直接重试到成功”",
+          "right": "必须有重试上限和停止条件"
         }
       ]
     },
     {
       "type": "match",
-      "question": "15. 将检查发现与修正动作配对：",
+      "question": "15. 将调用日志片段与结论配对：",
       "pairs": [
         {
-          "left": "引用链接指向无关页面",
-          "right": "更换或删除这条依据"
+          "left": "request.day='weekend'",
+          "right": "枚举不合法，属于参数校验失败"
         },
         {
-          "left": "资料页要求登录私人账号",
-          "right": "停止，不绕过访问限制"
+          "left": "httpStatus=403",
+          "right": "权限不足，不是数据为空"
         },
         {
-          "left": "工具请求编辑原始材料",
-          "right": "改为只读或人工处理"
+          "left": "attempt=3, maxRetry=2",
+          "right": "超过上限，应停止并上报"
         },
         {
-          "left": "草稿引用已足够",
-          "right": "停止并交人审阅"
+          "left": "status='success' 但 data 缺主字段",
+          "right": "结果不完整，需判定为失败并恢复"
         }
       ]
     },

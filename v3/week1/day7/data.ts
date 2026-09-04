@@ -1,149 +1,45 @@
 import { DayContent } from '../../../types';
 
+const graded: DayContent['steps'] = [
+  { type: 'quiz', question: '1. 输入文字进入模型后的第一道主要工序是什么？', options: ['Tokenizer 将文字切成 Token', 'Softmax 直接验证事实', 'Temperature 生成 Embedding'], correct: 0 },
+  { type: 'quiz', question: '2. Token ID 之后为什么还需要 Embedding？', options: ['编号本身不表达语义，需要转成可计算向量', 'Embedding 用来上网搜索', 'Token ID 不能存入电脑'], correct: 0 },
+  { type: 'quiz', question: '3. Attention 在生成链中主要解决什么？', options: ['根据上下文动态整合相关 Token 信息', '永久保存用户资料', '保证输出没有幻觉'], correct: 0 },
+  { type: 'match', question: '4. 【生产线部件】', pairs: [
+    { left: 'Tokenizer', right: '切分文字并映射编号' },
+    { left: 'Embedding', right: '把编号转换为向量表示' },
+    { left: 'Attention', right: '按上下文混合相关信息' },
+    { left: 'Logits', right: '给下一 Token 候选打原始分' }
+  ] },
+  { type: 'fill', question: '5. Logits 经过 ___ 后可转换成总和为 1 的概率分布。', parts: ['Logits 经过', '___', '。'], options: ['Softmax', 'Tokenizer', 'RAG'], correct: 'Softmax' },
+  { type: 'quiz', question: '6. Temperature 和 Top-p 位于生成链的哪个阶段？', options: ['候选 Token 的概率与采样控制阶段', '文字切分阶段', '模型预训练数据收集阶段'], correct: 0 },
+  { type: 'quiz', question: '7. 模型把“银行”理解成河岸，最先应检查什么？', options: ['上下文是否足够，Attention 是否抓到存钱或河流等线索', '图片分辨率', '输出文件名'], correct: 0 },
+  { type: 'quiz', question: '8. 回答在开头遗漏了最早的关键要求，可能与什么有关？', options: ['上下文截断或关键信息未被有效利用', 'Softmax 概率总和不是 1', '模型没有 Tokenizer'], correct: 0 },
+  { type: 'match', question: '9. 【故障与检查点】', pairs: [
+    { left: '罕见词被切得很碎', right: '检查 Tokenizer 与词表' },
+    { left: '多义词理解错误', right: '检查上下文与 Attention' },
+    { left: '故事每次太相似', right: '检查 Temperature 与候选池' },
+    { left: '出现不存在的引用', right: '接入可靠来源并人工核验' }
+  ] },
+  { type: 'quiz', question: '10. 高 Temperature 导致冷门候选更常出现，属于哪一环的变化？', options: ['概率分布与采样', 'Embedding 维度', 'BPE 训练词表'], correct: 0 },
+  { type: 'quiz', question: '11. 模型两次输出完全一致，能否证明事实正确？', options: ['不能，一致只说明输出稳定，仍需证据', '能，一致就是验证', '能，但只在低温时'], correct: 0 },
+  { type: 'fill', question: '12. 模型选出一个 Token 后，会把它加入已有内容并继续下一轮，这种逐步生成叫 ___ 生成。', parts: ['这叫', '___', '生成。'], options: ['自回归', '检索式', '一次性'], correct: '自回归' },
+  { type: 'quiz', question: '13. 哪条链路顺序正确？', options: ['文本→Token→Embedding→Attention→Logits→Softmax→Sampling', '文本→Softmax→Token→RAG→Embedding', '文本→Temperature→Tokenizer→训练'], correct: 0 },
+  { type: 'quiz', question: '14. 降低幻觉风险最有效的组合是什么？', options: ['提供可靠上下文、调用合适工具并核验输出', '只把 Temperature 调到零', '把 Prompt 写得越长越好'], correct: 0 },
+  { type: 'practice', isBoss: true, task: '15. 【生成链 Boss】为问题“为什么月球会发亮？”画出从输入文字到模型输出的完整流程：Tokenizer、Embedding、Attention、Logits、Softmax、Sampling。至少标出三个可能出错的位置，并为每个错误写一个检查或核验办法。', rubric: '必须按正确顺序覆盖六个核心环节；至少三个错误位置应具体且与环节相关；核验办法应包括补充上下文、调整采样或使用可靠来源/工具中的合理组合，不能声称模型内部概率等于事实证明。', placeholder: '流程：文字→……→输出\n错误点 1：……；检查：……\n错误点 2：……；检查：……\n错误点 3：……；检查：……', minLength: 120, referenceAnswer: '文字先经 Tokenizer 切分并编号，Embedding 将编号变成向量，Attention 结合“月球、发亮”等上下文，输出层产生 Logits，Softmax 转为概率，再按采样规则选出下一个 Token 并循环。错误点：问题含糊可导致上下文不足，应补清问题；Attention 可能错误关联，应检查解释；采样可能选到不佳候选，可降低随机性；最重要的是模型可能没有事实证据，应查天文馆等可靠来源。' }
+];
+
 export const v3w1d7Data: DayContent = {
   day: 7,
-  title: "Day 7: Dragon Lair Choices - Model Selection and Boss Battle",
+  title: 'Boss：穿越大模型——从文字输入到生成输出',
   shards: 1,
+  isBoss: true,
   steps: [
-    // --- 模块一：开源 vs 闭源 ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n🏰 **第一章：怎样选模型？**\n\n有些模型只能通过服务商使用（闭源），有些会公开模型权重或代码（开放权重/开源）。前者通常更省部署工作，后者可能提供更多控制空间。具体许可证、价格、能力和数据处理规则各不相同；“开源”不等于免费、私密或适合所有人。"
-    },
-    {
-      type: 'match',
-      question: "🐉【识破 AI 魔法】【选型顾问】请为以下龙学院任务推荐方案",
-      pairs: [
-        { left: "校内敏感资料不能离开学校", right: "先做安全与合规评估，再考虑本地方案" },
-        { left: "快速做一个公开创意原型", right: "选择规则清楚的云端服务并控制预算" },
-        { left: "研究模型如何运作", right: "查看允许研究的公开权重和文档" },
-        { left: "稳定的公共问答服务", right: "选择有支持服务并做好内容审核的方案" }
-      ]
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【误区】开放权重模型意味着完全免费吗？",
-      options: ["不是，还要看许可证、设备和运行成本", "是的，不会产生任何费用", "是的，只要下载就能保证私密安全"],
-      correct: 0
-    },
-
-    // --- 模块二：大象与蚂蚁 (参数量) ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n⚖️ **第二章：够用比最大更重要**\n\n模型名称中的 7B、70B 常表示参数量级。更大的模型往往需要更多设备和费用，但不保证每项任务都更好。选模型要先看任务、测试效果、速度、成本和安全要求。\n\n量化是用更省空间的方式保存和运行模型，能降低设备要求，也可能影响效果，必须实际测试。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【应用】从短文中提取龙名，合理的第一步是什么？",
-      options: ["直接选最大、最贵的模型", "为了一个短文训练新模型", "先测试一个能完成任务的较小模型"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【硬件】模型明显超过自己的设备能力时，正确做法是什么？",
-      options: ["强行运行，电脑会自动补足资源", "换用更小模型或评估其他合适方案", "关闭散热，让设备运行得更快"],
-      correct: 1
-    },
-
-    // --- 模块三：Week 1 Boss Battle (综合复习) ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n⚔️ **最终章：第一周 BOSS BATTLE**\n\n准备好了吗？把 Token、语义地图、注意力、资料核查和提示词串起来。目标不是背术语，而是在使用 AI 时作出更可靠的判断。"
-    },
-    
-    // Level 1: 原理
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】1. 【原理】语言模型生成文字时，主要在估计什么？",
-      options: ["根据前文出现后续片段的可能性", "这句话的情感分数", "这句话是否绝对真实"],
-      correct: 0
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】2. 【核心】Transformer 训练时可 ___ 处理多个位置，并建立远近关联。",
-      parts: ["Transformer 训练时可", "___", "处理多个位置。"],
-      options: ["同时", "逐字", "随机"],
-      correct: "同时"
-    },
-
-    // Level 2: 向量与搜索
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】3. 【Embedding】向量“加减”示意主要说明什么？",
-      options: ["汉字笔画数决定词义关系", "词义关系有时会呈现可比较的规律", "任何词都能算出唯一正确答案"],
-      correct: 1
-    },
-    {
-      type: 'match',
-      question: "🐉【识破 AI 魔法】4. 【技术栈连线】",
-      pairs: [
-        { left: "把字切成数", right: "Tokenizer" },
-        { left: "把数变成坐标", right: "Embedding" },
-        { left: "存储海量坐标", right: "Vector DB" },
-        { left: "计算关注点", right: "Attention Mechanism" }
-      ]
-    },
-
-    // Level 3: 记忆与窗口
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】5. 【Context】回答达到输出上限时，可能会发生什么？",
-      options: ["系统一定会自动无缝续写", "模型一定会删除全部聊天记录", "回答会停止，需要分段继续"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】6. 【RAG】为什么有了 RAG 还要写清提示词？",
-      options: ["有 RAG 后不必提出任务要求", "RAG 找资料，提示词说明要怎样使用和核查资料", "提示词只会让资料变得不可靠"],
-      correct: 1
-    },
-
-    // Level 4: 控制与交互
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】7. 【Temperature】为需要稳定格式的代码草稿选设置时，较合适的是？",
-      options: ["较高温度，并跳过测试", "较低温度，并运行测试核对", "最高温度，并相信一定正确"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】8. 【Prompt】核对一道计算题时，哪种要求最有帮助？",
-      options: [
-        "隐藏所有依据，只给一个结论",
-        "不看题目，直接猜一个答案",
-        "给出简短、可检查的计算步骤和结果"
-      ],
-      correct: 2
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】9. 【Prompt】Few-Shot 是指在 Prompt 中提供",
-      parts: ["Few-Shot 是指提供", "___", "让模型模仿。"],
-      options: ["示例 (Examples)", "指令", "金钱"],
-      correct: "示例 (Examples)"
-    },
-    
-    // Level 5: 综合应用 (Scenario)
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】10. 【终极应用】设计“社团规则查阅助手”，要求引用准确且不乱编，较好的方案是？",
-      options: ["让模型自由回答，不提供规则原文", "使用批准资料检索、标注出处，并由负责人维护", "只提高温度，让回答更有创意"],
-      correct: 1
-    },
-    {
-      type: 'match',
-      isBoss: true,
-      question: "🐉【识破 AI 魔法】🏆 **通关认证：从原理到产品**",
-      pairs: [
-        { left: "算力层", right: "GPU / TPU" },
-        { left: "模型层", right: "Transformer / Weights" },
-        { left: "记忆层", right: "Vector DB / Context" },
-        { left: "应用层", right: "Prompt / Agent" }
-      ]
-    },
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n🎉 **Week 1 完成！**\n\n你已经学会：AI 会按模式生成、可能出错；资料要核验；隐私和任务要求要先想清楚。下周开始练习怎样把目标、背景和限制说清楚，让 AI 更好地协助你的创作。"
-    }
+    { type: 'theory', content: '🐉 **Boss 第一关：文字进入工厂**\n\n输入先被 Tokenizer 切成文字积木并映射为编号；Embedding 再把编号变成向量。切分决定模型看见哪些基本单元，向量让这些单元进入可计算的语义空间。' },
+    { type: 'interactive', interactiveKind: 'pipeline', interactiveTitle: '大模型生产线：按真实顺序组装六个模块' },
+    { type: 'theory', content: '🐉 **Boss 第二关：词语交换情报**\n\nTransformer 用 Attention 让 Token 根据上下文交换信息。Q 表示要找什么，K 用来匹配，V 提供真正取回的内容，位置编码保留先后顺序。' },
+    { type: 'theory', content: '🐉 **Boss 第三关：候选词抽签**\n\n上下文表示经过输出层得到 Logits，Softmax 把分数变成概率。Temperature 改变分布集中程度，Top-k/Top-p 缩小候选池，Sampling 选出下一个 Token，然后生产线再次循环。' },
+    { type: 'theory', content: '🐉 **Boss 最后一关：流畅之后要验真**\n\n整条链路优化的是生成合理后续，并不自动证明客观事实。遇到最新信息、精确计算、私有规则或重要决定时，要在输出端接上可靠资料、工具和人工核验。' },
+    ...graded,
+    { type: 'theory', content: '🐉 **Week 1 通关**\n\n你已经能完整解释：文字怎样变 Token，Token 怎样变向量，Attention 怎样利用上下文，Logits 怎样经 Softmax 和采样成为下一块输出；也知道模型为什么会幻觉，以及证据应该在哪里接入。下周开始学习如何把任务、资料、示例和验收标准写成真正可靠的 Prompt。' }
   ]
 };

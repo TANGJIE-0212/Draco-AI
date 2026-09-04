@@ -1,0 +1,169 @@
+{
+  "videos": [
+    {
+      "id": "W1-Mechanism-ZH",
+      "output": "zh/week1/model-mechanism.mp4",
+      "lesson": "第一周 · 大模型如何工作",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"opening","eyebrow":"从文字到数字","title":"模型不是直接读句子","body":"文字先被切成词元，再变成可以计算的向量。","labels":[],"narration":"我们读到的是一句完整的话，大语言模型看到的却是一串数字。分词器先把文字切成词元，也就是 Token，再把每个词元换成编号和向量，让模型可以计算词语之间的关系。"},
+        {"id":"mechanism","kind":"rules","eyebrow":"理解上下文","title":"嵌入表示与注意力协同工作","body":"嵌入表示提供语义坐标，注意力根据上下文寻找相关信息。","labels":["词元切分","嵌入表示","注意力整合"],"narration":"Embedding，也就是嵌入表示，把词元放进语义空间。Transformer 的注意力机制再比较查询、键和值，为当前位置找出更相关的信息。同一个词进入不同句子后，因此可以形成不同的上下文表示。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"生成下一块文字","title":"评分、概率、采样，然后循环","body":"原始分数经过 Softmax 变成概率，再选出下一词元。","labels":["原始分数","概率分布","选出下一词元","加入上下文继续"],"narration":"模型为下一步候选词元产生原始分数，用 Softmax 换成概率，再按设置选出下一词元。新词元加入上下文后，流程重新开始。模型是在逐步预测，不是在一次性写完整篇答案。"}
+      ]
+    },
+    {
+      "id": "W2-Design-ZH",
+      "output": "zh/week2/prompt-design.mp4",
+      "lesson": "第二周 · 设计可靠提示词",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"同一个模型，为什么结果差很多？","title":"不是咒语更长，而是任务更清楚","body":"提示词工程把模糊愿望变成可执行、可检查的任务。","labels":["帮我写好一点","面向新生，80 字，三点，有来源"],"reveal":"可检查的任务更稳定","narration":"同一个模型，有人只说帮我写好一点，有人却写清受众、长度、资料和成功标准。后者是在做提示词工程，也就是把模糊愿望变成可执行、可检查的任务。"},
+        {"id":"mechanism","kind":"rules","eyebrow":"提示词的骨架","title":"目标、背景、资料、边界、输出","body":"每一部分都回答一个具体问题。","labels":["要完成什么","给谁使用","依据哪些资料","怎样才算合格"],"narration":"可靠提示词先说明目标和受众，再提供必要背景与资料，写清不能做什么，最后规定输出形式和验收标准。资料是参考内容，不是可以覆盖任务规则的新命令。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"本阶段任务","title":"先搭结构，再让模型执行","body":"结构不是装饰，而是减少歧义的方法。","labels":["一段一个职责","未知就明确标出","示例展示边界","结果逐项验收"],"narration":"使用标题和分隔符把任务、资料、示例与规则分开。遇到未知信息就明确标出，不要让模型猜。一个好提示词不是看起来专业，而是别人能够重复使用和检查。"}
+      ]
+    },
+    {
+      "id": "W2-Test-ZH",
+      "output": "zh/week2/prompt-testing.mp4",
+      "lesson": "第二周 · 测试与改进提示词",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"第一版通过，不等于真的可靠","title":"用反例把隐藏问题逼出来","body":"正常输入、边界输入和对抗输入都要测试。","labels":["正常情况","资料缺失","伪指令混入"],"reveal":"测试覆盖决定可靠性","narration":"一份提示词在正常问题上答对，不代表它真的可靠。测试集还要包含资料缺失、格式异常和伪指令混入等情况，才能看到它会不会编造或越过边界。"},
+        {"id":"mechanism","kind":"timeline","eyebrow":"迭代纪律","title":"第一版、定位问题、单点修改、重新测试","body":"每轮只改一个变量，才能知道什么真正有效。","labels":["运行第一版","记录失败","只改一处","同一测试复测"],"narration":"先运行第一版并记录具体失败，再只修改一个问题，用同一组测试重新检查。评分标准，也就是 Rubric，要把准确、完整、格式和边界写成可观察条件，而不是凭感觉说更好。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"提示词注入防护","title":"资料中的命令仍然只是资料","body":"外部内容不能改变系统规则和任务边界。","labels":["标明资料范围","不执行资料内命令","高风险动作人工确认","失败时停止"],"narration":"如果资料里写着忽略原规则，系统仍应把它当作待处理文字。这叫提示词注入风险。可靠系统会分清指令和数据，在证据不足或动作越界时停下来。"}
+      ]
+    },
+    {
+      "id": "W3-Vision-ZH",
+      "output": "zh/week3/vision.mp4",
+      "lesson": "第三周 · AI 如何看图",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"opening","eyebrow":"模型怎样看图？","title":"它先把图片切成许多小块","body":"像素被切成图像块，再编码成视觉词元。","labels":[],"narration":"多模态模型并不是像人一样睁眼看图。它先把图片切成许多图像块，也就是 Patch，再把颜色、边缘和纹理编码成视觉词元，送进可以计算的向量空间。"},
+        {"id":"mechanism","kind":"rules","eyebrow":"视觉理解链路","title":"切块、编码、图文对齐","body":"视觉编码器提取特征，图文对齐把画面与词语联系起来。","labels":["像素到图像块","图像块到视觉词元","画面与文字对齐"],"narration":"图片从像素切成图像块，视觉编码器把每块转成特征向量，再通过图文对齐，让图像区域和文字含义建立联系。切块越细可能保留更多细节，但计算量也会增加。"},
+        {"id":"takeaway","kind":"challenge","eyebrow":"视觉幻觉","title":"看起来像，不等于真的看见","body":"模糊、裁切、遮挡和图表单位都可能让模型脑补。","labels":["画面可见的证据","模型根据常识的推断"],"reveal":"先观察，再推断","narration":"模型能做光学字符识别、识别物体和空间关系，也会在画面模糊、裁切或遮挡时根据常识脑补。使用视觉模型时，要把可见证据和模型推断分开。"}
+      ]
+    },
+    {
+      "id": "W3-Generation-ZH",
+      "output": "zh/week3/generation.mp4",
+      "lesson": "第三周 · 生成图片、视频与声音",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"看图和画图是两套发动机","title":"生成图片，从噪声开始","body":"扩散模型像在电视雪花中逐步雕刻出画面。","labels":["视觉编码器：图片到向量","扩散模型：噪声到图片"],"reveal":"分析与生成方向不同","narration":"看图时，视觉编码器把图片压成向量；画图时，扩散模型从随机噪声出发，根据文字条件一步步去噪。它们是两套方向不同的发动机。"},
+        {"id":"mechanism","kind":"learning","eyebrow":"三个控制旋钮","title":"随机种子、去噪步数与引导强度","body":"随机起点、处理次数和提示词引导共同影响结果。","labels":["随机种子 Seed","去噪步数 Steps","引导强度 CFG"],"narration":"随机种子决定起点，去噪步数决定迭代次数，CFG 控制模型多强地跟随提示词。要判断哪个设置造成变化，其他条件保持不变，每次只改一个旋钮。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"从图片到短片","title":"时间维度让一致性更难","body":"关键帧、动作、字幕和声音必须在时间轴上对齐。","labels":["参考图与视觉锚点","关键帧与动作方向","语音合成与识别","版权、隐私与 AI 标注"],"narration":"图片变成视频后，角色、背景和动作要保持连续。关键帧、语音合成、字幕和剪辑共同组成短片。最终作品还要事实可查、声画同步，并检查素材许可与隐私。"}
+      ]
+    },
+    {
+      "id": "W4-Foundations-ZH",
+      "output": "zh/week4/agent-foundations.mp4",
+      "lesson": "第四周 · 智能体如何行动",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"对话不等于智能体","title":"从回答问题，到推进任务","body":"智能体不只是多说几轮，而是管理目标、状态并调用工具。","labels":["问一句，答一句","计划、行动、观察、更新"],"reveal":"自主循环必须有边界","narration":"聊天主要回答当前问题，工作流按固定步骤运行，智能体则围绕目标管理状态、选择工具并根据结果调整计划。它不是更会聊天，而是多了一个受控执行循环。"},
+        {"id":"mechanism","kind":"timeline","eyebrow":"PAOU 行动循环","title":"计划、行动、观察、更新","body":"每一步都写回状态，再判断继续、重试、求助还是停止。","labels":["计划下一步","调用允许的工具","观察返回结果","更新状态"],"narration":"PAOU 来自计划、行动、观察和更新四个英文词。智能体先规划下一步，再调用经过授权的工具，观察结构化结果，并更新任务状态。做一步，看一步，而不是盲目执行到底。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"任务状态","title":"知道做到哪，也知道何时完成","body":"目标、计划、当前任务、状态与完成条件缺一不可。","labels":["目标可验收","步骤有依赖","状态可恢复","完成有条件"],"narration":"一个可靠智能体要记录目标、计划、当前任务、状态和完成条件。模型说完成了并不算完成，只有可检查的条件全部满足，任务才真正结束。"}
+      ]
+    },
+    {
+      "id": "W4-Safety-ZH",
+      "output": "zh/week4/agent-safety.mp4",
+      "lesson": "第四周 · 让智能体安全停止",
+      "language": "zh-CN",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"能力越强，控制越重要","title":"工具、记忆和权限都要有边界","body":"智能体能行动，也必须知道什么不能做。","labels":["最小权限","有限记忆"],"reveal":"高风险动作由人确认","narration":"智能体能使用工具和保存记忆，但不应因此获得无限权限。只开放当前任务需要的功能，只保存经同意的非敏感信息，并写明保存期限和删除方式。"},
+        {"id":"mechanism","kind":"rules","eyebrow":"失败处理","title":"有限重试、防重复、人工确认","body":"不同错误需要不同处理，不能一律不断重试。","labels":["暂时错误：有限重试","无权限：立即停止","重复请求：只执行一次"],"narration":"网络暂时失败可以有限重试，没有权限必须停止。幂等性表示同一请求重复到达，也只产生一次效果。发送、付款、删除和公开等动作必须通过人在回路，也就是 HITL，由人最后确认。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"红队测试","title":"故意刁难，才能发现失控路径","body":"资料缺失、指令注入和重复请求都要测试。","labels":["正常路径","资料冲突","越权请求","重复执行"],"narration":"上线前不能只测试顺利情况，还要故意提供缺失资料、冲突信息、越权命令和重复请求。真正可靠的智能体不是永远完成，而是在不该继续时安全停止并解释原因。"}
+      ]
+    },
+    {
+      "id": "W1-History-EN",
+      "output": "en/week1/history.mp4",
+      "lesson": "Week 1 · A Short History of AI",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"opening","eyebrow":"Where did AI begin?","title":"From a question to a field of research","body":"AI did not suddenly appear with chatbots.","labels":[],"narration":"Artificial intelligence did not suddenly appear with modern chatbots. In 1950, Alan Turing turned the question of machine intelligence into a testable conversation problem. In 1956, the Dartmouth workshop helped establish AI as a research field."},
+        {"id":"mechanism","kind":"timeline","eyebrow":"Three major shifts","title":"Rules, learning, and generation","body":"Each era changed how machines produced useful behavior.","labels":["Rule-based systems","Machine learning","Generative AI"],"narration":"Early expert systems followed rules written by people. Machine learning later found patterns in examples. Deep learning used multilayer neural networks to learn richer features, while the Transformer became a foundation for modern language models."},
+        {"id":"takeaway","kind":"recap","eyebrow":"What history teaches us","title":"Progress does not remove limits","body":"Fluent generation is not consciousness or guaranteed truth.","labels":["Know the mechanism","Check important evidence","People remain responsible"],"narration":"ChatGPT made generative AI widely accessible through natural language. But fluent output is not proof of consciousness or factual accuracy. Use AI to create and explore, while checking important dates, numbers, and sources."}
+      ]
+    },
+    {
+      "id": "W1-Mechanism-EN",
+      "output": "en/week1/model-mechanism.mp4",
+      "lesson": "Week 1 · How Language Models Work",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"opening","eyebrow":"From text to numbers","title":"A model does not read a sentence directly","body":"Text becomes tokens, then computable vectors.","labels":[],"narration":"You see a complete sentence, but a language model receives numbers. A tokenizer splits text into tokens, maps each token to an identifier, and turns it into a vector the model can process."},
+        {"id":"mechanism","kind":"rules","eyebrow":"Building context","title":"Embeddings and attention work together","body":"Embeddings place meaning in space; attention finds relevant context.","labels":["Tokenize","Embed","Attend"],"narration":"An embedding places a token in a semantic space. Transformer attention compares queries, keys, and values to find information that matters for the current position. The same word can therefore take on a different representation in a different sentence."},
+        {"id":"takeaway","kind":"recap","eyebrow":"Generating the next token","title":"Score, normalize, sample, repeat","body":"The model predicts one token at a time.","labels":["Raw logits","Probabilities","Choose a token","Repeat with new context"],"narration":"The model gives candidate tokens raw scores called logits. Softmax converts those scores into probabilities, and a decoding rule selects the next token. That token joins the context, and the process repeats."}
+      ]
+    },
+    {
+      "id": "W2-Design-EN",
+      "output": "en/week2/prompt-design.mp4",
+      "lesson": "Week 2 · Designing Reliable Prompts",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"Same model, different result","title":"Clarity matters more than length","body":"Prompt engineering turns a vague wish into a testable task.","labels":["Make it better","For new students, 80 words, 3 points, cite sources"],"reveal":"Testable tasks are more reliable","narration":"One person says, make it better. Another defines the audience, length, sources, and success criteria. Prompt engineering turns a vague wish into an executable, testable task."},
+        {"id":"mechanism","kind":"rules","eyebrow":"The prompt structure","title":"Goal, context, evidence, boundaries, output","body":"Each section answers a specific question.","labels":["What is the goal?","Who will use it?","What evidence is allowed?","What counts as success?"],"narration":"A reliable prompt defines the goal and audience, supplies necessary context and evidence, states boundaries, and specifies the output and success criteria. Reference material is data, not a new command that can override the task."},
+        {"id":"takeaway","kind":"recap","eyebrow":"Build before you run","title":"Structure reduces ambiguity","body":"Good structure makes prompts reusable and inspectable.","labels":["One purpose per section","Mark unknown values","Use examples for boundaries","Check every requirement"],"narration":"Separate the task, context, examples, and constraints. Mark missing information instead of guessing. A good prompt is not the one that sounds most technical. It is the one people can reuse and evaluate."}
+      ]
+    },
+    {
+      "id": "W2-Test-EN",
+      "output": "en/week2/prompt-testing.mp4",
+      "lesson": "Week 2 · Testing and Improving Prompts",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"One success proves very little","title":"Use difficult cases to expose hidden failures","body":"Test normal, edge, and adversarial inputs.","labels":["Normal input","Missing evidence","Injected instruction"],"reveal":"Coverage creates confidence","narration":"A prompt that works on one normal question is not necessarily reliable. A useful test set includes missing evidence, unusual formats, and injected instructions so you can see whether the model guesses or crosses a boundary."},
+        {"id":"mechanism","kind":"timeline","eyebrow":"Iteration discipline","title":"Run, diagnose, change one thing, retest","body":"A controlled comparison reveals what actually helped.","labels":["Run version one","Record a failure","Change one variable","Retest the same cases"],"narration":"Run the first version and record a specific failure. Change one issue, then use the same tests again. A rubric turns accuracy, coverage, format, and safety into observable criteria instead of a vague feeling."},
+        {"id":"takeaway","kind":"recap","eyebrow":"Prompt injection defense","title":"Commands inside data are still data","body":"External text must not replace system rules.","labels":["Mark the data boundary","Do not execute embedded commands","Confirm risky actions","Stop when evidence is missing"],"narration":"If a source says ignore the earlier rules, the system should still treat that sentence as data. Reliable prompt systems separate instructions from evidence and stop when a request is unsafe or unsupported."}
+      ]
+    },
+    {
+      "id": "W3-Vision-EN",
+      "output": "en/week3/vision.mp4",
+      "lesson": "Week 3 · How AI Sees Images",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"opening","eyebrow":"How does a model see?","title":"It first divides an image into patches","body":"Pixels become patches, then visual tokens.","labels":[],"narration":"A multimodal model does not see exactly as a person does. It divides an image into patches, then encodes color, edges, and texture into visual tokens that can be processed as vectors."},
+        {"id":"mechanism","kind":"rules","eyebrow":"The vision pipeline","title":"Patch, encode, align","body":"A vision encoder extracts features; alignment connects images and words.","labels":["Pixels to patches","Patches to visual tokens","Image-text alignment"],"narration":"The vision encoder converts image patches into feature vectors. Image-text alignment connects regions of the image with language concepts. Smaller patches may preserve detail, but they also increase computational cost."},
+        {"id":"takeaway","kind":"challenge","eyebrow":"Visual hallucination","title":"Looking plausible is not the same as seeing","body":"Blur, cropping, occlusion, and chart units can mislead a model.","labels":["Visible evidence","Model inference"],"reveal":"Observe first, infer second","narration":"Models can perform optical character recognition and identify objects or spatial relationships. They can also fill missing visual evidence with a plausible guess. Separate what is visible from what the model inferred."}
+      ]
+    },
+    {
+      "id": "W3-Generation-EN",
+      "output": "en/week3/generation.mp4",
+      "lesson": "Week 3 · Generating Images, Video, and Audio",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"Seeing and drawing use different engines","title":"Image generation begins with noise","body":"A diffusion model gradually shapes noise into an image.","labels":["Vision encoder: image to vector","Diffusion model: noise to image"],"reveal":"Analysis and generation move in opposite directions","narration":"A vision encoder compresses an existing image into features. A diffusion model starts with random noise and removes noise step by step under text guidance. These are different processes."},
+        {"id":"mechanism","kind":"learning","eyebrow":"Three control knobs","title":"Seed, steps, and guidance strength","body":"The random start, denoising iterations, and prompt guidance affect the result.","labels":["Seed","Denoising steps","CFG guidance"],"narration":"The seed controls the random starting point. Steps control the number of denoising iterations. Classifier-free guidance, or CFG, controls how strongly the image follows the prompt. Change one variable at a time to learn what caused a difference."},
+        {"id":"takeaway","kind":"recap","eyebrow":"From image to short video","title":"Time makes consistency harder","body":"Keyframes, motion, captions, and audio must align.","labels":["Reference image","Keyframes and motion","Speech and captions","Rights, privacy, disclosure"],"narration":"Once images become video, characters, objects, lighting, speech, and captions must remain consistent over time. A finished piece also needs factual checks, usable media rights, privacy protection, and clear AI disclosure."}
+      ]
+    },
+    {
+      "id": "W4-Foundations-EN",
+      "output": "en/week4/agent-foundations.mp4",
+      "lesson": "Week 4 · How Agents Take Action",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"A chat is not automatically an agent","title":"From answering a question to advancing a task","body":"An agent manages goals, state, and tools.","labels":["One question, one answer","Plan, act, observe, update"],"reveal":"Autonomy needs boundaries","narration":"A chat answers the current question. A workflow follows fixed steps. An agent manages a goal, chooses allowed tools, observes results, and adjusts its plan. The difference is a controlled action loop, not simply a longer conversation."},
+        {"id":"mechanism","kind":"timeline","eyebrow":"The PAOU loop","title":"Plan, act, observe, update","body":"Every step changes the recorded state.","labels":["Plan the next step","Use an allowed tool","Observe the result","Update the state"],"narration":"In the PAOU loop, an agent plans the next step, acts through an authorized tool, observes the structured result, and updates its state. It works one step at a time instead of blindly following the original plan."},
+        {"id":"takeaway","kind":"recap","eyebrow":"Task state","title":"Know where you are and when you are done","body":"A goal, plan, current task, state, and completion rule work together.","labels":["Testable goal","Ordered dependencies","Recoverable state","Observable completion"],"narration":"A reliable agent tracks the goal, plan, current task, state, and completion criteria. The task is not complete because the model says so. It is complete when observable requirements are satisfied."}
+      ]
+    },
+    {
+      "id": "W4-Safety-EN",
+      "output": "en/week4/agent-safety.mp4",
+      "lesson": "Week 4 · Keeping Agents Under Control",
+      "language": "en-US",
+      "scenes": [
+        {"id":"hook","kind":"challenge","eyebrow":"More capability requires more control","title":"Tools, memory, and permissions need boundaries","body":"An agent can act, but it must also know what it cannot do.","labels":["Least privilege","Limited memory"],"reveal":"People confirm high-risk actions","narration":"An agent may use tools and store memory, but it should not receive unlimited access. Enable only what the current task needs. Store only consented, non-sensitive information with a clear expiration and deletion rule."},
+        {"id":"mechanism","kind":"rules","eyebrow":"Failure handling","title":"Limited retries, deduplication, human approval","body":"Different failures require different responses.","labels":["Temporary error: retry briefly","No permission: stop","Duplicate request: execute once"],"narration":"A temporary network error may justify a limited retry. A permission error requires a stop. Idempotency means the same request arriving twice still causes only one effect. Sending, paying, deleting, and publishing require human-in-the-loop approval."},
+        {"id":"takeaway","kind":"recap","eyebrow":"Red-team testing","title":"Challenge the system before real users do","body":"Test missing evidence, injection, permission abuse, and duplicate requests.","labels":["Happy path","Conflicting evidence","Unauthorized request","Repeated action"],"narration":"Do not test only the happy path. Deliberately try missing evidence, conflicting sources, unauthorized commands, and repeated requests. A reliable agent can stop safely and explain why it cannot continue."}
+      ]
+    }
+  ]
+}

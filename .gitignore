@@ -39,3 +39,9 @@ vo-*.png
 check-day*.png
 day*-state.png
 nlm-*.png
+
+# Remotion and Edge TTS generated media
+output/
+public/video/
+video/archive/
+temp-video-qa/

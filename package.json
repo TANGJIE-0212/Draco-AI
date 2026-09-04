@@ -6,17 +6,24 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "video:tts:core": "python video/scripts/generate_core_video_tts.py",
+    "video:studio": "remotion studio video/src/index.ts",
+    "video:render:core:zh": "remotion render video/src/index.ts W1-Mechanism-ZH public/video/zh/week1/model-mechanism.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W2-Design-ZH public/video/zh/week2/prompt-design.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W2-Test-ZH public/video/zh/week2/prompt-testing.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W3-Vision-ZH public/video/zh/week3/vision.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W3-Generation-ZH public/video/zh/week3/generation.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W4-Foundations-ZH public/video/zh/week4/agent-foundations.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W4-Safety-ZH public/video/zh/week4/agent-safety.mp4 --codec=h264 --crf=20 --concurrency=4",
+    "video:render:core:en": "remotion render video/src/index.ts W1-History-EN public/video/en/week1/history.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W1-Mechanism-EN public/video/en/week1/model-mechanism.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W2-Design-EN public/video/en/week2/prompt-design.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W2-Test-EN public/video/en/week2/prompt-testing.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W3-Vision-EN public/video/en/week3/vision.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W3-Generation-EN public/video/en/week3/generation.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W4-Foundations-EN public/video/en/week4/agent-foundations.mp4 --codec=h264 --crf=20 --concurrency=4 && remotion render video/src/index.ts W4-Safety-EN public/video/en/week4/agent-safety.mp4 --codec=h264 --crf=20 --concurrency=4",
+    "video:render:core": "npm run video:render:core:zh && npm run video:render:core:en"
   },
   "dependencies": {
-    "@google/genai": "^1.33.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.1.0-alpha9",
+    "@remotion/media-utils": "^4.1.0-alpha9",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "puppeteer": "^25.1.0",
+    "remotion": "^4.1.0-alpha9",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

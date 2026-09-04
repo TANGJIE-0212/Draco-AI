@@ -15,6 +15,34 @@
             overscroll-behavior: none;
             user-select: none;
         }
+        .portrait-video-hint {
+            display: none;
+        }
+        @media (max-width: 767px) and (orientation: portrait) {
+            .portrait-video-hint {
+                display: flex;
+            }
+        }
+        @media (orientation: landscape) and (max-height: 500px) {
+            .lesson-nav {
+                padding-top: 0.35rem !important;
+                padding-bottom: 0.35rem !important;
+            }
+            .lesson-stage {
+                justify-content: flex-start !important;
+                padding: 0.35rem 0.75rem !important;
+            }
+            .lesson-video {
+                margin-bottom: 0 !important;
+            }
+            .lesson-footer {
+                padding: 0.35rem 0.75rem !important;
+            }
+            .lesson-footer button {
+                padding-top: 0.45rem !important;
+                padding-bottom: 0.45rem !important;
+            }
+        }
         h1, h2, h3, .game-font {
             font-family: 'Fredoka', sans-serif;
         }
@@ -149,7 +177,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <div id="root"></div>

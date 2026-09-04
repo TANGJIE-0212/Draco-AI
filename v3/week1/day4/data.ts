@@ -1,175 +1,40 @@
-
 import { DayContent } from '../../../types';
 
 export const v3w1d4Data: DayContent = {
-  day: 4, 
-  title: "Day 4: Dragon Brain Engine - Transformer and Attention",
+  day: 4,
+  title: "词语雷达——Transformer、Attention 与 QKV",
   shards: 1,
   steps: [
-    // --- 模块一：架构革命 ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n🚀 **第一章：Transformer**\n\nTransformer 是许多现代语言模型的基础。训练时，它能同时处理一句话中的多个位置，并用“注意力”把相关信息联系起来。生成回答时，它仍会按顺序产出后续内容。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【对比】Transformer 的重要特点是什么？",
-      options: ["靠固定规则表判断每个词的意思", "只能从第一个字依次读到最后一个字", "训练时可同时处理多个位置并建立远近联系"],
-      correct: 2
-    },
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n📍 **位置线索**\n\n“猫追狗”和“狗追猫”用的是同一批词，意思却不同。Transformer 需要位置编码这类线索，才能知道每个词在句子中的先后位置。"
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】【原理】没有位置线索时，模型最难区分“猫追狗”和“狗追猫”的哪项差别？",
-      parts: ["没有位置线索时，模型最难理解词语的", "___", "。"],
-      options: ["先后顺序", "笔画多少", "屏幕颜色"],
-      correct: "先后顺序"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【直觉】位置编码最重要的作用是？",
-      options: ["把所有词变成同一个词", "告诉模型词在句中的位置", "删除句中重复出现的词"],
-      correct: 1
-    },
-
-    // --- 模块二：Self-Attention 机制 (QKV) ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n💡 **第二章：注意力像找资料**\n\n可以把注意力想成在图书馆找资料：Q 是你要找什么，K 是每本书的索引线索，V 是书中可取用的内容。模型用它们判断该多关注哪些内容。"
-    },
-    {
-      type: 'match',
-      question: "🐉【识破 AI 魔法】【角色扮演】将 QKV 映射到搜索引擎",
-      pairs: [
-        { left: "Query", right: "你在搜索框输入的关键词" },
-        { left: "Key", right: "网页的标题和元数据" },
-        { left: "Value", right: "网页的正文内容" },
-        { left: "Weight", right: "匹配的相关性分数" }
-      ]
-    },
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n🔥 **关键动作：比较相关度**\n\n模型会比较“正在找什么”和“各处提供的线索”，得到相关度分数。分数只是模型的内部判断，不等于事实的可信度。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【直觉】在简化句 “The cat sat on the mat” 中，要判断“谁坐着”，最该关联哪个词？",
-      options: ["cat", "The", "on"],
-      correct: 0
-    },
-
-    // --- 模块三：Softmax 与 加权求和 ---
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n📊 **关键动作：分配注意力**\n\n相关度分数需要转换成一组“关注比例”，让所有比例加起来为 1。Softmax 是常用的转换方式：分数较高的内容通常会获得更大的关注份额。"
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】【注意力比例】如果 A 的相关度明显高于 B，经过 Softmax 后通常会怎样？",
-      parts: ["A 通常会获得", "___", "的关注份额。"],
-      options: ["更大", "相同", "更小"],
-      correct: "更大"
-    },
-    { 
-      type: 'theory', 
-      content: "🐉 **巨龙解剖档案**\n\n🍹 **关键动作 3：混合 (Weighted Sum)**\n\nAttention 的最终输出不是「只选一个词」，而是「把所有相关词的信息混合在一起」。\n\n就像调鸡尾酒：\n- 80% 的 'cat' (V)\n- 15% 的 'mat' (V)\n- 5% 的其他词 (V)\n\n这让 'sat' 这个词吸收了主语和宾语的信息，变得更丰富。" 
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】🧮 **计算题：混合信息**\n数值 10 的权重是 0.8，数值 5 的权重是 0.2。把“数值×权重”相加，结果是多少？",
-      options: ["15", "7.5", "9.0"],
-      correct: 2
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【概念】经过注意力处理后，一个词的表示有什么变化？",
-      options: ["它和所有词变得完全相同", "它结合了其他相关词提供的语境", "它变成了一个更长的单词"],
-      correct: 1
-    },
-
-    // --- 模块四：指代消解挑战 ---
-    {
-      type: 'theory',
-      content: "🐉 **巨龙解剖档案**\n\n⚔️ **实战：它 (It) 是谁？**\n\nAttention 最强的能力是理解上下文。\n请看句 A：'The animal didn't cross the street because **it** was too tired.'（动物没有过街，因为**它**太累了。）\n请看句 B：'The animal didn't cross the street because **it** was too wide.'（动物没有过街，因为**它**太宽了。）\n\n两句里的「it」，A 句指动物，B 句指街道。Attention 能通过上下文自动判断。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【推理】在句 A（tired）中，it 最自然指谁？",
-      options: ["animal", "street", "cross"],
-      correct: 0
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【推理】在句 B（wide）中，it 最自然指谁？",
-      options: ["animal", "street", "cross"],
-      correct: 1
-    },
-
-    // --- 模块五：GPT 的特殊机制 (Masked Attention) ---
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n🙈 **不偷看答案的遮挡**\n\n生成式模型训练“预测下一个词”时，不能先看到后面的正确答案。Mask（遮挡）会把后面的位置盖住，让模型只能依据前面的内容学习预测。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【原理】这种“不看后文”的遮挡，主要帮助哪类模型生成文本？",
-      options: ["理解整句的模型", "像 GPT 一样续写的模型", "只负责显示文字的界面"],
-      correct: 1
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【后果】如果没有 Mask，GPT 在训练时会发生什么？",
-      options: ["后面的词会泄露答案，模型学不好预测", "模型会因此完全无法处理文字", "模型只会忘记开头的词"],
-      correct: 0
-    },
-
-    // --- 模块六：Multi-Head & FFN ---
-    { 
-      type: 'theory', 
-      content: "🐉 **AI 小侦探档案**\n\n🐙 **多种关注角度**\n\n一句话里可能同时要看主语、指代和语气。多头注意力让模型从多种角度寻找关联，再综合这些线索；每个“头”不一定固定只负责一种语言任务。"
-    },
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【类比】多头注意力就像...",
-      options: ["同时关注剧情、演技、配乐和特效", "把电影从头到尾看十遍", "让十个人轮流写同一段话"],
-      correct: 0
-    },
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n🧠 **整理信息**\n\n注意力负责找出并汇集相关线索，后面的前馈网络会进一步转换这些信息。把它们想成“先找资料，再整理资料”即可。"
-    },
-    {
-      type: 'fill',
-      question: "🐉【识破 AI 魔法】【结构】Attention 层负责信息的",
-      parts: ["Attention 负责信息的", "___", "，FFN 负责信息的处理与转换。"],
-      options: ["路由/聚合", "遗忘", "存储"],
-      correct: "路由/聚合"
-    },
-
-    // --- 模块七：综合复习 ---
-    {
-      type: 'quiz',
-      question: "🐉【识破 AI 魔法】【Context Window】为什么超长上下文会更难、更贵处理？",
-      options: ["模型需要比较和处理更多内容之间的关系", "长文本会自动变成更短的文本", "因为硬盘只能存放一篇文章"],
-      correct: 0
-    },
-    {
-      type: 'match',
-      isBoss: true,
-      question: "🐉【识破 AI 魔法】🏆 **Day 4 终极排序：数据流转图**",
-      pairs: [
-        { left: "1. 入口", right: "Input Embedding + Positional Encoding" },
-        { left: "2. 聚合", right: "Masked Multi-Head Attention" },
-        { left: "3. 消化", right: "Feed Forward Network (FFN)" },
-        { left: "4. 出口", right: "Linear + Softmax (预测概率)" }
-      ]
-    },
-    {
-      type: 'theory',
-      content: "🐉 **AI 小侦探档案**\n\n🎉 **Day 4 完成！**\n你知道 Transformer 会结合位置和上下文来找重点。明天看看它的“短期工作台”为什么有限，以及怎样借助资料回答问题。"
-    }
+    { type: 'theory', content: "🐉 **AI 小侦探档案**\n\n📡 **字典坐标为什么不够？**\n\n‘苹果’既可能是水果，也可能是公司。**Transformer** 是以注意力机制为核心的模型架构；**Attention（注意力）**像词语打开雷达，为上下文中的信息分配不同权重。它常把信息分成 **QKV** 三种角色：Query（查询）表示当前要找什么，Key（键）用于匹配，Value（值）承载匹配后取回的内容。模型比较 Q 和 K，再按权重混合 V。" },
+    { type: 'interactive', interactiveKind: 'attention', interactiveTitle: 'Attention 雷达：上下文如何改变关注重点' },
+    { type: 'quiz', question: "1. 为什么静态 Embedding 不能独自解决一词多义？", options: ["它不知道当前句子周围提供的具体语境", "它不能表示任何数字", "一个词只能出现在一个句子里"], correct: 0 },
+    { type: 'quiz', question: "2. Attention 最接近哪种描述？", options: ["为当前 Token 动态分配对其他 Token 的关注权重", "自动搜索互联网并核实事实", "把所有词永久存入长期记忆"], correct: 0 },
+    { type: 'fill', question: "3. Attention 像词语打开 ___，寻找上下文中更相关的信息。", parts: ["Attention 像打开", "___", "。"], options: ["雷达", "计算器", "摄像机"], correct: "雷达" },
+    { type: 'theory', content: "🐉 **Q、K、V 像图书检索**\n\nQuery（Q）表示‘我现在要找什么’；Key（K）像每本书的标签，用来判断能否匹配；Value（V）是匹配后真正取回的内容。模型比较 Q 和各个 K，产生权重，再把对应的 V 按权重混合起来。" },
+    { type: 'match', question: "4. 【图书馆里的 QKV】", pairs: [
+      { left: "Query", right: "读者正在寻找的主题" },
+      { left: "Key", right: "每本书用于匹配的标签" },
+      { left: "Value", right: "书中真正取回的内容" },
+      { left: "Attention 权重", right: "每本书对当前问题的重要程度" }
+    ] },
+    { type: 'quiz', question: "5. 模型比较 Q 和 K，主要是为了决定什么？", options: ["哪些位置的信息对当前 Token 更相关", "答案是否符合客观事实", "词表中有多少 Token"], correct: 0 },
+    { type: 'quiz', question: "6. 为什么 Q、K 匹配后还需要 V？", options: ["V 承载要被加权取回的实际信息", "V 用来删除所有低分词", "V 表示模型版本号"], correct: 0 },
+    { type: 'theory', content: "🐉 **从匹配分到百分比**\n\n模型会算出多个匹配分，再用 Softmax 把它们变成总和为 100% 的注意力权重。例如当前词可能把 70% 注意力给主语、20% 给动作、10% 给其他词。权重高表示当前计算更依赖它，不表示那条信息一定真实。" },
+    { type: 'quiz', question: "7. 三个位置的注意力权重分别为 0.6、0.3、0.1，它们的总和是多少？", options: ["0.1", "1", "3"], correct: 1 },
+    { type: 'quiz', question: "8. 某词获得 90% 注意力权重，可以证明模型答案真实吗？", options: ["可以，超过 80% 就是真实", "不可以，权重表示计算相关性，不是事实认证", "可以，但只对历史题有效"], correct: 1 },
+    { type: 'fill', question: "9. Softmax 会把一组匹配分转换成总和为 1 的注意力 ___。", parts: ["Softmax 得到注意力", "___", "。"], options: ["权重", "词表", "坐标"], correct: "权重" },
+    { type: 'theory', content: "🐉 **位置像全班报数**\n\n如果只给模型一袋无序词语，‘猫追狗’和‘狗追猫’看起来成分一样。位置编码像全班依次报数，让模型知道谁在前、谁在后。多头注意力则像多个侦探同时工作：有人盯语法，有人找指代，有人关注远距离关系。" },
+    { type: 'quiz', question: "10. 位置编码主要帮助模型知道什么？", options: ["Token 在序列中的顺序和相对位置", "每个事实是否正确", "用户所在城市"], correct: 0 },
+    { type: 'quiz', question: "11. 没有位置信息时，模型为什么难以区分‘猫追狗’和‘狗追猫’？", options: ["两句话包含相同词，但顺序决定角色关系", "猫和狗没有 Embedding", "中文没有标点"], correct: 0 },
+    { type: 'quiz', question: "12. 多头注意力的直觉优势是什么？", options: ["可以同时关注语法、指代等不同关系", "自动调用多个搜索引擎", "保证每个头都得出相同答案"], correct: 0 },
+    { type: 'match', question: "13. 【雷达故障诊断】", pairs: [
+      { left: "代词指错对象", right: "相关词匹配或上下文可能不足" },
+      { left: "主客体颠倒", right: "位置和词序信息可能未被正确利用" },
+      { left: "漏掉远处条件", right: "长距离关系没有得到足够关注" },
+      { left: "引用错误事实", right: "不能只靠 Attention，仍需外部核验" }
+    ] },
+    { type: 'quiz', question: "14. ‘奖杯放不进箱子，因为它太大了’中，要判断‘它’指谁，模型最需要结合什么？", options: ["奖杯、箱子、放不进和太大之间的上下文关系", "句子的字体颜色", "随机选择离它最近的词"], correct: 0 },
+    { type: 'practice', task: "15. 【词语雷达实验】选择一句含有代词或多义词的句子。写出当前词的 Query 想找什么，列出两个候选 Key，并说明应从哪个 Value 取回信息；再改动词序或上下文，预测注意力重点怎样变化。", rubric: "应包含一句有真实歧义的句子、一个清楚的查询目标、至少两个候选匹配、取回信息及改动后的合理预测；不要求真实计算模型内部权重。", placeholder: "句子：……\nQuery 想找：……\n候选 Key：……\n取回的 Value：……\n改变上下文后：……", minLength: 70, referenceAnswer: "句子：小明把书递给小刚，因为他明天要演讲。Query 想找‘他’指谁；候选 Key 是小明和小刚；Value 是两人的相关动作信息。若改成‘小刚接过书，因为小刚明天要演讲’，注意力应更明确地指向小刚。" },
+    { type: 'theory', content: "🐉 **Day 4 完成**\n\n你知道 Transformer 如何用 Attention 让 Token 互相交换上下文信息：Q 去找，K 来匹配，V 提供内容，位置编码保留顺序。明天看模型如何给下一块文字打分，并用 Temperature 与采样做选择。" }
   ]
 };

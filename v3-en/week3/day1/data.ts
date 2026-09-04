@@ -1,0 +1,34 @@
+import type { DayContent } from '../../../types';
+
+const graded: DayContent['steps'] = [
+  { type: 'quiz', question: '1. Which source is best to give AI for first-pass reading?', options: ['A classmate\'s private family details', 'Internal files from unknown sources', 'A public science article on the school website', 'A contact list from group chat'], correct: 2 },
+  { type: 'quiz', question: '2. Which instruction gives AI the clearest reading task?', options: ['State the goal, number of facts, and original locations', 'Shorten the whole text and remove citations', 'Guess the full article from the title', 'Only copy sentences that support your opinion'], correct: 0 },
+  { type: 'quiz', question: '3. AI says “the original text does not mention this.” What should you do?', options: ['Fill it in using common sense', 'Write the AI claim as fact', 'Pick the webpage with stronger wording', 'Mark it as “to verify” and check the source text'], correct: 3 },
+  { type: 'quiz', question: '4. What is the most important check before sharing materials?', options: ['Only check if the file opens', 'Only remove names from the title', 'Check personal data like names, phone numbers, and addresses', 'Let AI judge everything by itself'], correct: 2 },
+  { type: 'quiz', question: '5. Why should you state your goal before reading long material?', options: ['So output is organized around your task goal', 'So AI automatically judges truthfulness', 'So original locations are no longer needed', 'So AI can do all verification alone'], correct: 0 },
+  { type: 'quiz', question: '6. If AI summary conflicts with the source text, what is the standard?', options: ['Choose the version you prefer', 'Go back to the source text and re-check', 'Treat both as facts', 'Use whichever version is longer'], correct: 1 },
+  { type: 'fill', question: '7. First safety gate: use only public content or content with ___ permission.', parts: ['Use only public content or content with', '___', 'permission.'], options: ['authorized', 'licensed', 'agreed'], correct: 'authorized' },
+  { type: 'fill', question: '8. When asking AI to find facts, require the original text ___.', parts: ['When asking AI for facts, also require original text', '___', '.'], options: ['locations', 'authors', 'summaries'], correct: 'locations' },
+  { type: 'fill', question: '9. Phone numbers and home addresses are protected ___.', parts: ['Phone numbers and home addresses are protected', '___', '.'], options: ['personal information', 'public information', 'browsing history'], correct: 'personal information' },
+  { type: 'quiz', question: '10. A reading card says “Volcanoes all erupt at night” but gives no source location. Best handling?', options: ['Mark it “to verify,” return to the source for evidence, and remove it if unsupported', 'Keep it and just make the tone more certain', 'Ask AI to invent a likely paragraph location'], correct: 0 },
+  { type: 'practice', task: '11. [Script Draft] Pick one fact from a public source (museum, school, or science institution) and write a 15-30-second knowledge short script. Include: a hook question, one sourced core fact, and a takeaway ending.', rubric: 'Must include hook, core fact, and ending. Fact must include a public source or source location. Script should fit a 15-30-second voice-over and must not add unsupported claims or personal information.', placeholder: 'Hook: ...\nCore fact (source): ...\nEnding: ...', minLength: 50, referenceAnswer: 'Hook: Why does the Moon look bright at night? Core fact: The Moon does not emit its own light; it reflects sunlight (source: paragraph 2 of a public planetarium page). Ending: Moonlight is actually sunlight taking a detour.' },
+  { type: 'match', question: '12. Match: material-handling actions', pairs: [{ left: 'File contains a classmate\'s phone number', right: 'Remove sensitive info or switch to a public source' }, { left: 'Material comes from a museum official site', right: 'Good priority source to read first' }, { left: 'AI says source does not mention a claim', right: 'Return to source and mark as “to verify”' }, { left: 'Article has no publish date', right: 'Mark date as unknown on the reading card' }] },
+  { type: 'match', question: '13. Match: reading card sections', pairs: [{ left: 'Volcanoes can release gases', right: 'Fact section' }, { left: 'Paragraph 3, sentence 2', right: 'Source location section' }, { left: 'Museum webpage link', right: 'Link/source section' }, { left: 'When did volcanoes form?', right: 'To-verify question section' }] },
+  { type: 'match', question: '14. Match: prompt parts', pairs: [{ left: 'Science explainer for Grade 7 students', right: 'Defines audience' }, { left: 'List three volcano facts', right: 'Defines task and quantity' }, { left: 'Add paragraph number after each fact', right: 'Requires source locations' }, { left: 'Do not guess details not in source', right: 'Sets constraints' }] },
+  { type: 'match', question: '15. Match: good habits', pairs: [{ left: 'AI summary includes a number', right: 'Open source text and find the exact sentence' }, { left: 'File contains a home address', right: 'Do not upload; remove personal data' }, { left: 'Webpage says “may form”', right: 'Mark as possibility, not fact' }, { left: 'Still unsure after reading', right: 'Write it into “to verify” questions' }] },
+];
+
+export const v3enw3d1Data: DayContent = {
+  day: 1,
+  title: 'Multimodal Engine I: Pixels, Patches, Visual Tokens, Encoder, and Text-Image Alignment',
+  shards: 30,
+  steps: [
+    { type: 'theory', content: '🐉 **Image Understanding Pipeline**\n\nToday we decode how AI “reads” images: pixels are cut into patches, patches become visual tokens, tokens pass through the encoder, and then align with language space.' },
+    { type: 'video', url: '', content: 'Upcoming video: turn a public science source into a 15-30-second knowledge short script' },
+    { type: 'theory', content: '📚 **Mechanism Card 1 | Pixels to Patches**\nSmaller patches mean more visual tokens. You keep more detail, but computation cost rises. Resolution and patch size directly affect readable detail.' },
+    { type: 'theory', content: '🎯 **Mechanism Card 2 | Visual Tokens and Encoder**\nVisual tokens are not words. They are vectors for color, texture, edges, and structure. The encoder compresses them into computable representations for cross-modal alignment.' },
+    { type: 'theory', content: '🧹 **Mechanism Card 3 | Text-Image Alignment**\n“Describe what you see” works because image and language are trained into a shared semantic space. But high similarity is not equal to factual correctness. You still need evidence checks.' },
+    ...graded,
+    { type: 'theory', content: '✅ **Store in Your Project Box**\nSave your source card and first 15-30-second narration draft. Tomorrow you will let AI read an image tied to your topic and separate “what is visible” from “what we infer.”' },
+  ],
+};

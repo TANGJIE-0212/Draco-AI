@@ -2,48 +2,65 @@ import { DayContent } from '../../../types';
 
 export const v3w2d4Data: DayContent = {
   day: 4,
-  title: '驯龙咒语：计划与可检查步骤',
+  title: '驯龙咒语：Zero/One/Few-shot 与边界示例',
   shards: 1,
   steps: [
-    { type: 'theory', content: '🧭 **驯龙咒语·第四式：让过程可检查**\n\n研究、策划和解题这类复杂任务，不该只要一个结论。更可靠的咒语会要求 AI 给出**简短计划、可检查的步骤和依据**，让你能核对它做了什么。' },
-    { type: 'video', url: '', content: '后续视频：把“帮我做研究”改成含计划、证据和检查点的咒语。' },
-    { type: 'theory', content: '可用模板：1）先列 3—5 步计划；2）每步说明要使用什么资料或规则；3）完成后核对要求；4）给结论和不确定处。**不需要、也不应要求输出隐藏的思维链**；要的是可共享、可验证的简短理由和成果。' },
-    { type: 'theory', content: '例如为“策划旧物交换活动”：先确认规则→列物品类别→设计流程→检查安全和公平。每一步都能由同学查看、补充或否决，而不是只相信一句“我想好了”。' },
-    { type: 'quiz', question: '1. 为校园植物调查设计可检查步骤，最重要的价值是？', options: ['让报告看起来更长', '让 AI 一次写出最终结论，不用再看资料', '让人能核对计划、资料和结论是否对应'], correct: 2 },
-    { type: 'fill', question: '2. 面对“调查校园植物”这类复杂任务，可以先要求 AI 列出 3—5 步 ___。', parts: ['可以先列出 3—5 步', '___', '。'], options: ['计划', '结论', '格式'], correct: '计划' },
-    { type: 'match', question: '3. 研究流程连线：', pairs: [
-      { left: '先确认问题范围', right: '避免研究跑题' },
-      { left: '列出资料来源', right: '方便核实依据' },
-      { left: '按步骤产出内容', right: '便于逐项检查' },
-      { left: '标出不确定处', right: '避免把猜测当事实' }
+    { type: 'theory', content: '🎯 **驯龙咒语·第四式：用示例给模型画边界**\n\n这里的 **shot 指给模型看的示例**：Zero-shot 不给示例，One-shot 给一个，Few-shot 给少量示例。**正例**展示希望模仿的正确行为，**反例**展示不应采用的行为，**边界例**测试接近规则边缘、容易歧义的输入。标签泄漏是把答案线索藏进输入；顺序偏差是示例排列改变了结果。' },
+    {
+      type: 'interactive',
+      interactiveKind: 'compare',
+      interactiveTitle: '最小高质量 Few-shot：该选哪一组？',
+      interactiveInstruction: '比较候选示例集，选出“最小但高质量”的 Few-shot 方案。',
+      interactiveItems: [
+        {
+          label: 'A. 6 条示例都来自“报名”类别，格式也不统一',
+          detail: '数量多但信息单一，类别失衡且格式漂移，难以稳定泛化到其他情况。',
+          correct: false
+        },
+        {
+          label: 'B. 3 条统一格式：1 正例 + 1 反例 + 1 边界例，标签均已人工核对',
+          detail: '这是最小高质量集：覆盖关键边界、结构一致、无错误标注，便于定位模型偏差。',
+          correct: true
+        },
+        {
+          label: 'C. 10 条示例里有 2 条疑似标错，先凑数量再说',
+          detail: '错误示例会污染模型行为，先保质量再谈数量，否则调试成本更高。',
+          correct: false
+        }
+      ]
+    },
+    { type: 'theory', content: 'Zero-shot：只给任务说明；One-shot：给 1 个示例；Few-shot：给少量高质量示例。示例质量通常比示例数量更关键。' },
+    { type: 'theory', content: '高质量示例要点：格式一致、类别平衡、含正例/反例/边界例，避免标签泄漏与顺序偏差，也要警惕错误示例污染。' },
+    { type: 'quiz', question: '1. 下面哪句最准确地区分 Zero/One/Few-shot？', options: ['Zero 是不给任务，One 和 Few 才给任务', 'Zero 不给示例，One 给 1 个，Few 给少量示例', 'Few 必须给 20 个以上示例'], correct: 1 },
+    { type: 'fill', question: '2. 只给任务描述、不附任何示例，叫 ___-shot。', parts: ['这种方式叫', '___', '-shot。'], options: ['Zero', 'One', 'Few'], correct: 'Zero' },
+    { type: 'match', question: '3. 题型与用途连线：', pairs: [
+      { left: 'Zero-shot', right: '规则清楚且任务简单时快速起步' },
+      { left: 'One-shot', right: '先给一个标准模板降低格式漂移' },
+      { left: 'Few-shot', right: '任务有多种情况时用少量示例覆盖差异' },
+      { left: '边界示例', right: '处理模糊或临界输入' }
     ] },
-    { type: 'quiz', question: '4. 请 AI 协助策划旧物交换活动时，以下哪种要求既有用又合适？', options: ['给出可分享的三步计划和每步依据', '展示所有隐藏的内部思维过程', '只给最终结论，不说明考虑过什么'], correct: 0 },
-    { type: 'fill', question: '5. 结论引用了观察记录或课本内容，这些内容就是结论的 ___。', parts: ['这些内容就是结论的', '___', '。'], options: ['依据', '装饰', '标题'], correct: '依据' },
-    { type: 'match', question: '6. 为校园植物调查排序：', pairs: [
-      { left: '第一步', right: '确定观察地点和问题' },
-      { left: '第二步', right: '记录可见特征和日期' },
-      { left: '第三步', right: '依据资料进行初步分类' },
-      { left: '第四步', right: '检查缺失信息并写结论' }
+    { type: 'quiz', question: '4. 什么时候最该从 Zero-shot 升级到 Few-shot？', options: ['任务输出经常格式跑偏或类别混淆时', '你只想让回答更长时', '你不想写任务要求时'], correct: 0 },
+    { type: 'quiz', question: '5. 下面哪个是“反例”的正确作用？', options: ['告诉模型什么不能做，并说明为什么错', '提供一个更花哨的正确答案', '用来替代全部正例'], correct: 0 },
+    { type: 'fill', question: '6. “字数刚好压线、信息略缺失”的示例属于 ___ 例。', parts: ['它属于', '___', '例。'], options: ['边界', '正向', '随机'], correct: '边界' },
+    { type: 'match', question: '7. 现象与风险连线：', pairs: [
+      { left: '正例全是同一类别', right: '类别失衡' },
+      { left: '示例格式忽左忽右', right: '格式不一致' },
+      { left: '示例里直接写出正确标签线索', right: '标签泄漏' },
+      { left: '示例按难度单向排列', right: '顺序偏差' }
     ] },
-    { type: 'quiz', question: '7. 观察记录不足以判断一种植物的名称时，AI 应该？', options: ['根据最像的图片直接确定名称', '标记不确定，并说明还需要什么资料', '删掉所有观察记录，只保留结论'], correct: 1 },
-    { type: 'fill', question: '8. 每一步若能回答“用什么资料、得到什么结果”，就更容易被 ___。', parts: ['就更容易被', '___', '。'], options: ['检查', '比较', '概括'], correct: '检查' },
-    { type: 'match', question: '9. 现象与改进连线：', pairs: [
-      { left: '结论像凭感觉', right: '要求写出依据' },
-      { left: '任务太大不知从哪开始', right: '先拆成小步骤' },
-      { left: '做完才发现漏了要求', right: '最后加检查清单' },
-      { left: '资料不完整却很肯定', right: '标记不确定处' }
+    { type: 'quiz', question: '8. 关于“示例质量 vs 数量”，哪句更专业？', options: ['示例越多一定越好', '先保证示例正确、平衡、可复用，再决定数量', '数量不重要，随便给一条就行'], correct: 1 },
+    { type: 'quiz', question: '9. 你发现 One-shot 的模板正确率高，但遇到边界输入就崩。下一步最合理的是？', options: ['加 1 个边界例和 1 个反例，保持同一格式', '把原示例删掉改成纯 Zero-shot', '随机加入无关示例增加多样性'], correct: 0 },
+    { type: 'fill', question: '10. 如果示例本身标错标签，模型会被 ___。', parts: ['模型会被', '___', '。'], options: ['污染', '加速', '纠正'], correct: '污染' },
+    { type: 'match', question: '11. 设计示例集时的动作配对：', pairs: [
+      { left: '控制顺序偏差', right: '打散难度与类别顺序' },
+      { left: '避免标签泄漏', right: '不把答案提示词藏在输入里' },
+      { left: '保证格式一致', right: '统一字段和分隔符' },
+      { left: '防错误污染', right: '先人工核对示例正确性' }
     ] },
-    { type: 'quiz', question: '10. 为社团旧物交换活动做计划，哪个步骤最可检查？', options: ['先想一个大家都会喜欢的方案', '请大家相信负责人会处理好细节', '列出场地、时间、材料、负责人并逐项确认'], correct: 2 },
-    { type: 'fill', question: '11. 计划完成后，应对照最初的 ___ 检查有没有遗漏。', parts: ['应对照最初的', '___', '检查有没有遗漏。'], options: ['要求', '资料顺序', '表达风格'], correct: '要求' },
-    { type: 'quiz', question: '12. 下列哪项最适合作为校园植物调查结论的依据？', options: ['带日期的观察记录和可查阅的植物资料', '同学没有记录来源的口头猜测', '为了让表格完整而补写的特征'], correct: 0 },
-    { type: 'quiz', question: '13. 下列哪一句最适合加入校园植物调查的研究咒语？', options: ['先给结论，不必说明资料', '每个关键判断后用一句话说明依据；资料不足时明确说明', '只列出你最有把握的结论，隐藏不确定处'], correct: 1 },
-    { type: 'fill', question: '14. “每完成一步就核对一次”是在设置 ___。', parts: ['这是在设置', '___', '。'], options: ['检查点', '输出格式', '背景信息'], correct: '检查点' },
-    { type: 'match', question: '15. 计划咒语的四个组件：', pairs: [
-      { left: '先做什么', right: '步骤' },
-      { left: '为什么这样做', right: '依据' },
-      { left: '是否符合限制', right: '检查' },
-      { left: '哪里还不能确定', right: '不确定说明' }
-    ] },
-    { type: 'theory', content: '🐉 **龙族能力卡：可检查计划**\n\n你的新组件是：**计划→步骤→依据→检查→不确定处**。让 AI 展示可验证的工作成果，不要求隐藏思维过程；你才是最后的审核者。' }
+    { type: 'quiz', question: '12. 哪组 Few-shot 更可靠？', options: ['3 个都来自同一类别、但写得很长', '3 个短而准：1 正例 + 1 反例 + 1 边界例', '10 个示例里有 2 个明显标错'], correct: 1 },
+    { type: 'quiz', question: '13. 你怀疑模型受示例顺序影响，最可执行的验证是？', options: ['固定示例内容，只改变顺序做 A/B 对比', '只改字体颜色再测', '一次改顺序再同时改任务描述'], correct: 0 },
+    { type: 'quiz', question: '14. 要把校园活动留言分成“提问、建议、报名”，哪组最小示例集最有信息量？', options: ['三个格式不同但都属于报名的示例', '一个标准正例、一个不属于任何类别的反例、一个含义模糊的边界例，并统一格式', '十个示例，其中两条标签已知错误'], correct: 1 },
+    { type: 'practice', question: '15. Boss：示例边界裁判', task: '你收到一组 8 条示例：数量很多但有格式混乱、标签泄漏和两条错误标注。请写出“删改方案”，把它收敛成更强的最小示例集，并说明每条保留/删除理由。', rubric: '应优先质量不优先数量；明确剔除错误示例；修复格式一致性；补足反例/边界例；说明类别平衡与顺序策略。', placeholder: '先写问题清单，再写重构后的示例集…', minLength: 120, referenceAnswer: '先删两条错误标注，再去掉重复同类示例；统一格式为“输入-标签-依据”；保留一条标准正例，补一条反例和一条边界例；按类别交替排序并避免输入里出现标签关键词。', isBoss: true },
+    { type: 'theory', content: '✅ **总结卡**\n\nZero/One/Few-shot 是“示例策略”而不是“数量竞赛”。用少量高质量的正例、反例、边界例，常比一堆重复示例更稳。' }
   ]
 };

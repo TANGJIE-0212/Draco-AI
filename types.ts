@@ -1,6 +1,6 @@
 
 export type LessonStep = {
-    type: 'theory' | 'quiz' | 'boss' | 'match' | 'fill' | 'video' | 'practice';
+    type: 'theory' | 'quiz' | 'boss' | 'match' | 'fill' | 'video' | 'practice' | 'interactive';
     content?: string;
     question?: string;
     options?: string[];
@@ -9,6 +9,11 @@ export type LessonStep = {
     pairs?: { left: string; right: string }[];
     parts?: string[];
     url?: string;
+    interactiveKind?: 'timeline' | 'bpe' | 'embedding' | 'attention' | 'temperature' | 'evidence' | 'pipeline' | 'compare' | 'sequence' | 'diagnose';
+    interactiveTitle?: string;
+    interactiveInstruction?: string;
+    interactiveItems?: { label: string; detail?: string; correct?: boolean }[];
+    interactiveSequence?: string[];
     // 'practice' 字段：开放式实战题，由大模型评判
     task?: string;          // 任务说明（展示给用户）
     rubric?: string;        // 评分标准（喂给 LLM）

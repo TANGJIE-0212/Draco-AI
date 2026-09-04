@@ -1,0 +1,34 @@
+import type { DayContent } from '../../../types';
+
+const graded: DayContent['steps'] = [
+  { type: 'quiz', question: '1. For a 15-30-second short, what should narration satisfy first?', options: ['Pack in all source details', 'Be naturally readable within the target duration', 'Speak at least ten words per second', 'Use advanced jargon only'], correct: 1 },
+  { type: 'quiz', question: '2. What is the most basic subtitle requirement?', options: ['Match narration content and timing', 'Longer lines always look more professional', 'Use many animated fonts', 'Show title only'], correct: 0 },
+  { type: 'quiz', question: '3. With narration present, music should usually be...', options: ['Louder than voice', 'Fully cover environmental sound', 'Lower volume so voice stays clear', 'A new song in every shot'], correct: 2 },
+  { type: 'quiz', question: '4. When narration says “The Moon reflects sunlight,” the best visual support is...', options: ['An unrelated volcano scene', 'A scene showing Moon-sunlight relation or matching evidence', 'Fast flashing effects only', 'A blank frame'], correct: 1 },
+  { type: 'quiz', question: '5. Which editing rhythm fits a knowledge short better?', options: ['Cut away immediately when key info appears', 'Every shot has identical length', 'Give viewers enough time to read key info, then cut', 'The more fragmented the shots, the better'], correct: 2 },
+  { type: 'quiz', question: '6. When publishing AI-assisted videos, you should...', options: ['Hide AI involvement', 'Disclose AI-generated/assisted parts and keep fact sources', 'Label AI visuals as live footage', 'Only write “for reference”'], correct: 1 },
+  { type: 'fill', question: '7. When visuals and narration line up, that is audio-visual ___.', parts: ['When visuals and narration line up, that is audio-visual', '___', '.'], options: ['sync', 'mixing', 'transition'], correct: 'sync' },
+  { type: 'fill', question: '8. To keep voice clear, background music ___ should stay below narration.', parts: ['Background music', '___', 'should stay below narration.'], options: ['volume', 'speed', 'duration'], correct: 'volume' },
+  { type: 'fill', question: '9. The checklist that verifies facts, copyright, and privacy is a release check ___.', parts: ['This checklist is a release check', '___', '.'], options: ['sheet', 'script', 'shot'], correct: 'sheet' },
+  { type: 'quiz', question: '10. Rough cut is 24s, but natural narration needs 36s. Best fix?', options: ['Cut secondary lines and re-record, then adjust shot timing if needed', 'Speed up voice until hard to understand', 'Use subtitles for second half without timing changes', 'Keep it and explain after publishing'], correct: 0 },
+  { type: 'practice', task: '11. [15-30s Rough Cut + Checklist] Design one rough cut with total duration, per-shot timing, narration, subtitles, and music treatment. Then list release checks for facts, copyright, privacy, and AI disclosure.', rubric: 'Total length must be 15-30 seconds. Shot timing should be continuous and narration naturally readable. Subtitles must match narration. Music cannot mask voice. Checklist must cover fact source, media rights, personal privacy, and AI generated/assisted disclosure.', placeholder: 'Total length: ... sec\n0-... sec | Visual: ... | Narration: ... | Subtitles: ... | Music: ...\nRelease checks: facts ...; copyright ...; privacy ...; AI disclosure ...', minLength: 130, referenceAnswer: 'Total length: 22 seconds. 0-6s: dragon looks at the Moon; narration asks “Why does the Moon look bright?” subtitle synced; soft music. 6-15s: close-up of source card; narration says “The Moon does not emit light, it reflects sunlight”; subtitles in two lines; music lowered under voice. 15-22s: dragon presents conclusion and source; narration cites public planetarium source; subtitle shows source short name. Checks: facts verified in source; music/image licenses valid; no personal info; AI-assisted visual label in ending frame.' },
+  { type: 'match', question: '12. Match: audio issues and fixes', pairs: [{ left: 'Music covers narration', right: 'Lower music volume' }, { left: 'Narration has clipping', right: 'Adjust mic distance and re-record' }, { left: 'No pause between sentences', right: 'Edit natural breathing space' }, { left: 'Voice volume jumps between lines', right: 'Normalize narration loudness' }] },
+  { type: 'match', question: '13. Match: subtitle checks', pairs: [{ left: 'Subtitle appears before narration', right: 'Shift subtitle later' }, { left: 'One line is too long', right: 'Split by meaning or shorten text' }, { left: 'Subtitle blocks key evidence', right: 'Change subtitle position or composition' }, { left: 'Technical term is misspelled', right: 'Correct against reliable source' }] },
+  { type: 'match', question: '14. Match: release risks', pairs: [{ left: 'Using unlicensed popular music', right: 'Replace with licensed track' }, { left: 'Classmate name appears on screen', right: 'Remove it or get explicit consent' }, { left: 'Scientific number has no source', right: 'Verify source before use' }, { left: 'AI visual resembles real news footage', right: 'Clearly label it as AI-generated' }] },
+  { type: 'match', question: '15. Match: editing rhythm', pairs: [{ left: 'First 3 seconds', right: 'Raise the main question quickly' }, { left: 'Middle section', right: 'Show evidence and explanation' }, { left: 'Ending section', right: 'Conclude and give source' }, { left: 'Key subtitle too short to read', right: 'Hold longer or simplify text' }] },
+];
+
+export const v3enw3d6Data: DayContent = {
+  day: 6,
+  title: 'Audio Pipeline: TTS, ASR, Subtitle Sync, Copyright, Privacy',
+  shards: 30,
+  steps: [
+    { type: 'theory', content: '🎙️ **First Try | Voice + Subtitle Dual Channel**\nToday we lock three layers: TTS narration generation, ASR back-check, and subtitle timeline sync, then add copyright and privacy checks.' },
+    { type: 'video', url: '', content: 'Video: add narration, subtitles, and music to your 15-30-second short, then complete release checks' },
+    { type: 'theory', content: '🎧 **Card 1 | TTS-ASR Loop**\nTTS creates understandable narration. ASR listens back to catch wrong words, missing words, and misread terms.' },
+    { type: 'theory', content: '✂️ **Card 2 | Subtitle and Audio-Visual Sync**\nSubtitles must match words, timing, and visual information points. Avoid “voice ends, subtitle appears later.”' },
+    { type: 'theory', content: '🛡️ **Card 3 | Copyright and Privacy**\nCheck licenses for music, voice timbre, images, and fonts. Narration/subtitles must not expose personal information. AI-generated content should be clearly labeled.' },
+    ...graded,
+    { type: 'theory', content: '✅ **Store in Your Project Box**\nSave your 15-30-second rough cut and completed release checklist. Tomorrow\'s Boss requires a fully edited final film with complete narration/subtitles and passed checks.' },
+  ],
+};

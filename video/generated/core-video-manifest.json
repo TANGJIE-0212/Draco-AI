@@ -1,0 +1,937 @@
+{
+  "W1-Mechanism-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W1-Mechanism-ZH/scene-01-hook.mp3",
+      "durationSeconds": 15.504,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.764,
+          "text": "我们读到的是一句完整的话，大语言模型看到的却是一串数字。"
+        },
+        {
+          "start": 5.714,
+          "end": 15.452,
+          "text": "分词器先把文字切成词元，也就是 Token，再把每个词元换成编号和向量，让模型可以计算词语之间的关系。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W1-Mechanism-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 17.472,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.693,
+          "text": "Embedding，也就是嵌入表示，把词元放进语义空间。"
+        },
+        {
+          "start": 4.643,
+          "end": 11.905,
+          "text": "Transformer 的注意力机制再比较查询、键和值，为当前位置找出更相关的信息。"
+        },
+        {
+          "start": 11.905,
+          "end": 17.429,
+          "text": "同一个词进入不同句子后，因此可以形成不同的上下文表示。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W1-Mechanism-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 17.016,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 8.407,
+          "text": "模型为下一步候选词元产生原始分数，用 Softmax 换成概率，再按设置选出下一词元。"
+        },
+        {
+          "start": 8.357,
+          "end": 12.262,
+          "text": "新词元加入上下文后，流程重新开始。"
+        },
+        {
+          "start": 12.262,
+          "end": 16.952,
+          "text": "模型是在逐步预测，不是在一次性写完整篇答案。"
+        }
+      ]
+    }
+  ],
+  "W2-Design-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W2-Design-ZH/scene-01-hook.mp3",
+      "durationSeconds": 14.568,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 7.848,
+          "text": "同一个模型，有人只说帮我写好一点，有人却写清受众、长度、资料和成功标准。"
+        },
+        {
+          "start": 7.798,
+          "end": 14.5,
+          "text": "后者是在做提示词工程，也就是把模糊愿望变成可执行、可检查的任务。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W2-Design-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 14.352,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 9.821,
+          "text": "可靠提示词先说明目标和受众，再提供必要背景与资料，写清不能做什么，最后规定输出形式和验收标准。"
+        },
+        {
+          "start": 9.821,
+          "end": 14.298,
+          "text": "资料是参考内容，不是可以覆盖任务规则的新命令。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W2-Design-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 15.024,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.419,
+          "text": "使用标题和分隔符把任务、资料、示例与规则分开。"
+        },
+        {
+          "start": 5.369,
+          "end": 9.31,
+          "text": "遇到未知信息就明确标出，不要让模型猜。"
+        },
+        {
+          "start": 9.31,
+          "end": 14.964,
+          "text": "一个好提示词不是看起来专业，而是别人能够重复使用和检查。"
+        }
+      ]
+    }
+  ],
+  "W2-Test-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W2-Test-ZH/scene-01-hook.mp3",
+      "durationSeconds": 13.704,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.883,
+          "text": "一份提示词在正常问题上答对，不代表它真的可靠。"
+        },
+        {
+          "start": 4.833,
+          "end": 13.643,
+          "text": "测试集还要包含资料缺失、格式异常和伪指令混入等情况，才能看到它会不会编造或越过边界。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W2-Test-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 16.536,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 7.205,
+          "text": "先运行第一版并记录具体失败，再只修改一个问题，用同一组测试重新检查。"
+        },
+        {
+          "start": 7.155,
+          "end": 16.488,
+          "text": "评分标准，也就是 Rubric，要把准确、完整、格式和边界写成可观察条件，而不是凭感觉说更好。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W2-Test-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 14.28,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.752,
+          "text": "如果资料里写着忽略原规则，系统仍应把它当作待处理文字。"
+        },
+        {
+          "start": 5.702,
+          "end": 8.107,
+          "text": "这叫提示词注入风险。"
+        },
+        {
+          "start": 8.107,
+          "end": 14.214,
+          "text": "可靠系统会分清指令和数据，在证据不足或动作越界时停下来。"
+        }
+      ]
+    }
+  ],
+  "W3-Vision-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W3-Vision-ZH/scene-01-hook.mp3",
+      "durationSeconds": 13.728,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 3.8,
+          "text": "多模态模型并不是像人一样睁眼看图。"
+        },
+        {
+          "start": 3.75,
+          "end": 13.679,
+          "text": "它先把图片切成许多图像块，也就是 Patch，再把颜色、边缘和纹理编码成视觉词元，送进可以计算的向量空间。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W3-Vision-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 15.336,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 10.548,
+          "text": "图片从像素切成图像块，视觉编码器把每块转成特征向量，再通过图文对齐，让图像区域和文字含义建立联系。"
+        },
+        {
+          "start": 10.548,
+          "end": 15.274,
+          "text": "切块越细可能保留更多细节，但计算量也会增加。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W3-Vision-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 14.16,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 9.167,
+          "text": "模型能做光学字符识别、识别物体和空间关系，也会在画面模糊、裁切或遮挡时根据常识脑补。"
+        },
+        {
+          "start": 9.167,
+          "end": 14.107,
+          "text": "使用视觉模型时，要把可见证据和模型推断分开。"
+        }
+      ]
+    }
+  ],
+  "W3-Generation-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W3-Generation-ZH/scene-01-hook.mp3",
+      "durationSeconds": 12.72,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 9.845,
+          "text": "看图时，视觉编码器把图片压成向量；画图时，扩散模型从随机噪声出发，根据文字条件一步步去噪。"
+        },
+        {
+          "start": 9.845,
+          "end": 12.679,
+          "text": "它们是两套方向不同的发动机。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W3-Generation-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 14.088,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 7.871,
+          "text": "随机种子决定起点，去噪步数决定迭代次数，CFG 控制模型多强地跟随提示词。"
+        },
+        {
+          "start": 7.821,
+          "end": 14.024,
+          "text": "要判断哪个设置造成变化，其他条件保持不变，每次只改一个旋钮。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W3-Generation-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 16.128,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.074,
+          "text": "图片变成视频后，角色、背景和动作要保持连续。"
+        },
+        {
+          "start": 5.024,
+          "end": 9.929,
+          "text": "关键帧、语音合成、字幕和剪辑共同组成短片。"
+        },
+        {
+          "start": 9.929,
+          "end": 16.06,
+          "text": "最终作品还要事实可查、声画同步，并检查素材许可与隐私。"
+        }
+      ]
+    }
+  ],
+  "W4-Foundations-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W4-Foundations-ZH/scene-01-hook.mp3",
+      "durationSeconds": 14.52,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 10.238,
+          "text": "聊天主要回答当前问题，工作流按固定步骤运行，智能体则围绕目标管理状态、选择工具并根据结果调整计划。"
+        },
+        {
+          "start": 10.238,
+          "end": 14.464,
+          "text": "它不是更会聊天，而是多了一个受控执行循环。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W4-Foundations-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 16.8,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.324,
+          "text": "PAOU 来自计划、行动、观察和更新四个英文词。"
+        },
+        {
+          "start": 5.274,
+          "end": 13.0,
+          "text": "智能体先规划下一步，再调用经过授权的工具，观察结构化结果，并更新任务状态。"
+        },
+        {
+          "start": 13.0,
+          "end": 16.75,
+          "text": "做一步，看一步，而不是盲目执行到底。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W4-Foundations-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 13.296,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 6.431,
+          "text": "一个可靠智能体要记录目标、计划、当前任务、状态和完成条件。"
+        },
+        {
+          "start": 6.381,
+          "end": 13.226,
+          "text": "模型说完成了并不算完成，只有可检查的条件全部满足，任务才真正结束。"
+        }
+      ]
+    }
+  ],
+  "W4-Safety-ZH": [
+    {
+      "id": "hook",
+      "audio": "video/core/W4-Safety-ZH/scene-01-hook.mp3",
+      "durationSeconds": 13.92,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.764,
+          "text": "智能体能使用工具和保存记忆，但不应因此获得无限权限。"
+        },
+        {
+          "start": 5.714,
+          "end": 13.869,
+          "text": "只开放当前任务需要的功能，只保存经同意的非敏感信息，并写明保存期限和删除方式。"
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W4-Safety-ZH/scene-02-mechanism.mp3",
+      "durationSeconds": 17.856,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.836,
+          "text": "网络暂时失败可以有限重试，没有权限必须停止。"
+        },
+        {
+          "start": 4.786,
+          "end": 9.655,
+          "text": "幂等性表示同一请求重复到达，也只产生一次效果。"
+        },
+        {
+          "start": 9.655,
+          "end": 17.798,
+          "text": "发送、付款、删除和公开等动作必须通过人在回路，也就是 HITL，由人最后确认。"
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W4-Safety-ZH/scene-03-takeaway.mp3",
+      "durationSeconds": 15.696,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 8.502,
+          "text": "上线前不能只测试顺利情况，还要故意提供缺失资料、冲突信息、越权命令和重复请求。"
+        },
+        {
+          "start": 8.452,
+          "end": 15.631,
+          "text": "真正可靠的智能体不是永远完成，而是在不该继续时安全停止并解释原因。"
+        }
+      ]
+    }
+  ],
+  "W1-History-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W1-History-EN/scene-01-hook.mp3",
+      "durationSeconds": 16.992,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.572,
+          "text": "Artificial intelligence did not suddenly appear with modern chatbots."
+        },
+        {
+          "start": 4.522,
+          "end": 11.201,
+          "text": "In 1950, Alan Turing turned the question of machine intelligence into a testable conversation problem."
+        },
+        {
+          "start": 11.201,
+          "end": 16.924,
+          "text": "In 1956, the Dartmouth workshop helped establish AI as a research field."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W1-History-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 15.264,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 3.726,
+          "text": "Early expert systems followed rules written by people."
+        },
+        {
+          "start": 3.676,
+          "end": 7.169,
+          "text": "Machine learning later found patterns in examples."
+        },
+        {
+          "start": 7.169,
+          "end": 15.196,
+          "text": "Deep learning used multilayer neural networks to learn richer features, while the Transformer became a foundation for modern language models."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W1-History-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 15.288,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.976,
+          "text": "ChatGPT made generative AI widely accessible through natural language."
+        },
+        {
+          "start": 4.926,
+          "end": 9.412,
+          "text": "But fluent output is not proof of consciousness or factual accuracy."
+        },
+        {
+          "start": 9.412,
+          "end": 15.221,
+          "text": "Use AI to create and explore, while checking important dates, numbers, and sources."
+        }
+      ]
+    }
+  ],
+  "W1-Mechanism-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W1-Mechanism-EN/scene-01-hook.mp3",
+      "durationSeconds": 12.6,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.597,
+          "text": "You see a complete sentence, but a language model receives numbers."
+        },
+        {
+          "start": 4.547,
+          "end": 12.549,
+          "text": "A tokenizer splits text into tokens, maps each token to an identifier, and turns it into a vector the model can process."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W1-Mechanism-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 16.008,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 3.726,
+          "text": "An embedding places a token in a semantic space."
+        },
+        {
+          "start": 3.676,
+          "end": 10.919,
+          "text": "Transformer attention compares queries, keys, and values to find information that matters for the current position."
+        },
+        {
+          "start": 10.919,
+          "end": 15.956,
+          "text": "The same word can therefore take on a different representation in a different sentence."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W1-Mechanism-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 14.328,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.168,
+          "text": "The model gives candidate tokens raw scores called logits."
+        },
+        {
+          "start": 4.118,
+          "end": 10.233,
+          "text": "Softmax converts those scores into probabilities, and a decoding rule selects the next token."
+        },
+        {
+          "start": 10.233,
+          "end": 14.265,
+          "text": "That token joins the context, and the process repeats."
+        }
+      ]
+    }
+  ],
+  "W2-Design-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W2-Design-EN/scene-01-hook.mp3",
+      "durationSeconds": 13.2,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 2.905,
+          "text": "One person says, make it better."
+        },
+        {
+          "start": 2.855,
+          "end": 8.125,
+          "text": "Another defines the audience, length, sources, and success criteria."
+        },
+        {
+          "start": 8.125,
+          "end": 13.15,
+          "text": "Prompt engineering turns a vague wish into an executable, testable task."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W2-Design-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 14.904,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 10.013,
+          "text": "A reliable prompt defines the goal and audience, supplies necessary context and evidence, states boundaries, and specifies the output and success criteria."
+        },
+        {
+          "start": 9.963,
+          "end": 14.841,
+          "text": "Reference material is data, not a new command that can override the task."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W2-Design-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 14.832,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.731,
+          "text": "Separate the task, context, examples, and constraints."
+        },
+        {
+          "start": 4.681,
+          "end": 7.88,
+          "text": "Mark missing information instead of guessing."
+        },
+        {
+          "start": 7.88,
+          "end": 11.483,
+          "text": "A good prompt is not the one that sounds most technical."
+        },
+        {
+          "start": 11.483,
+          "end": 14.779,
+          "text": "It is the one people can reuse and evaluate."
+        }
+      ]
+    }
+  ],
+  "W2-Test-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W2-Test-EN/scene-01-hook.mp3",
+      "durationSeconds": 13.968,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.829,
+          "text": "A prompt that works on one normal question is not necessarily reliable."
+        },
+        {
+          "start": 4.779,
+          "end": 13.922,
+          "text": "A useful test set includes missing evidence, unusual formats, and injected instructions so you can see whether the model guesses or crosses a boundary."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W2-Test-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 14.616,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 3.653,
+          "text": "Run the first version and record a specific failure."
+        },
+        {
+          "start": 3.603,
+          "end": 7.255,
+          "text": "Change one issue, then use the same tests again."
+        },
+        {
+          "start": 7.255,
+          "end": 14.571,
+          "text": "A rubric turns accuracy, coverage, format, and safety into observable criteria instead of a vague feeling."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W2-Test-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 12.336,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.65,
+          "text": "If a source says ignore the earlier rules, the system should still treat that sentence as data."
+        },
+        {
+          "start": 5.6,
+          "end": 12.267,
+          "text": "Reliable prompt systems separate instructions from evidence and stop when a request is unsafe or unsupported."
+        }
+      ]
+    }
+  ],
+  "W3-Vision-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W3-Vision-EN/scene-01-hook.mp3",
+      "durationSeconds": 12.456,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.18,
+          "text": "A multimodal model does not see exactly as a person does."
+        },
+        {
+          "start": 4.13,
+          "end": 12.402,
+          "text": "It divides an image into patches, then encodes color, edges, and texture into visual tokens that can be processed as vectors."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W3-Vision-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 14.376,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.266,
+          "text": "The vision encoder converts image patches into feature vectors."
+        },
+        {
+          "start": 4.216,
+          "end": 8.971,
+          "text": "Image-text alignment connects regions of the image with language concepts."
+        },
+        {
+          "start": 8.971,
+          "end": 14.314,
+          "text": "Smaller patches may preserve detail, but they also increase computational cost."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W3-Vision-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 13.776,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 6.386,
+          "text": "Models can perform optical character recognition and identify objects or spatial relationships."
+        },
+        {
+          "start": 6.336,
+          "end": 10.49,
+          "text": "They can also fill missing visual evidence with a plausible guess."
+        },
+        {
+          "start": 10.49,
+          "end": 13.713,
+          "text": "Separate what is visible from what the model inferred."
+        }
+      ]
+    }
+  ],
+  "W3-Generation-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W3-Generation-EN/scene-01-hook.mp3",
+      "durationSeconds": 12.36,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.204,
+          "text": "A vision encoder compresses an existing image into features."
+        },
+        {
+          "start": 4.154,
+          "end": 9.951,
+          "text": "A diffusion model starts with random noise and removes noise step by step under text guidance."
+        },
+        {
+          "start": 9.951,
+          "end": 12.304,
+          "text": "These are different processes."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W3-Generation-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 16.608,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 3.187,
+          "text": "The seed controls the random starting point."
+        },
+        {
+          "start": 3.137,
+          "end": 6.593,
+          "text": "Steps control the number of denoising iterations."
+        },
+        {
+          "start": 6.593,
+          "end": 12.537,
+          "text": "Classifier-free guidance, or CFG, controls how strongly the image follows the prompt."
+        },
+        {
+          "start": 12.537,
+          "end": 16.544,
+          "text": "Change one variable at a time to learn what caused a difference."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W3-Generation-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 15.48,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 7.905,
+          "text": "Once images become video, characters, objects, lighting, speech, and captions must remain consistent over time."
+        },
+        {
+          "start": 7.855,
+          "end": 15.417,
+          "text": "A finished piece also needs factual checks, usable media rights, privacy protection, and clear AI disclosure."
+        }
+      ]
+    }
+  ],
+  "W4-Foundations-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W4-Foundations-EN/scene-01-hook.mp3",
+      "durationSeconds": 16.44,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 2.771,
+          "text": "A chat answers the current question."
+        },
+        {
+          "start": 2.721,
+          "end": 5.441,
+          "text": "A workflow follows fixed steps."
+        },
+        {
+          "start": 5.441,
+          "end": 11.544,
+          "text": "An agent manages a goal, chooses allowed tools, observes results, and adjusts its plan."
+        },
+        {
+          "start": 11.544,
+          "end": 16.385,
+          "text": "The difference is a controlled action loop, not simply a longer conversation."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W4-Foundations-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 13.368,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 8.69,
+          "text": "In the PAOU loop, an agent plans the next step, acts through an authorized tool, observes the structured result, and updates its state."
+        },
+        {
+          "start": 8.64,
+          "end": 13.309,
+          "text": "It works one step at a time instead of blindly following the original plan."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W4-Foundations-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 13.944,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 6.557,
+          "text": "A reliable agent tracks the goal, plan, current task, state, and completion criteria."
+        },
+        {
+          "start": 6.507,
+          "end": 10.061,
+          "text": "The task is not complete because the model says so."
+        },
+        {
+          "start": 10.061,
+          "end": 13.885,
+          "text": "It is complete when observable requirements are satisfied."
+        }
+      ]
+    }
+  ],
+  "W4-Safety-EN": [
+    {
+      "id": "hook",
+      "audio": "video/core/W4-Safety-EN/scene-01-hook.mp3",
+      "durationSeconds": 14.256,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 5.479,
+          "text": "An agent may use tools and store memory, but it should not receive unlimited access."
+        },
+        {
+          "start": 5.429,
+          "end": 8.468,
+          "text": "Enable only what the current task needs."
+        },
+        {
+          "start": 8.468,
+          "end": 14.191,
+          "text": "Store only consented, non-sensitive information with a clear expiration and deletion rule."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "audio": "video/core/W4-Safety-EN/scene-02-mechanism.mp3",
+      "durationSeconds": 17.184,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 4.021,
+          "text": "A temporary network error may justify a limited retry."
+        },
+        {
+          "start": 3.971,
+          "end": 6.752,
+          "text": "A permission error requires a stop."
+        },
+        {
+          "start": 6.752,
+          "end": 11.961,
+          "text": "Idempotency means the same request arriving twice still causes only one effect."
+        },
+        {
+          "start": 11.961,
+          "end": 17.12,
+          "text": "Sending, paying, deleting, and publishing require human-in-the-loop approval."
+        }
+      ]
+    },
+    {
+      "id": "takeaway",
+      "audio": "video/core/W4-Safety-EN/scene-03-takeaway.mp3",
+      "durationSeconds": 14.544,
+      "cues": [
+        {
+          "start": 0.1,
+          "end": 2.844,
+          "text": "Do not test only the happy path."
+        },
+        {
+          "start": 2.794,
+          "end": 9.645,
+          "text": "Deliberately try missing evidence, conflicting sources, unauthorized commands, and repeated requests."
+        },
+        {
+          "start": 9.645,
+          "end": 14.498,
+          "text": "A reliable agent can stop safely and explain why it cannot continue."
+        }
+      ]
+    }
+  ]
+}

@@ -1,34 +1,46 @@
 import type { DayContent } from '../../../types';
 
 const graded: DayContent['steps'] = [
-  { type: 'quiz', question: '1. 看图时最先可靠描述是？', options: ["画面可见的物体、文字和位置", "拍摄者的拍摄意图", "人物在画面外的行动", "事件完整经过"], correct: 0 },
-  { type: 'quiz', question: '2. 图中阴影像“另一个物体”，最好的结论是？', options: ["阴影较深就一定是物体", "有阴影说明图被修改", "阴影可能造成误判，需更多信息", "AI 识别可替代检查"], correct: 2 },
-  { type: 'quiz', question: '3. 哪种提问更适合让 AI 看图？', options: ["由服装推测职业收入", "描述可见元素和不确定处", "判断人物是否可信", "从背景推断住址"], correct: 1 },
-  { type: 'quiz', question: '4. 一张图配的文字与图中日期矛盾时，应？', options: ["优先相信配文", "让 AI 补出时间线", "只比较清晰度", "检查来源、日期和上下文"], correct: 3 },
-  { type: 'quiz', question: '5. AI 把模糊招牌读错，说明？', options: ["读错字说明图片伪造", "识别结果比原图可靠", "视觉识别受清晰度和角度影响", "模糊招牌一定无法识别"], correct: 2 },
-  { type: 'quiz', question: '6. 使用别人拍的照片做练习，最稳妥的是？', options: ["裁掉水印即可用", "自己拍摄或明确可用并标来源", "非商用不用管作者要求", "社交平台公开就可使用"], correct: 1 },
-  { type: 'fill', question: '7. 看见什么就说什么，先做___，再做解释。', parts: ['先做', '___', '，再做解释。'], options: ["观察", "推断", "判断"], correct: '观察' },
-  { type: 'fill', question: '8. 图像中无法确认的地方应标为___。', parts: ['无法确认的地方应标为', '___', '。'], options: ["不确定", "推测", "事实"], correct: '不确定' },
-  { type: 'fill', question: '9. 图片的裁切、角度和光线都会影响我们的___。', parts: ['裁切、角度和光线会影响我们的', '___', '。'], options: ["判断", "注意力", "记忆"], correct: '判断' },
-  { type: 'fill', question: '10. 复查图片时，要找原始发布的___。', parts: ['复查图片时找原始发布的', '___', '。'], options: ["来源", "拍摄角度", "图像质量"], correct: '来源' },
-  { type: 'fill', question: '11. 今天的作品组件是一张“龙之眼___卡”。', parts: ['今天的组件是龙之眼', '___', '卡。'], options: ["观察", "证据", "场景"], correct: '观察' },
-  { type: 'match', question: '12. 连线：看图三层', pairs: [{"left": "画面左下有一把红伞", "right": "观察"}, {"left": "拿伞的人可能在等雨停", "right": "解释，需要证据"}, {"left": "照片来自哪天、哪里", "right": "需要查证的上下文"}, {"left": "AI 说这是某城市", "right": "未经核实不能当事实"}] },
-  { type: 'match', question: '13. 连线：视觉误判来源', pairs: [{"left": "阴影遮住地面花纹", "right": "形状可能被误读"}, {"left": "广角镜头让近处物体显大", "right": "比例可能失真"}, {"left": "低清照片", "right": "细小文字难确认"}, {"left": "裁掉周围环境", "right": "缺少判断背景"}] },
-  { type: 'match', question: '14. 连线：安全提问', pairs: [{"left": "图中有哪些可见物体？", "right": "安全的观察提问"}, {"left": "这个人住在哪里？", "right": "涉及隐私，不应猜测"}, {"left": "AI 说招牌是“星光路”", "right": "放大原图或标不确定"}, {"left": "图片配文说拍于去年", "right": "回原始来源查日期"}] },
-  { type: 'match', question: '15. 连线：观察卡栏目', pairs: [{"left": "可见细节", "right": "如红伞在左下角"}, {"left": "不确定处", "right": "如招牌文字模糊"}, {"left": "可能解释", "right": "如阴影造成误判"}, {"left": "来源与日期", "right": "方便回到原处复查"}] },
+  { type: 'quiz', question: '1. Diffusion 生成里，Seed 最像什么？', options: ["输出分辨率", "去噪步数", "随机起点编号", "负向提示词"], correct: 2 },
+  { type: 'quiz', question: '2. 你要判断 Steps 是否影响细节，正确实验设计是？', options: ["固定 Seed 和 CFG，只改 Steps", "同时改 Seed、Steps、CFG", "每次都换提示词", "先看一次就定结论"], correct: 0 },
+  { type: 'quiz', question: '3. CFG 过高常见风险是？', options: ["更自由但更偏题", "画面僵硬、伪影或不自然细节增加", "完全不受提示词影响", "帧率下降"], correct: 1 },
+  { type: 'quiz', question: '4. 同参数下只改 Seed，最合理期待是？', options: ["核心构图趋势相近但细节变体不同", "输出必然完全一致", "知识事实会自动改变", "推理链条会消失"], correct: 0 },
+  { type: 'quiz', question: '5. 画面总是偏题，你应优先检查哪一项？', options: ["ASR 文本回听", "CFG 太低或提示词约束不足", "字幕字号", "背景音乐版权"], correct: 1 },
+  { type: 'quiz', question: '6. 结果忽好忽坏时，最科学的排查起点是？', options: ["先固定 Seed 再做单变量对照", "一次调三四个参数提高成功率", "只保留最好看的一张", "完全重写主题"], correct: 0 },
+  { type: 'fill', question: '7. Diffusion 本质是逐步___噪声来形成图像。', parts: ['Diffusion 本质是逐步', '___', '噪声。'], options: ["去除", "增加", "复制"], correct: '去除' },
+  { type: 'fill', question: '8. 只改一个参数、其余固定，叫___实验。', parts: ['这叫', '___', '实验。'], options: ["单变量", "随机", "盲测"], correct: '单变量' },
+  { type: 'fill', question: '9. 想复现某次结果，最关键先记录___。', parts: ['最关键先记录', '___', '。'], options: ["Seed", "配色名称", "文件后缀"], correct: 'Seed' },
+  { type: 'quiz', question: '10. 一次输出出现“主体边缘断裂”。你先做哪组诊断最有信息量？', options: ["固定 Seed，比较 Steps=20/30/40 的边缘完整性", "只改风格词并删去参数记录", "连续重抽十次挑最好一张"], correct: 0 },
+  { type: 'practice', task: '11. 【生图小实验】用同一句描述生成两次，只改变一个设置（随机种子、生成步数或提示词跟随强度任选一个）。记录两张图哪里不同，并判断这个改变有没有帮助。', rubric: '两次生成只改变一个设置；写出相同点、不同点和简单结论；不要求计算参数。', placeholder: '固定描述：……\n我只改变了：……\n两张图的不同：……\n我的结论：……', minLength: 55, referenceAnswer: '我固定“月球反射太阳光的科普插图”，只改变随机种子。两张图构图不同，但都应保持太阳照亮月球的关系。第二张更清楚，不过仍要检查知识是否正确。' },
+  { type: 'match', question: '12. 把生图设置和白话作用连起来：', pairs: [{"left": "随机起点", "right": "让同一句描述产生不同版本"}, {"left": "生成步数", "right": "影响处理细节的次数和耗时"}, {"left": "提示词跟随强度", "right": "影响画面多严格地照描述生成"}, {"left": "不要出现的内容", "right": "提醒模型避开明显错误"}] },
+  { type: 'match', question: '13. 把画面现象和先检查的地方连起来：', pairs: [{"left": "画面总是偏题", "right": "把主体和场景描述得更清楚"}, {"left": "细节比较模糊", "right": "检查生成步数是否太少"}, {"left": "画面僵硬不自然", "right": "检查跟随提示的力度是否太高"}, {"left": "每次构图都不同", "right": "检查随机起点是否改变"}] },
+  { type: 'match', question: '14. 连线：实验违规与后果', pairs: [{"left": "同时改三项参数", "right": "无法归因变化来源"}, {"left": "不记录 Seed", "right": "难以复现结果"}, {"left": "只保留最佳样本", "right": "结论可能偏差"}, {"left": "每轮问题不一致", "right": "对照失效"}] },
+  { type: 'match', question: '15. 连线：真实误解纠正', pairs: [{"left": "Steps 越高一定越好", "right": "超过阈值后收益递减且耗时上升"}, {"left": "CFG 越高越准确", "right": "过高会带来僵硬与伪影"}, {"left": "Seed 只是文件编号", "right": "它决定随机起点分布"}, {"left": "单次命中代表参数最优", "right": "需要多轮对照验证"}] },
 ];
 
 export const v3w3d3Data: DayContent = {
   day: 3,
-  title: '龙之眼：看图与视觉误判',
+  title: '图像生成引擎：Diffusion、潜空间、Seed、Steps、CFG',
   shards: 30,
   steps: [
-    { type: 'theory', content: '👁️ **先试：让龙之眼慢三秒**\n找一张自己拍的物品照或明确可用的公开图片。先不问“这是什么故事”，只列五个看得见的细节；再请 AI 说出它无法确定的地方。今天保存**观察卡**，不上传人脸、私人相册或用图猜身份。' },
-    { type: 'video', url: '', content: '视频：从“我以为看见了”到“我能证明看见了”' },
-    { type: 'theory', content: '🔍 **卡 1｜观察和解释分开写**\n“有一把红伞”是观察；“这个人很着急”是解释。先收集可见线索，再提出有条件的推断。' },
-    { type: 'theory', content: '🌀 **卡 2｜图会骗眼睛**\n裁切藏起背景，角度改变比例，阴影改变形状，模糊吞掉细节。AI 也会把不清楚的东西看错。' },
-    { type: 'theory', content: '🧭 **卡 3｜问得像侦探**\n问“画面可见什么”“哪些区域模糊”“有什么其他解释”，而不是让 AI 猜人、地点或未经证实的事件。' },
+    { type: 'theory', content: '🎨 **开场｜从噪声到图像**\n**Diffusion（扩散模型）**可以理解为从一团杂乱噪声开始，反复去除噪声，逐步得到图像。它常在**潜空间（Latent Space）**中工作，也就是图片被压缩后的“特征地图”。**Seed（随机种子）**决定随机起点，**Steps（去噪步数）**决定处理次数，**CFG（Classifier-Free Guidance，无分类器引导）**控制画面多大程度遵循提示词。' },
+    { type: 'video', url: '/video/zh/week3/generation.mp4', content: '核心视频：从扩散生图到关键帧、配音和字幕。' },
+    {
+      type: 'interactive',
+      interactiveKind: 'compare',
+      interactiveTitle: '实验方案对比器：谁才是单变量实验？',
+      interactiveInstruction: '在候选方案中找出真正可归因的实验设计。',
+      interactiveItems: [
+        { label: '方案 A：固定 Seed/CFG，只改 Steps（20/30/40）', detail: '这是标准单变量，适合判断细节与耗时随 Steps 的变化。', correct: true },
+        { label: '方案 B：每轮同时改 Seed、CFG、Steps', detail: '多变量同时变化，无法判断哪个参数导致结果改变。', correct: false },
+        { label: '方案 C：固定 Seed/Steps，只改 CFG（4/6/8）', detail: '也是单变量，可观察跟随度与自然度权衡。', correct: true },
+        { label: '方案 D：固定 Steps/CFG，只改 Seed（42/99/314）', detail: '单变量，适合检查变体分布和可复现性。', correct: true }
+      ]
+    },
+    { type: 'theory', content: '🧱 **理论卡 1｜潜空间与 Seed**\nSeed 像随机起点编号：同模型同参数下可复现风格趋势；换 Seed 会得到不同细节变体。' },
+    { type: 'theory', content: '🧭 **理论卡 2｜Steps 与 CFG**\nSteps 控制去噪迭代次数；CFG 控制对提示词的跟随强度。过低易偏题，过高可能僵硬或伪影增加。' },
+    { type: 'theory', content: '✅ **理论卡 3｜参数实验纪律**\n做单变量实验：固定 Seed 时调 Steps 或 CFG；或固定参数只换 Seed。否则无法判断变化来源。' },
     ...graded,
-    { type: 'theory', content: '✅ **收进作品盒**\n阅读卡、证据水晶和观察卡已齐。明天你会用这些可靠线索，设计属于自己的龙族角色。' },
+    { type: 'theory', content: '🏁 **结尾｜知识主视觉完成**\n保存 D1 核心句、五段式提示词、主视觉和四项验收结果。这张图将成为短片的视觉基准，明天会围绕它制作连续镜头。' },
   ],
 };
