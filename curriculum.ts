@@ -34,10 +34,10 @@ import { v3w4d6Data as w4d6Data } from './v3/week4/day6/data';
 import { v3w4d7Data as w4d7Data } from './v3/week4/day7/data';
 
 export const WEEKS: WeekInfo[] = [
-  { id: 1, title: "第一周：巨龙解剖学", color: "from-orange-400 to-red-500", icon: "fa-magnifying-glass", description: "LLM Fundamentals" },
-  { id: 2, title: "第二周：咒语魔法师", color: "from-blue-400 to-indigo-500", icon: "fa-wand-magic-sparkles", description: "Prompt Engineering" },
-  { id: 3, title: "第三周：龙之七巧手", color: "from-purple-400 to-pink-500", icon: "fa-briefcase", description: "Workplace AI Deliverables" },
-  { id: 4, title: "第四周：召唤分身术 (Agent)", color: "from-green-400 to-emerald-600", icon: "fa-robot", description: "Agents & Harness" },
+  { id: 1, title: "第一周：巨龙解剖学", color: "from-orange-400 to-red-500", icon: "fa-magnifying-glass", description: "大语言模型基础" },
+  { id: 2, title: "第二周：咒语魔法师", color: "from-blue-400 to-indigo-500", icon: "fa-wand-magic-sparkles", description: "提示词工程" },
+  { id: 3, title: "第三周：龙之七巧手", color: "from-purple-400 to-pink-500", icon: "fa-briefcase", description: "多模态创作" },
+  { id: 4, title: "第四周：召唤分身术（智能体）", color: "from-green-400 to-emerald-600", icon: "fa-robot", description: "智能体工程" },
 ];
 
 export const ALL_CURRICULUM: Record<number, DayContent[]> = {

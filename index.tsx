@@ -1,14 +1,58 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { WEEKS, ALL_CURRICULUM } from './curriculum';
+import { WEEKS as WEEKS_ZH, ALL_CURRICULUM as CURRICULUM_ZH } from './curriculum';
+import { WEEKS_EN, ALL_CURRICULUM_EN } from './curriculum-en';
 import { LessonStep, DayContent } from './types';
 
 // --- 配置区 ---
 const MASCOT_IMAGE_URL = "/brand/draco-ai.jpg";
+const IS_EN = window.location.pathname.startsWith('/en');
+const WEEKS = IS_EN ? WEEKS_EN : WEEKS_ZH;
+const ALL_CURRICULUM = IS_EN ? ALL_CURRICULUM_EN : CURRICULUM_ZH;
+const tr = (zh: string, en: string) => IS_EN ? en : zh;
+
+const UI = {
+  videoPending: tr('本节视频待生成', 'Video coming soon'),
+  videoPendingBody: tr('可以先继续学习后面的图文内容。', 'Continue with the lesson while this video is being prepared.'),
+  videoLoading: tr('龙之影像载入中...', 'Loading the dragon reel...'),
+  landscapeHint: tr('横过手机观看，画面和字幕会更清楚', 'Rotate your phone for a clearer video and captions'),
+  fullscreen: tr('横屏全屏', 'Fullscreen'),
+  glossary: tr('AI 名词本', 'AI Glossary'),
+  flipCard: tr('点击查看定义', 'Tap to reveal the definition'),
+  definition: tr('定义：', 'Definition:'),
+  randomQuiz: tr('随机抽查', 'Quick quiz'),
+  quizPrompt: tr('这是什么的定义？', 'Which definition is correct?'),
+  correct: tr('正确！', 'Correct!'),
+  retry: tr('再试试看', 'Try again'),
+  continue: tr('继续', 'Continue'),
+  check: tr('检查', 'Check'),
+  exit: tr('退出', 'Exit'),
+  previous: tr('上一步', 'Previous'),
+  review: tr('错题复习', 'Review mistakes'),
+  noLesson: tr('本课暂无内容', 'This lesson has no content yet'),
+  back: tr('返回', 'Back'),
+  interactive: tr('互动讲解实验', 'INTERACTIVE LAB'),
+  compareSuccess: tr('选择正确，完成实验', 'Correct choice — complete lab'),
+  compareRetry: tr('这个方案还有关键缺口，再比较一次。', 'This choice misses an important safeguard. Compare again.'),
+  found: tr('已找到', 'Found'),
+  remaining: tr('项，还剩', '— remaining'),
+  diagnoseDone: tr('故障全部定位，完成实验', 'All failures found — complete lab'),
+  sequenceDone: tr('顺序正确，完成实验', 'Correct order — complete lab'),
+  practice: tr('实战任务', 'Practice task'),
+  written: tr('已写', 'Written'),
+  chars: tr('字', 'characters'),
+  improveHint: tr('再补充角色目标、输入、步骤、输出格式或边界限制后即可提交。', 'Add the goal, input, steps, output format, or boundaries before checking.'),
+  selfCheck: tr('开始自检', 'Start self-check'),
+  selfCheckStandards: tr('自检标准', 'Self-check criteria'),
+  reference: tr('查看参考答案', 'View reference answer'),
+  confirm: tr('我已对照自检标准检查答案，必要时也查看了参考答案。', 'I checked my answer against the criteria and reviewed the reference answer if needed.'),
+  revise: tr('返回修改', 'Revise answer'),
+  finishPractice: tr('完成并继续', 'Finish and continue'),
+};
 
 // AI 名词数据
-const AI_GLOSSARY = [
+const AI_GLOSSARY_ZH = [
   { term: "Token (词元)", definition: "AI处理文本的最小单位。不是单词，而是被切碎的语义碎片。", example: "就像把句子拆成一块块‘语义乐高’。" },
   { term: "Embedding (嵌入)", definition: "将Token转化成高维空间坐标的过程，捕捉词与词之间的关系。", example: "把词放到‘语义宇宙’中，意思相近的靠得更近。", emoji: "🌌" },
   { term: "Prompt (提示词)", definition: "用户输入给AI的指令，是引导AI预测下一个词的‘咒语’。", example: "你对厨师提的要求，要求越细，菜越合口味。", emoji: "🪄" },
@@ -18,6 +62,17 @@ const AI_GLOSSARY = [
   { term: "Multi-modal (多模态)", definition: "AI不仅能看文字，还能理解图像、声音、视频。", example: "AI以前是盲人，现在有了眼睛和耳朵。", emoji: "👁️" },
   { term: "RLHF", definition: "基于人类反馈的强化学习。通过人类的‘点赞’或‘点踩’来训练AI的价值观。", example: "像教小孩懂礼貌，做对了给糖，做错了纠正。", emoji: "👍" }
 ];
+const AI_GLOSSARY_EN = [
+  { term: 'Token', definition: 'A basic unit of text processed by a language model. It may be a word, character, or word fragment.', example: 'Like breaking a sentence into text blocks.' },
+  { term: 'Embedding', definition: 'A numeric vector that places meaning in a computable semantic space.', example: 'Related ideas tend to be closer on a semantic map.', emoji: '🌌' },
+  { term: 'Prompt', definition: 'The task, context, evidence, and constraints provided to an AI system.', example: 'Like giving a cook a clear order and dietary limits.', emoji: '🪄' },
+  { term: 'Hallucination', definition: 'A fluent AI output that is unsupported or factually incorrect.', example: 'A confident answer still needs evidence.', emoji: '😵‍💫' },
+  { term: 'Transformer', definition: 'A neural-network architecture that uses attention to connect information across a sequence.', example: 'It helps the model focus on relevant context.', emoji: '🏎️' },
+  { term: 'RAG', definition: 'Retrieval-Augmented Generation: retrieve evidence first, then generate an answer from it.', example: 'An open-book exam for AI.', emoji: '📚' },
+  { term: 'Multimodal AI', definition: 'AI that works with more than one kind of information, such as text, images, audio, and video.', example: 'One system can read, see, and listen.', emoji: '👁️' },
+  { term: 'RLHF', definition: 'Reinforcement Learning from Human Feedback: using human preferences to shape model behavior.', example: 'People compare outputs and signal which behavior is better.', emoji: '👍' },
+];
+const AI_GLOSSARY = IS_EN ? AI_GLOSSARY_EN : AI_GLOSSARY_ZH;
 
 // --- Audio System ---
 const SoundSynth = {
@@ -124,8 +179,8 @@ const VideoPlayer = ({ url }: { url: string }) => {
     return (
       <div className="w-full aspect-video bg-indigo-950 rounded-2xl overflow-hidden mb-6 relative shadow-2xl flex flex-col items-center justify-center text-center p-6">
         <i className="fa-solid fa-video-slash text-indigo-200 text-5xl mb-4"></i>
-        <div className="text-white text-xl font-black mb-2">本节视频待生成</div>
-        <p className="text-indigo-200 text-sm leading-relaxed max-w-md">可以先继续学习后面的图文内容；生成视频后，把链接填到这一天的 data.ts 里即可播放。</p>
+        <div className="text-white text-xl font-black mb-2">{UI.videoPending}</div>
+        <p className="text-indigo-200 text-sm leading-relaxed max-w-md">{UI.videoPendingBody}</p>
       </div>
     );
   }
@@ -138,7 +193,7 @@ const VideoPlayer = ({ url }: { url: string }) => {
               <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-indigo-400 border-t-yellow-400 rounded-full animate-spin"></div>
               <i className="fa-solid fa-dragon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-400 text-lg sm:text-xl animate-pulse"></i>
             </div>
-            <p className="mt-3 text-indigo-200 text-xs sm:text-sm font-medium tracking-wider animate-pulse">龙之影像载入中...</p>
+            <p className="mt-3 text-indigo-200 text-xs sm:text-sm font-medium tracking-wider animate-pulse">{UI.videoLoading}</p>
           </div>
         )}
         {isLocalVideo ? (
@@ -162,10 +217,10 @@ const VideoPlayer = ({ url }: { url: string }) => {
       <div className="portrait-video-hint mt-3 items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-indigo-900">
         <div className="flex min-w-0 items-center gap-2 text-sm font-semibold">
           <i className="fa-solid fa-mobile-screen-button rotate-90 text-indigo-600"></i>
-          <span>横过手机观看，画面和字幕会更清楚</span>
+          <span>{UI.landscapeHint}</span>
         </div>
         <button type="button" onClick={openLandscapeFullscreen} className="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white active:scale-95">
-          <i className="fa-solid fa-expand mr-1"></i>横屏全屏
+          <i className="fa-solid fa-expand mr-1"></i>{UI.fullscreen}
         </button>
       </div>
     </div>
@@ -234,7 +289,7 @@ const GlossaryView = ({ onClose }: { onClose: () => void }) => {
       {!quizMode ? (
         <>
           <h2 className="text-white text-2xl font-bold mb-8 flex items-center gap-2">
-            <i className="fa-solid fa-book-sparkles text-yellow-400"></i> AI 名词本
+            <i className="fa-solid fa-book-sparkles text-yellow-400"></i> {UI.glossary}
           </h2>
           
           <div className="w-full max-w-sm h-80 perspective-1000" onClick={handleFlip}>
@@ -242,10 +297,10 @@ const GlossaryView = ({ onClose }: { onClose: () => void }) => {
               <div className="absolute inset-0 bg-white rounded-3xl p-8 flex flex-col items-center justify-center shadow-2xl backface-hidden border-4 border-white">
                 <div className="text-4xl text-indigo-600 mb-4"><i className="fa-solid fa-brain"></i></div>
                 <h3 className="text-2xl font-bold text-gray-800 text-center">{AI_GLOSSARY[currentIndex].term}</h3>
-                <p className="mt-4 text-gray-400 text-sm italic">点击查看定义</p>
+                <p className="mt-4 text-gray-400 text-sm italic">{UI.flipCard}</p>
               </div>
               <div className="absolute inset-0 bg-indigo-50 rounded-3xl p-8 flex flex-col items-center justify-center shadow-2xl backface-hidden rotate-y-180 border-4 border-indigo-400 overflow-y-auto">
-                <h4 className="text-indigo-600 font-bold mb-2">定义:</h4>
+                <h4 className="text-indigo-600 font-bold mb-2">{UI.definition}</h4>
                 <p className="text-gray-800 text-center text-base leading-relaxed mb-4">{AI_GLOSSARY[currentIndex].definition}</p>
                 <div className="bg-white/60 p-3 rounded-xl border border-indigo-200">
                     <p className="text-xs text-gray-500"><i className="fa-solid fa-lightbulb text-yellow-500 mr-1"></i> {AI_GLOSSARY[currentIndex].example}</p>
@@ -256,14 +311,14 @@ const GlossaryView = ({ onClose }: { onClose: () => void }) => {
           
           <div className="flex gap-4 sm:gap-8 mt-10">
             <button onClick={(e) => { e.stopPropagation(); handlePrev(); }} className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition-colors active:scale-90"><i className="fa-solid fa-chevron-left"></i></button>
-            <button onClick={(e) => { e.stopPropagation(); startQuiz(); }} className="px-6 py-2 rounded-full bg-yellow-400 text-indigo-900 font-bold hover:bg-yellow-300 shadow-lg flex items-center gap-2 text-sm sm:text-base active:translate-y-1 transition-all">随机抽查</button>
+            <button onClick={(e) => { e.stopPropagation(); startQuiz(); }} className="px-6 py-2 rounded-full bg-yellow-400 text-indigo-900 font-bold hover:bg-yellow-300 shadow-lg flex items-center gap-2 text-sm sm:text-base active:translate-y-1 transition-all">{UI.randomQuiz}</button>
             <button onClick={(e) => { e.stopPropagation(); handleNext(); }} className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition-colors active:scale-90"><i className="fa-solid fa-chevron-right"></i></button>
           </div>
           <p className="mt-6 text-white/50 text-sm">{currentIndex + 1} / {AI_GLOSSARY.length}</p>
         </>
       ) : (
         <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl animate-pop relative overflow-hidden">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">这是什么的定义？</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">{UI.quizPrompt}</h2>
           <div className="p-4 bg-indigo-50 rounded-2xl mb-6 text-center border-2 border-dashed border-indigo-200">
             <h3 className="text-2xl font-bold text-indigo-600">{AI_GLOSSARY[currentIndex].term}</h3>
           </div>
@@ -286,13 +341,13 @@ const GlossaryView = ({ onClose }: { onClose: () => void }) => {
             <div className={`p-4 -mx-8 -mb-8 mt-4 animate-slide-up ${quizResult.correct ? 'bg-green-100' : 'bg-red-100'}`}>
               <div className="flex flex-col gap-4">
                 <div className={`font-bold text-center ${quizResult.correct ? 'text-green-700' : 'text-red-700'}`}>
-                  {quizResult.correct ? "🎉 太棒了！你答对了" : "💡 没关系，再复习一下吧"}
+                  {quizResult.correct ? tr('太棒了！你答对了', 'Great work — correct!') : tr('没关系，再复习一下吧', 'Review the card and try again.')}
                 </div>
                 <button 
                   onClick={handleQuizFinish} 
                   className={`w-full py-3 rounded-xl font-bold text-white shadow-lg active:scale-95 transition-transform ${quizResult.correct ? 'bg-green-500' : 'bg-red-500'}`}
                 >
-                  继续
+                  {UI.continue}
                 </button>
               </div>
             </div>
@@ -388,7 +443,7 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
     const shell = (body: React.ReactNode, instruction: string) => (
       <div className="w-full space-y-5 animate-slide-up">
         <div className="rounded-3xl bg-gradient-to-br from-indigo-950 to-indigo-800 p-5 text-white shadow-xl">
-          <div className="text-xs font-black tracking-widest text-yellow-300">互动讲解实验</div>
+          <div className="text-xs font-black tracking-widest text-yellow-300">{UI.interactive}</div>
           <h2 className="mt-2 text-2xl sm:text-3xl font-black">{step.interactiveTitle}</h2>
           <p className="mt-2 text-indigo-100 leading-relaxed">{instruction}</p>
         </div>
@@ -486,7 +541,7 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
             {selected === item.label && item.detail && <div className="mt-2 text-sm leading-relaxed text-gray-600">{item.detail}</div>}
           </button>)}
         </div>
-        {chosen && (chosen.correct ? <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">选择正确，完成实验</button> : <div className="rounded-xl bg-orange-50 p-4 text-sm font-bold text-orange-700">这个方案还有关键缺口，再比较一次。</div>)}
+        {chosen && (chosen.correct ? <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{UI.compareSuccess}</button> : <div className="rounded-xl bg-orange-50 p-4 text-sm font-bold text-orange-700">{UI.compareRetry}</div>)}
       </>, step.interactiveInstruction || '比较不同方案，找出既能完成任务又能检查结果的一项。');
     }
 
@@ -506,8 +561,8 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
             </button>;
           })}
         </div>
-        <div className="rounded-xl bg-indigo-50 p-3 text-center text-sm font-bold text-indigo-800">已找到 {order.length} 项，还剩 {remaining.length} 项</div>
-        {remaining.length === 0 && order.length > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">故障全部定位，完成实验</button>}
+        <div className="rounded-xl bg-indigo-50 p-3 text-center text-sm font-bold text-indigo-800">{UI.found} {order.length}; {UI.remaining} {remaining.length}</div>
+        {remaining.length === 0 && order.length > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{UI.diagnoseDone}</button>}
       </>, step.interactiveInstruction || '找出所有真正会让系统失败的因素。误选不会扣分，可以继续诊断。');
     }
 
@@ -523,7 +578,7 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
             else { SoundSynth.play('match'); setOrder([...order, item]); }
           }} className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 font-bold">{item}</button>)}</div>
         </div>
-        {order.length === target.length && target.length > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">顺序正确，完成实验</button>}
+        {order.length === target.length && target.length > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{UI.sequenceDone}</button>}
       </>, step.interactiveInstruction || '按真实依赖顺序点击步骤，点错会重新开始。');
     }
 
@@ -568,8 +623,8 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
             {tableRows.map((row, rowIndex) => (
               <div key={rowIndex} className="rounded-2xl border-2 border-indigo-100 bg-white p-4 shadow-sm">
                 <div className="text-lg font-black text-indigo-700 mb-2"><InlineText text={row[0] || ''} /></div>
-                {row[1] && <div className="text-base leading-relaxed text-gray-800"><span className="font-bold text-gray-500">作用：</span><InlineText text={row[1]} /></div>}
-                {row[2] && <div className="text-base leading-relaxed text-gray-800 mt-1"><span className="font-bold text-gray-500">类比：</span><InlineText text={row[2]} /></div>}
+                {row[1] && <div className="text-base leading-relaxed text-gray-800"><span className="font-bold text-gray-500">{tr('作用：', 'Purpose: ')}</span><InlineText text={row[1]} /></div>}
+                {row[2] && <div className="text-base leading-relaxed text-gray-800 mt-1"><span className="font-bold text-gray-500">{tr('类比：', 'Analogy: ')}</span><InlineText text={row[2]} /></div>}
               </div>
             ))}
           </div>
@@ -632,7 +687,7 @@ const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void })
             <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-2">
                     <i className="fa-solid fa-pen-ruler text-purple-600"></i>
-          <span className="font-bold text-purple-700">实战任务</span>
+          <span className="font-bold text-purple-700">{UI.practice}</span>
                 </div>
                 <div className="text-gray-800 whitespace-pre-wrap leading-relaxed">{step.task}</div>
             </div>
@@ -641,22 +696,22 @@ const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void })
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 disabled={showSelfCheck}
-                placeholder={step.placeholder || `在这里写下你的答案……（至少 ${minLen} 字）`}
+                placeholder={step.placeholder || tr(`在这里写下你的答案……（至少 ${minLen} 字）`, `Write your answer here (at least ${minLen} characters).`)}
                 className="w-full min-h-[160px] p-4 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none text-base leading-relaxed resize-y disabled:bg-gray-50"
             />
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 text-sm text-gray-500">
               <div>
-                <span>已写 <span className={charCount >= minLen ? 'text-green-600 font-bold' : 'text-orange-600 font-bold'}>{charCount}</span> / {minLen} 字</span>
-                {remainingChars > 0 && <div className="mt-1 text-orange-600">再补充角色目标、输入、步骤、输出格式或边界限制后即可提交。</div>}
+                <span>{UI.written} <span className={charCount >= minLen ? 'text-green-600 font-bold' : 'text-orange-600 font-bold'}>{charCount}</span> / {minLen} {UI.chars}</span>
+                {remainingChars > 0 && <div className="mt-1 text-orange-600">{UI.improveHint}</div>}
               </div>
                 {!showSelfCheck && (
                     <button
                     onClick={() => { SoundSynth.play('pop'); setShowSelfCheck(true); }}
                     disabled={!canCheck}
-                    title={remainingChars > 0 ? `至少还需要 ${remainingChars} 个字` : "打开自检清单"}
+                    title={remainingChars > 0 ? tr(`至少还需要 ${remainingChars} 个字`, `${remainingChars} more characters needed`) : UI.selfCheck}
                     className="bg-purple-600 text-white px-6 py-2 rounded-xl font-bold shadow disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:cursor-not-allowed active:scale-95 transition-transform"
                     >
-                    {remainingChars > 0 ? `还差 ${remainingChars} 字` : "开始自检"}
+                    {remainingChars > 0 ? tr(`还差 ${remainingChars} 字`, `${remainingChars} to go`) : UI.selfCheck}
                     </button>
                 )}
             </div>
@@ -664,22 +719,22 @@ const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void })
               {showSelfCheck && (
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-5 space-y-4 animate-pop">
                     <div>
-                    <div className="font-bold text-green-700 mb-1"><i className="fa-solid fa-list-check mr-1"></i>自检标准</div>
+                    <div className="font-bold text-green-700 mb-1"><i className="fa-solid fa-list-check mr-1"></i>{UI.selfCheckStandards}</div>
                     <div className="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">{step.rubric}</div>
                     </div>
                   {step.referenceAnswer && (
                         <details className="bg-white/60 rounded-xl p-3">
-                            <summary className="font-bold text-indigo-700 cursor-pointer"><i className="fa-solid fa-lightbulb mr-1"></i>查看参考答案</summary>
+                            <summary className="font-bold text-indigo-700 cursor-pointer"><i className="fa-solid fa-lightbulb mr-1"></i>{UI.reference}</summary>
                       <div className="mt-2 text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">{step.referenceAnswer}</div>
                         </details>
                     )}
                   <label className="flex items-start gap-3 rounded-xl bg-white p-3 cursor-pointer">
                     <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} className="mt-1 w-5 h-5 accent-green-600" />
-                    <span className="text-sm text-gray-700">我已对照自检标准检查答案，必要时也查看了参考答案。</span>
+                    <span className="text-sm text-gray-700">{UI.confirm}</span>
                   </label>
                     <div className="flex gap-2 pt-2">
-                    <button onClick={() => { setShowSelfCheck(false); setConfirmed(false); }} className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-2 rounded-xl font-bold active:scale-95">返回修改</button>
-                    <button onClick={() => { SoundSynth.play('correct'); onPass(); }} disabled={!confirmed} className="flex-1 bg-green-500 text-white py-2 rounded-xl font-bold shadow disabled:opacity-40 active:scale-95">完成并继续</button>
+                    <button onClick={() => { setShowSelfCheck(false); setConfirmed(false); }} className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-2 rounded-xl font-bold active:scale-95">{UI.revise}</button>
+                    <button onClick={() => { SoundSynth.play('correct'); onPass(); }} disabled={!confirmed} className="flex-1 bg-green-500 text-white py-2 rounded-xl font-bold shadow disabled:opacity-40 active:scale-95">{UI.finishPractice}</button>
                     </div>
                 </div>
             )}
@@ -700,7 +755,7 @@ const LessonEngine = ({ weekId, dayId, onComplete, onExit }: { weekId: number, d
     useEffect(() => { if (lessonData) setSteps(lessonData.steps); }, [lessonData]);
     useEffect(() => { setSelectedOption(null); setShowResult(false); setIsCorrect(false); setShake(false); }, [stepIndex, isReviewMode]);
 
-    if (!steps || steps.length === 0) return <div className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-6"><h2 className="text-xl font-bold mb-4">本课暂无内容</h2><button onClick={onExit} className="bg-indigo-600 text-white px-6 py-2 rounded-xl">返回</button></div>;
+    if (!steps || steps.length === 0) return <div className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-6"><h2 className="text-xl font-bold mb-4">{UI.noLesson}</h2><button onClick={onExit} className="bg-indigo-600 text-white px-6 py-2 rounded-xl">{UI.back}</button></div>;
     
     const currentStep = steps[stepIndex];
 
@@ -736,17 +791,17 @@ const LessonEngine = ({ weekId, dayId, onComplete, onExit }: { weekId: number, d
             {/* 增强型导航栏 */}
           <div className={`lesson-nav shrink-0 px-3 py-2 sm:px-4 sm:pt-6 sm:pb-4 flex items-center gap-3 sm:gap-4 ${isReviewMode ? 'bg-orange-50' : ''}`}>
                 <div className="flex items-center gap-3">
-                    <button onClick={onExit} className="text-gray-400 p-2 hover:bg-gray-100 rounded-full transition-colors active:scale-90" title="退出">
+                    <button onClick={onExit} className="text-gray-400 p-2 hover:bg-gray-100 rounded-full transition-colors active:scale-90" title={UI.exit}>
                         <i className="fa-solid fa-xmark text-2xl"></i>
                     </button>
                     {stepIndex > 0 && (
-                        <button onClick={handleBack} className="text-gray-400 p-2 hover:bg-gray-100 rounded-full transition-colors animate-pop active:scale-90" title="上一步">
+                        <button onClick={handleBack} className="text-gray-400 p-2 hover:bg-gray-100 rounded-full transition-colors animate-pop active:scale-90" title={UI.previous}>
                             <i className="fa-solid fa-chevron-left text-2xl"></i>
                         </button>
                     )}
                 </div>
                 <div className="flex-1">
-                    {isReviewMode ? <div className="text-center text-orange-600 font-bold"><i className="fa-solid fa-rotate-left mr-2"></i>错题复习</div> : <ProgressBar current={stepIndex + 1} total={steps.length} />}
+                    {isReviewMode ? <div className="text-center text-orange-600 font-bold"><i className="fa-solid fa-rotate-left mr-2"></i>{UI.review}</div> : <ProgressBar current={stepIndex + 1} total={steps.length} />}
                 </div>
             </div>
 
@@ -769,14 +824,14 @@ const LessonEngine = ({ weekId, dayId, onComplete, onExit }: { weekId: number, d
             
             <div className={`lesson-footer shrink-0 px-4 py-3 sm:p-6 border-t ${showResult ? (isCorrect ? 'bg-green-100' : 'bg-red-100') : 'bg-white'}`}>
                 <div className="max-w-2xl mx-auto flex justify-between items-center">
-                    {showResult && currentStep.type !== 'practice' && <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? "正确！" : "再试试看"}</div>}
+                    {showResult && currentStep.type !== 'practice' && <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? UI.correct : UI.retry}</div>}
                     <div className="flex-1"></div>
                     {currentStep.type === 'practice' ? null
                       : currentStep.type === 'interactive' && !showResult
                       ? null
                         : (currentStep.type === 'quiz' || currentStep.type === 'fill') && !showResult
-                        ? <button onClick={handleCheck} disabled={selectedOption === null} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg disabled:opacity-50 active:scale-95 transition-transform">检查</button>
-                        : <button onClick={handleContinue} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform">继续</button>}
+                        ? <button onClick={handleCheck} disabled={selectedOption === null} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg disabled:opacity-50 active:scale-95 transition-transform">{UI.check}</button>
+                        : <button onClick={handleContinue} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform">{UI.continue}</button>}
                 </div>
             </div>
         </div>
@@ -807,6 +862,8 @@ const App = () => {
   const activeWeeks = WEEKS;
 
   useEffect(() => {
+    document.documentElement.lang = IS_EN ? 'en' : 'zh-CN';
+    document.title = IS_EN ? 'Draco AI Learning Quest' : 'AI 驯龙之路';
     const splashTimer = window.setTimeout(() => setShowSplash(false), 3000);
     return () => window.clearTimeout(splashTimer);
   }, []);
@@ -841,11 +898,11 @@ const App = () => {
         {showSplash && <div className="fixed inset-0 z-[100] bg-[#93cf4f] flex flex-col items-center justify-center transition-opacity duration-700">
             <div className="relative animate-bounce-slight mb-8">
                 <div className="w-64 h-64 bg-white rounded-full flex items-center justify-center animate-pop overflow-hidden border-8 border-white shadow-2xl">
-                    <img src={MASCOT_IMAGE_URL} className="w-full h-full object-contain" alt="Draco AI 龙吉祥物" />
+                    <img src={MASCOT_IMAGE_URL} className="w-full h-full object-contain" alt={tr('Draco AI 龙吉祥物', 'Draco AI dragon mascot')} />
                 </div>
             </div>
             <h1 className="text-white text-5xl font-bold game-font drop-shadow-lg mb-2">Draco AI</h1>
-            <p className="text-white/80 font-medium tracking-widest uppercase">Master the AI Dragon</p>
+            <p className="text-white/80 font-medium tracking-widest uppercase">{tr('踏上 AI 驯龙之路', 'Master the AI Dragon')}</p>
         </div>}
 
         {!showSplash && (
@@ -884,15 +941,21 @@ const App = () => {
                 <div className="relative z-30 mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-5 pt-5 sm:pt-7 md:pb-8">
                     <div className="flex w-full flex-col items-center gap-4 md:flex-row md:justify-between">
                       <div className="text-center md:text-left">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-md game-font">AI 驯龙之路</h1>
-                        <p className="mt-1 text-sm sm:text-base font-semibold text-white/80">四周完成从 AI 原理到 Agent Engineering</p>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-md game-font">{tr('AI 驯龙之路', 'Draco AI Learning Quest')}</h1>
+                        <p className="mt-1 text-sm sm:text-base font-semibold text-white/80">{tr('四周完成从 AI 原理到智能体工程的学习', 'Four weeks from AI fundamentals to agent engineering')}</p>
                       </div>
-                      <div className="bg-white/90 px-5 py-2 rounded-full shadow-lg border-2 border-yellow-200 flex items-center gap-3">
-                        <span className="text-orange-600 font-bold flex items-center gap-2 text-lg sm:text-xl"><i className="fa-solid fa-dragon"></i> {collectedBalls}/4 龙珠</span>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        <nav className="flex rounded-full border-2 border-white/60 bg-white/20 p-1 text-sm font-bold text-white" aria-label={tr('语言切换', 'Language switcher')}>
+                          <a href="/zh/" className={`rounded-full px-3 py-1.5 ${!IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>中文</a>
+                          <a href="/en/" className={`rounded-full px-3 py-1.5 ${IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>English</a>
+                        </nav>
+                        <div className="bg-white/90 px-5 py-2 rounded-full shadow-lg border-2 border-yellow-200 flex items-center gap-3">
+                          <span className="text-orange-600 font-bold flex items-center gap-2 text-lg sm:text-xl"><i className="fa-solid fa-dragon"></i> {collectedBalls}/4 {tr('龙珠', 'orbs')}</span>
+                        </div>
                       </div>
                     </div>
                     <div className="mt-4 flex w-full justify-center sm:justify-end">
-                      <button onClick={handleUnlockAll} className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold border border-white/50 shadow-sm active:scale-95 transition-transform">一键解锁</button>
+                      <button onClick={handleUnlockAll} className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold border border-white/50 shadow-sm active:scale-95 transition-transform">{tr('一键解锁', 'Unlock all')}</button>
                     </div>
                 </div>
                 
@@ -917,7 +980,7 @@ const App = () => {
                     </div>
                     {selectedWeekId === 1 && (
                       <button onClick={() => setShowGlossary(true)} className="bg-yellow-400 text-indigo-900 px-4 py-2 rounded-2xl font-bold shadow-lg flex items-center gap-2 active:scale-95 transition-transform">
-                        <i className="fa-solid fa-book-sparkles"></i> 名词本
+                        <i className="fa-solid fa-book-sparkles"></i> {UI.glossary}
                       </button>
                     )}
                 </div>
@@ -952,7 +1015,7 @@ const App = () => {
                                 <div className={`px-4 py-1.5 rounded-full font-bold text-sm shadow-md transition-colors whitespace-nowrap
                                     ${isUnlocked ? 'bg-white text-indigo-900 border-2 border-indigo-100' : 'bg-black/30 text-white/60'}
                                 `}>
-                                    第 {day.day} 天
+                                    {tr(`第 ${day.day} 天`, `Day ${day.day}`)}
                                 </div>
                             </div>
                         );
@@ -960,7 +1023,7 @@ const App = () => {
                     
                     <div className="mt-8 text-white/40 text-sm font-bold tracking-widest uppercase flex flex-col items-center gap-4">
                         <i className="fa-solid fa-dragon text-4xl"></i>
-                        <span>龙穴出口</span>
+                        <span>{tr('龙穴出口', 'DRAGON GATE')}</span>
                     </div>
                 </div>
             </div>}

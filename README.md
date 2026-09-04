@@ -9,13 +9,17 @@ Draco AI V3 is a four-week interactive AI literacy course for young learners. Th
 
 The Chinese production course has 28 days, 420 assessments, 28 interactive labs, 28 open practices, and eight core videos. It does not require an AI API key.
 
-## Language Status
+## Language Routes
 
+- Chinese course: `http://localhost:3000/zh/`
+- English course: `http://localhost:3000/en/`
+- `/` defaults to Chinese.
 - `v3/`: current Chinese production curriculum.
-- `v3-en/`: English curriculum draft for review and synchronization.
+- `v3-en/`: current English curriculum source.
 - Chinese video plan: two videos per week. Week 1 Day 1 retains the externally produced Chinese history film; the other seven videos are generated with Remotion.
 - English video plan: two independently written and rendered Remotion videos per week. English does not reuse the Chinese history film.
-- English MP4 assets are rendered, but the English playable site, current interactive labs, and final pedagogy parity still need implementation.
+- Both courses contain 28 days, 420 assessments, 28 interactive labs, 28 open practices, and eight core videos.
+- The shared engine localizes navigation, glossary, lesson feedback, interactive labs, practice self-checks, and video controls by route.
 
 Do not import `archive_v1` into production. It is repository history, not part of V3.
 
