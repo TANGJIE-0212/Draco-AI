@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:pages": "vite build --base=/draco-ai/ && node scripts/prepare-pages.mjs",
     "preview": "vite preview",
     "video:tts:core": "python video/scripts/generate_core_video_tts.py",
     "video:studio": "remotion studio video/src/index.ts",

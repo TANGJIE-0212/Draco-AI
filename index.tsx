@@ -1,13 +1,17 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { WEEKS as WEEKS_ZH, ALL_CURRICULUM as CURRICULUM_ZH } from './curriculum';
 import { WEEKS_EN, ALL_CURRICULUM_EN } from './curriculum-en';
 import { LessonStep, DayContent } from './types';
+import { loadProgress, saveProgress, progressPosition, type CompletedDays } from './course-progress';
+import { GLOSSARY, GLOSSARY_CATEGORIES, GLOSSARY_SOURCE_URL } from './glossary';
 
 // --- 配置区 ---
-const MASCOT_IMAGE_URL = "/brand/draco-ai.jpg";
-const IS_EN = window.location.pathname.startsWith('/en');
+const APP_BASE = import.meta.env.BASE_URL;
+const assetUrl = (url: string) => url.startsWith('/') && !url.startsWith('//') ? `${APP_BASE}${url.slice(1)}` : url;
+const MASCOT_IMAGE_URL = assetUrl("/brand/draco-ai.jpg");
+const IS_EN = window.location.pathname.slice(APP_BASE.length).split('/')[0] === 'en';
 const WEEKS = IS_EN ? WEEKS_EN : WEEKS_ZH;
 const ALL_CURRICULUM = IS_EN ? ALL_CURRICULUM_EN : CURRICULUM_ZH;
 const tr = (zh: string, en: string) => IS_EN ? en : zh;
@@ -51,28 +55,23 @@ const UI = {
   finishPractice: tr('完成并继续', 'Finish and continue'),
 };
 
-// AI 名词数据
-const AI_GLOSSARY_ZH = [
-  { term: "Token (词元)", definition: "AI处理文本的最小单位。不是单词，而是被切碎的语义碎片。", example: "就像把句子拆成一块块‘语义乐高’。" },
-  { term: "Embedding (嵌入)", definition: "将Token转化成高维空间坐标的过程，捕捉词与词之间的关系。", example: "把词放到‘语义宇宙’中，意思相近的靠得更近。", emoji: "🌌" },
-  { term: "Prompt (提示词)", definition: "用户输入给AI的指令，是引导AI预测下一个词的‘咒语’。", example: "你对厨师提的要求，要求越细，菜越合口味。", emoji: "🪄" },
-  { term: "Hallucination (幻觉)", definition: "AI一本正经地胡说八道。因为它只是在猜下一个词，而不是在查证事实。", example: "一个博学但爱吹牛的朋友在给你讲故事。", emoji: "😵‍💫" },
-  { term: "Transformer", definition: "现代AI的底层引擎，核心超能力是‘注意力机制’。", example: "让AI在读长文章时，能瞬间关注到重点词汇。", emoji: "🏎️" },
-  { term: "RAG (检索增强)", definition: "给AI配一本书。AI先查书（外部资料），再结合内容回答问题。", example: "开卷考试，AI不再只凭记忆，而是可以看参考书。", emoji: "📚" },
-  { term: "Multi-modal (多模态)", definition: "AI不仅能看文字，还能理解图像、声音、视频。", example: "AI以前是盲人，现在有了眼睛和耳朵。", emoji: "👁️" },
-  { term: "RLHF", definition: "基于人类反馈的强化学习。通过人类的‘点赞’或‘点踩’来训练AI的价值观。", example: "像教小孩懂礼貌，做对了给糖，做错了纠正。", emoji: "👍" }
-];
-const AI_GLOSSARY_EN = [
-  { term: 'Token', definition: 'A basic unit of text processed by a language model. It may be a word, character, or word fragment.', example: 'Like breaking a sentence into text blocks.' },
-  { term: 'Embedding', definition: 'A numeric vector that places meaning in a computable semantic space.', example: 'Related ideas tend to be closer on a semantic map.', emoji: '🌌' },
-  { term: 'Prompt', definition: 'The task, context, evidence, and constraints provided to an AI system.', example: 'Like giving a cook a clear order and dietary limits.', emoji: '🪄' },
-  { term: 'Hallucination', definition: 'A fluent AI output that is unsupported or factually incorrect.', example: 'A confident answer still needs evidence.', emoji: '😵‍💫' },
-  { term: 'Transformer', definition: 'A neural-network architecture that uses attention to connect information across a sequence.', example: 'It helps the model focus on relevant context.', emoji: '🏎️' },
-  { term: 'RAG', definition: 'Retrieval-Augmented Generation: retrieve evidence first, then generate an answer from it.', example: 'An open-book exam for AI.', emoji: '📚' },
-  { term: 'Multimodal AI', definition: 'AI that works with more than one kind of information, such as text, images, audio, and video.', example: 'One system can read, see, and listen.', emoji: '👁️' },
-  { term: 'RLHF', definition: 'Reinforcement Learning from Human Feedback: using human preferences to shape model behavior.', example: 'People compare outputs and signal which behavior is better.', emoji: '👍' },
-];
-const AI_GLOSSARY = IS_EN ? AI_GLOSSARY_EN : AI_GLOSSARY_ZH;
+const AI_GLOSSARY = GLOSSARY.map(entry => ({
+  id: entry.id,
+  category: entry.category,
+  ...(IS_EN ? entry.en : entry.zh),
+  otherTerm: IS_EN ? entry.zh.term : entry.en.term,
+  searchText: `${entry.zh.term} ${entry.en.term} ${entry.zh.definition} ${entry.en.definition}`.toLocaleLowerCase(),
+}));
+type GlossaryEntry = typeof AI_GLOSSARY[number];
+
+const shuffle = <T,>(items: T[]): T[] => {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 // --- Audio System ---
 const SoundSynth = {
@@ -198,7 +197,7 @@ const VideoPlayer = ({ url }: { url: string }) => {
         )}
         {isLocalVideo ? (
           <video
-            src={url}
+            src={assetUrl(url)}
             className={`w-full h-full object-contain transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
             controls
             playsInline
@@ -207,7 +206,7 @@ const VideoPlayer = ({ url }: { url: string }) => {
           />
         ) : (
           <iframe
-            src={url}
+            src={assetUrl(url)}
             className={`w-full h-full transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
             allowFullScreen
             onLoad={() => setIsLoading(false)}
@@ -229,131 +228,213 @@ const VideoPlayer = ({ url }: { url: string }) => {
 
 // --- Glossary Component ---
 const GlossaryView = ({ onClose }: { onClose: () => void }) => {
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('all');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [quizMode, setQuizMode] = useState(false);
-  const [quizResult, setQuizResult] = useState<{correct: boolean, show: boolean} | null>(null);
-  const [quizOptions, setQuizOptions] = useState<string[]>([]);
-  
-  const handleNext = () => {
-    SoundSynth.play('pop');
+  const [quiz, setQuiz] = useState<{ entry: GlossaryEntry, options: string[] } | null>(null);
+  const [quizResult, setQuizResult] = useState<boolean | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const wasQuiz = useRef(false);
+  const quizMode = quiz !== null;
+  const filtered = useMemo(() => {
+    const words = search.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    return AI_GLOSSARY.filter(entry =>
+      (category === 'all' || entry.category === category) &&
+      words.every(word => entry.searchText.includes(word)));
+  }, [search, category]);
+  const safeIndex = filtered.length ? currentIndex % filtered.length : 0;
+  const currentEntry = filtered[safeIndex];
+
+  useEffect(() => {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (wasQuiz.current !== quizMode) {
+      dialogRef.current?.querySelector<HTMLButtonElement>('[data-glossary-quiz-toggle]')?.focus();
+    }
+    wasQuiz.current = quizMode;
+  }, [quizMode]);
+
+  const resetCard = () => {
+    setCurrentIndex(0);
     setIsFlipped(false);
-    setCurrentIndex((prev) => (prev + 1) % AI_GLOSSARY.length);
   };
 
-  const handlePrev = () => {
+  const moveCard = (direction: number) => {
+    if (!filtered.length) return;
     SoundSynth.play('pop');
     setIsFlipped(false);
-    setCurrentIndex((prev) => (prev - 1 + AI_GLOSSARY.length) % AI_GLOSSARY.length);
+    setCurrentIndex((safeIndex + direction + filtered.length) % filtered.length);
   };
 
   const handleFlip = () => {
     SoundSynth.play('flip');
-    setIsFlipped(!isFlipped);
+    setIsFlipped(value => !value);
   };
 
   const startQuiz = () => {
+    if (!filtered.length) return;
+    const correct = filtered[Math.floor(Math.random() * filtered.length)];
+    const pool = filtered.length >= 3 ? filtered : AI_GLOSSARY;
+    let distractors = [...new Set(pool
+      .filter(entry => entry.id !== correct.id && entry.definition !== correct.definition)
+      .map(entry => entry.definition))];
+    // Repeated definitions must not turn a three-choice quiz into duplicate answers.
+    if (distractors.length < 2) {
+      distractors = [...new Set(AI_GLOSSARY
+        .filter(entry => entry.id !== correct.id && entry.definition !== correct.definition)
+        .map(entry => entry.definition))];
+    }
+    if (distractors.length < 2) return;
     SoundSynth.play('success');
-    setQuizMode(true);
-    const randomIndex = Math.floor(Math.random() * AI_GLOSSARY.length);
-    setCurrentIndex(randomIndex);
-    const correct = AI_GLOSSARY[randomIndex];
-    const distractors = AI_GLOSSARY
-      .filter(i => i.term !== correct.term)
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 2)
-      .map(i => i.definition);
-    setQuizOptions([correct.definition, ...distractors].sort(() => 0.5 - Math.random()));
+    setQuiz({ entry: correct, options: shuffle([correct.definition, ...shuffle(distractors).slice(0, 2)]) });
     setQuizResult(null);
   };
 
   const checkAnswer = (ans: string) => {
-    if (quizResult?.show) return;
-    const isCorrect = ans === AI_GLOSSARY[currentIndex].definition;
-    setQuizResult({ correct: isCorrect, show: true });
+    if (!quiz || quizResult !== null) return;
+    const isCorrect = ans === quiz.entry.definition;
+    setQuizResult(isCorrect);
     if (isCorrect) SoundSynth.play('correct');
     else SoundSynth.play('wrong');
   };
 
   const handleQuizFinish = () => {
     SoundSynth.play('pop');
-    setQuizMode(false);
+    setQuiz(null);
     setQuizResult(null);
     setIsFlipped(false);
   };
 
   return (
-    <div className="fixed inset-0 bg-[#1a237e]/95 z-[60] flex flex-col items-center justify-center p-6 animate-pop">
-      <button onClick={onClose} className="absolute top-6 right-6 text-white text-3xl hover:scale-110 transition active:scale-90"><i className="fa-solid fa-xmark"></i></button>
-      
-      {!quizMode ? (
-        <>
-          <h2 className="text-white text-2xl font-bold mb-8 flex items-center gap-2">
-            <i className="fa-solid fa-book-sparkles text-yellow-400"></i> {UI.glossary}
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="glossary-title"
+      className="fixed inset-0 bg-[#1a237e]/95 z-[60] overflow-y-auto overscroll-contain p-4 sm:p-6 animate-pop"
+      onKeyDown={event => {
+        if (event.key === 'Escape') {
+          event.stopPropagation();
+          onClose();
+        }
+        if (event.key === 'Tab') {
+          const controls = dialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input, select, a[href]');
+          const first = controls?.[0];
+          const last = controls?.[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }
+      }}
+    >
+      <div className="w-full max-w-xl mx-auto min-h-full flex flex-col items-center justify-center gap-5">
+        <div className="w-full flex items-center justify-between gap-4">
+          <h2 id="glossary-title" className="text-white text-2xl font-bold flex items-center gap-2">
+            <i className="fa-solid fa-book-sparkles text-yellow-400" aria-hidden="true"></i> {UI.glossary}
           </h2>
-          
-          <div className="w-full max-w-sm h-80 perspective-1000" onClick={handleFlip}>
-            <div className={`relative w-full h-full transition-transform duration-500 preserve-3d cursor-pointer ${isFlipped ? 'rotate-y-180' : ''}`}>
-              <div className="absolute inset-0 bg-white rounded-3xl p-8 flex flex-col items-center justify-center shadow-2xl backface-hidden border-4 border-white">
-                <div className="text-4xl text-indigo-600 mb-4"><i className="fa-solid fa-brain"></i></div>
-                <h3 className="text-2xl font-bold text-gray-800 text-center">{AI_GLOSSARY[currentIndex].term}</h3>
-                <p className="mt-4 text-gray-400 text-sm italic">{UI.flipCard}</p>
+          <button ref={closeRef} onClick={onClose} aria-label={tr('关闭名词本', 'Close glossary')} className="shrink-0 w-12 h-12 text-white text-3xl rounded-full hover:bg-white/20 focus-visible:outline focus-visible:outline-yellow-400"><i className="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+      {!quiz ? (
+        <>
+          <div className="w-full grid gap-3 sm:grid-cols-2">
+            <label className="text-white text-sm">
+              {tr('搜索中英文术语或定义', 'Search Chinese / English terms or definitions')}
+              <input type="search" value={search} onChange={event => { setSearch(event.target.value); resetCard(); }} className="mt-1 w-full rounded-xl p-3 text-gray-900 bg-white" placeholder={tr('例如：注意力 / attention', 'e.g. attention / 注意力')} />
+            </label>
+            <label className="text-white text-sm">
+              {tr('分类', 'Category')}
+              <select value={category} onChange={event => { setCategory(event.target.value); resetCard(); }} className="mt-1 w-full rounded-xl p-3 text-gray-900 bg-white">
+                <option value="all">{tr('全部分类', 'All categories')}</option>
+                {Object.entries(GLOSSARY_CATEGORIES).map(([key, labels]) => <option key={key} value={key}>{IS_EN ? labels.en : labels.zh}</option>)}
+              </select>
+            </label>
+          </div>
+          <p role="status" className="text-white/80 text-sm">{tr(`匹配 ${filtered.length} / ${AI_GLOSSARY.length} 个术语`, `${filtered.length} / ${AI_GLOSSARY.length} terms matched`)}</p>
+          {currentEntry ? (
+            <>
+              <p className="text-white/70 text-sm">{IS_EN ? GLOSSARY_CATEGORIES[currentEntry.category].en : GLOSSARY_CATEGORIES[currentEntry.category].zh}</p>
+              <button
+                type="button"
+                onClick={handleFlip}
+                aria-pressed={isFlipped}
+                aria-label={`${currentEntry.term}: ${tr('翻转学习卡', 'Flip study card')}`}
+                className={`w-full min-h-72 rounded-3xl p-6 sm:p-8 shadow-2xl border-4 text-center break-words focus-visible:outline focus-visible:outline-4 focus-visible:outline-yellow-400 transition-colors ${isFlipped ? 'bg-indigo-50 border-indigo-400' : 'bg-white border-white'}`}
+              >
+                <span className="block text-2xl font-bold text-gray-800">{currentEntry.term}</span>
+                <span className="block mt-2 text-sm text-gray-500">{currentEntry.otherTerm}</span>
+                {isFlipped ? (
+                  <span className="block mt-5" aria-live="polite">
+                    <span className="block text-indigo-600 font-bold mb-2">{UI.definition}</span>
+                    <span className="block text-gray-800 text-base leading-relaxed mb-4">{currentEntry.definition}</span>
+                    <span className="block bg-white/60 p-3 rounded-xl border border-indigo-200 text-sm text-gray-600"><i className="fa-solid fa-lightbulb text-yellow-500 mr-1" aria-hidden="true"></i> {currentEntry.example}</span>
+                    <span className="block mt-4 text-gray-500 text-sm">{tr('点击返回术语', 'Tap to return to the term')}</span>
+                  </span>
+                ) : (
+                  <span className="block mt-6 text-gray-500 text-sm italic"><i className="fa-solid fa-brain text-indigo-600 mr-2" aria-hidden="true"></i>{UI.flipCard}</span>
+                )}
+              </button>
+              <div className="flex items-center gap-3 sm:gap-8">
+                <button onClick={() => moveCard(-1)} disabled={filtered.length < 2} aria-label={tr('上一个术语', 'Previous term')} className="w-12 h-12 rounded-full bg-white/20 text-white hover:bg-white/30 disabled:opacity-40"><i className="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                <button data-glossary-quiz-toggle onClick={startQuiz} className="px-6 py-3 rounded-full bg-yellow-400 text-indigo-900 font-bold hover:bg-yellow-300 shadow-lg text-sm sm:text-base">{UI.randomQuiz}</button>
+                <button onClick={() => moveCard(1)} disabled={filtered.length < 2} aria-label={tr('下一个术语', 'Next term')} className="w-12 h-12 rounded-full bg-white/20 text-white hover:bg-white/30 disabled:opacity-40"><i className="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
               </div>
-              <div className="absolute inset-0 bg-indigo-50 rounded-3xl p-8 flex flex-col items-center justify-center shadow-2xl backface-hidden rotate-y-180 border-4 border-indigo-400 overflow-y-auto">
-                <h4 className="text-indigo-600 font-bold mb-2">{UI.definition}</h4>
-                <p className="text-gray-800 text-center text-base leading-relaxed mb-4">{AI_GLOSSARY[currentIndex].definition}</p>
-                <div className="bg-white/60 p-3 rounded-xl border border-indigo-200">
-                    <p className="text-xs text-gray-500"><i className="fa-solid fa-lightbulb text-yellow-500 mr-1"></i> {AI_GLOSSARY[currentIndex].example}</p>
-                </div>
-              </div>
+              <p aria-live="polite" className="text-white/70 text-sm">{safeIndex + 1} / {filtered.length}</p>
+            </>
+          ) : (
+            <div className="w-full rounded-3xl bg-white p-8 text-center">
+              <p className="text-gray-800">{tr('没有匹配的术语，请尝试其他关键词或分类。', 'No matching terms. Try another search or category.')}</p>
+              <button onClick={() => { setSearch(''); setCategory('all'); resetCard(); }} className="mt-4 rounded-xl bg-indigo-600 px-5 py-3 text-white font-bold">{tr('清除筛选', 'Clear filters')}</button>
             </div>
-          </div>
-          
-          <div className="flex gap-4 sm:gap-8 mt-10">
-            <button onClick={(e) => { e.stopPropagation(); handlePrev(); }} className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition-colors active:scale-90"><i className="fa-solid fa-chevron-left"></i></button>
-            <button onClick={(e) => { e.stopPropagation(); startQuiz(); }} className="px-6 py-2 rounded-full bg-yellow-400 text-indigo-900 font-bold hover:bg-yellow-300 shadow-lg flex items-center gap-2 text-sm sm:text-base active:translate-y-1 transition-all">{UI.randomQuiz}</button>
-            <button onClick={(e) => { e.stopPropagation(); handleNext(); }} className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition-colors active:scale-90"><i className="fa-solid fa-chevron-right"></i></button>
-          </div>
-          <p className="mt-6 text-white/50 text-sm">{currentIndex + 1} / {AI_GLOSSARY.length}</p>
+          )}
         </>
       ) : (
-        <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl animate-pop relative overflow-hidden">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">{UI.quizPrompt}</h2>
-          <div className="p-4 bg-indigo-50 rounded-2xl mb-6 text-center border-2 border-dashed border-indigo-200">
-            <h3 className="text-2xl font-bold text-indigo-600">{AI_GLOSSARY[currentIndex].term}</h3>
+        <div className="w-full bg-white rounded-3xl p-5 sm:p-8 shadow-2xl animate-pop break-words">
+          <button data-glossary-quiz-toggle onClick={handleQuizFinish} className="mb-5 text-indigo-700 font-bold underline">{tr('返回学习卡', 'Back to study cards')}</button>
+          <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">{UI.quizPrompt}</h3>
+          <div className="p-4 bg-indigo-50 rounded-2xl mb-6 text-center border-2 border-dashed border-indigo-200" aria-live="polite">
+            <p className="text-2xl font-bold text-indigo-600">{quiz.entry.term}</p>
           </div>
-          <div className="space-y-4 mb-8">
-            {quizOptions.map((opt, i) => (
-              <button 
-                key={i} 
+          <div className="space-y-4">
+            {quiz.options.map(opt => (
+              <button
+                key={opt}
                 onClick={() => checkAnswer(opt)}
-                className={`w-full p-4 rounded-xl border-2 text-left text-sm transition-all
-                  ${quizResult?.show && opt === AI_GLOSSARY[currentIndex].definition ? 'bg-green-100 border-green-500 text-green-700 font-bold' : 
-                    quizResult?.show && opt !== AI_GLOSSARY[currentIndex].definition ? 'bg-gray-50 border-gray-200 text-gray-400' : 'bg-white border-gray-200 hover:border-indigo-500'}
-                `}
+                aria-disabled={quizResult !== null}
+                className={`w-full p-4 rounded-xl border-2 text-left text-sm transition-all ${quizResult !== null && opt === quiz.entry.definition ? 'bg-green-100 border-green-500 text-green-700 font-bold' : 'bg-white border-gray-200 text-gray-800 hover:border-indigo-500'}`}
               >
                 {opt}
               </button>
             ))}
           </div>
-
-          {quizResult?.show && (
-            <div className={`p-4 -mx-8 -mb-8 mt-4 animate-slide-up ${quizResult.correct ? 'bg-green-100' : 'bg-red-100'}`}>
-              <div className="flex flex-col gap-4">
-                <div className={`font-bold text-center ${quizResult.correct ? 'text-green-700' : 'text-red-700'}`}>
-                  {quizResult.correct ? tr('太棒了！你答对了', 'Great work — correct!') : tr('没关系，再复习一下吧', 'Review the card and try again.')}
-                </div>
-                <button 
-                  onClick={handleQuizFinish} 
-                  className={`w-full py-3 rounded-xl font-bold text-white shadow-lg active:scale-95 transition-transform ${quizResult.correct ? 'bg-green-500' : 'bg-red-500'}`}
-                >
-                  {UI.continue}
-                </button>
-              </div>
+          {quizResult !== null && (
+            <div className={`p-4 mt-4 rounded-xl ${quizResult ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              <p role="status" className="font-bold">{quizResult ? tr('太棒了！你答对了', 'Great work — correct!') : tr('没关系，再复习一下吧', 'Review the card and try again.')}</p>
+              <p className="mt-2 text-sm">{UI.definition} {quiz.entry.definition}</p>
+              <button onClick={startQuiz} className="w-full mt-4 py-3 rounded-xl font-bold text-white bg-indigo-600">{tr('再来一题', 'Another question')}</button>
             </div>
           )}
         </div>
       )}
+        <p className="text-white/70 text-xs text-center pb-2">
+          <a href={GLOSSARY_SOURCE_URL} target="_blank" rel="noopener noreferrer" className="text-yellow-300 underline">{tr('术语参考', 'Term reference')}</a>
+          {' · '}{tr('定义与例子由 Draco 原创编写。', 'Original explanations and examples by Draco.')}
+        </p>
+      </div>
     </div>
   );
 };
@@ -851,42 +932,50 @@ const LevelMarker = ({ isUnlocked, isCompleted, icon, weekTitle, onClick }: { is
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
+  const [splashImageStatus, setSplashImageStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [view, setView] = useState<'world' | 'week' | 'lesson'>('world');
   const [selectedWeekId, setSelectedWeekId] = useState<number | null>(null);
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null);
-  const [unlockedWeek, setUnlockedWeek] = useState(1);
-  const [collectedBalls, setCollectedBalls] = useState(0);
-  const [completedDaysPerWeek, setCompletedDaysPerWeek] = useState<Record<number, number>>({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 });
+  const [initialProgress] = useState(loadProgress);
+  const [completedDaysPerWeek, setCompletedDaysPerWeek] = useState(initialProgress.completedDays);
+  const [progressError, setProgressError] = useState(initialProgress.error);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
   const activeWeeks = WEEKS;
+  const position = progressPosition(completedDaysPerWeek);
+  const unlockedWeek = position.week;
 
   useEffect(() => {
     document.documentElement.lang = IS_EN ? 'en' : 'zh-CN';
     document.title = IS_EN ? 'Draco AI Learning Quest' : 'AI 驯龙之路';
+  }, []);
+
+  useEffect(() => {
+    if (splashImageStatus !== 'ready') return;
     const splashTimer = window.setTimeout(() => setShowSplash(false), 3000);
     return () => window.clearTimeout(splashTimer);
-  }, []);
+  }, [splashImageStatus]);
 
   const currentCompletedDays = selectedWeekId ? (completedDaysPerWeek[selectedWeekId] || 0) : 0;
 
+  const updateProgress = (completedDays: CompletedDays) => {
+    setCompletedDaysPerWeek(completedDays);
+    setProgressError(saveProgress(completedDays));
+  };
+
   const handleUnlockAll = () => { 
     SoundSynth.play('success');
-    setUnlockedWeek(4);
-    setCollectedBalls(4);
     const allDone = { 1: 7, 2: 7, 3: 7, 4: 7 };
-    setCompletedDaysPerWeek(allDone);
+    updateProgress(allDone);
     setShowConfetti(true); setTimeout(() => setShowConfetti(false), 5000); 
   };
 
   const handleLessonComplete = () => {
     if (selectedWeekId && selectedDayId === currentCompletedDays + 1) {
         const nextDays = currentCompletedDays + 1;
-        setCompletedDaysPerWeek(prev => ({ ...prev, [selectedWeekId]: nextDays }));
+        updateProgress({ ...completedDaysPerWeek, [selectedWeekId]: nextDays });
         const weekLength = ALL_CURRICULUM[selectedWeekId]?.length || 0;
         if (nextDays === weekLength) {
-            setCollectedBalls(prev => Math.min(prev + 1, 4));
-            if (selectedWeekId === unlockedWeek) setUnlockedWeek(prev => prev + 1);
             setShowConfetti(true); setTimeout(() => setShowConfetti(false), 5000);
         }
     }
@@ -898,11 +987,15 @@ const App = () => {
         {showSplash && <div className="fixed inset-0 z-[100] bg-[#93cf4f] flex flex-col items-center justify-center transition-opacity duration-700">
             <div className="relative animate-bounce-slight mb-8">
                 <div className="w-64 h-64 bg-white rounded-full flex items-center justify-center animate-pop overflow-hidden border-8 border-white shadow-2xl">
-                    <img src={MASCOT_IMAGE_URL} className="w-full h-full object-contain" alt={tr('Draco AI 龙吉祥物', 'Draco AI dragon mascot')} />
+                    <img src={MASCOT_IMAGE_URL} onLoad={() => setSplashImageStatus('ready')} onError={() => setSplashImageStatus('error')} className="w-full h-full object-contain" alt={tr('Draco AI 龙吉祥物', 'Draco AI dragon mascot')} />
                 </div>
             </div>
             <h1 className="text-white text-5xl font-bold game-font drop-shadow-lg mb-2">Draco AI</h1>
             <p className="text-white/80 font-medium tracking-widest uppercase">{tr('踏上 AI 驯龙之路', 'Master the AI Dragon')}</p>
+            {splashImageStatus === 'error' && <div className="mt-6 text-center text-white">
+              <p role="alert">{tr('龙的开场图片加载失败，请刷新重试，或直接进入课程。', 'The dragon image could not load. Refresh to retry, or continue to the course.')}</p>
+              <button onClick={() => setShowSplash(false)} className="mt-3 rounded-full bg-white px-6 py-3 font-bold text-green-800">{tr('进入课程', 'Start learning')}</button>
+            </div>}
         </div>}
 
         {!showSplash && (
@@ -939,31 +1032,39 @@ const App = () => {
                 <i className="fa-solid fa-dragon absolute text-black/5 text-[200px] animate-dragon-shadow"></i>
 
                 <div className="relative z-30 mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-5 pt-5 sm:pt-7 md:pb-8">
-                    <div className="flex w-full flex-col items-center gap-4 md:flex-row md:justify-between">
-                      <div className="text-center md:text-left">
+                    <div className="flex w-full flex-col items-center gap-4">
+                      <div className="text-center">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-md game-font">{tr('AI 驯龙之路', 'Draco AI Learning Quest')}</h1>
                         <p className="mt-1 text-sm sm:text-base font-semibold text-white/80">{tr('四周完成从 AI 原理到智能体工程的学习', 'Four weeks from AI fundamentals to agent engineering')}</p>
                       </div>
                       <div className="flex flex-wrap items-center justify-center gap-2">
                         <nav className="flex rounded-full border-2 border-white/60 bg-white/20 p-1 text-sm font-bold text-white" aria-label={tr('语言切换', 'Language switcher')}>
-                          <a href="/zh/" className={`rounded-full px-3 py-1.5 ${!IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>中文</a>
-                          <a href="/en/" className={`rounded-full px-3 py-1.5 ${IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>English</a>
+                          <a href={assetUrl("/cn/")} className={`rounded-full px-3 py-1.5 ${!IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>中文</a>
+                          <a href={assetUrl("/en/")} className={`rounded-full px-3 py-1.5 ${IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>English</a>
                         </nav>
+                        <button onClick={() => setShowGlossary(true)} className="bg-yellow-400 text-indigo-900 px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2 active:scale-95 transition-transform">
+                          <i className="fa-solid fa-book-sparkles" aria-hidden="true"></i> {UI.glossary}
+                        </button>
                         <div className="bg-white/90 px-5 py-2 rounded-full shadow-lg border-2 border-yellow-200 flex items-center gap-3">
-                          <span className="text-orange-600 font-bold flex items-center gap-2 text-lg sm:text-xl"><i className="fa-solid fa-dragon"></i> {collectedBalls}/4 {tr('龙珠', 'orbs')}</span>
+                          <span role="status" className="text-orange-600 font-bold flex items-center gap-2 whitespace-nowrap text-lg sm:text-xl"><i className="fa-solid fa-dragon" aria-hidden="true"></i> {position.complete ? tr('冒险通关！', 'Quest complete!') : tr(`第 ${position.week} 周 · 第 ${position.day} 天`, `Week ${position.week} · Day ${position.day}`)}</span>
                         </div>
+                        {progressError && <p role="alert" className="mt-4 max-w-xl rounded-xl bg-white px-4 py-3 text-sm font-semibold text-red-800">
+                          {progressError === 'invalid'
+                            ? tr('保存的进度无法读取，本次将从第一周开始。完成下一课后会重新保存。', 'Saved progress could not be read. This session starts at Week 1; completing a lesson will save new progress.')
+                            : tr('浏览器无法保存学习进度，关闭或刷新页面后可能丢失本次进度。', 'Your browser cannot save learning progress. Progress may be lost when you close or refresh this page.')}
+                        </p>}
                       </div>
                     </div>
-                    <div className="mt-4 flex w-full justify-center sm:justify-end">
+                    {import.meta.env.DEV && <div className="mt-4 flex w-full justify-center sm:justify-end">
                       <button onClick={handleUnlockAll} className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold border border-white/50 shadow-sm active:scale-95 transition-transform">{tr('一键解锁', 'Unlock all')}</button>
-                    </div>
+                    </div>}
                 </div>
                 
-                <div className="relative z-20 mx-auto w-full max-w-sm px-5 pb-14 sm:max-w-md md:max-w-6xl md:px-8 md:pb-20 md:pt-8">
-                  <div className="absolute bottom-20 left-1/2 top-4 w-1 -translate-x-1/2 rounded-full bg-white/25 md:bottom-auto md:left-20 md:right-20 md:top-[4.75rem] md:h-1 md:w-auto md:translate-x-0"></div>
-                  <div className="relative grid grid-cols-1 gap-9 md:grid-cols-4 md:gap-6">
+                <div className="relative z-20 mx-auto w-full max-w-sm px-5 pb-14 sm:max-w-md md:pb-20 md:pt-8">
+                  <div className="absolute bottom-20 left-1/2 top-4 w-1 -translate-x-1/2 rounded-full bg-white/25"></div>
+                  <div className="relative grid grid-cols-1 gap-9">
                       {activeWeeks.map((week, idx) => (
-                      <div key={week.id} className={`flex w-full ${idx % 2 === 0 ? 'justify-start pr-16' : 'justify-end pl-16'} md:justify-center md:px-0`}>
+                      <div key={week.id} className={`flex w-full ${idx % 2 === 0 ? 'justify-start pr-16' : 'justify-end pl-16'}`}>
                         <LevelMarker isUnlocked={week.id <= unlockedWeek} isCompleted={(completedDaysPerWeek[week.id] || 0) >= 7} icon={week.icon === 'fa-magnifying-glass' ? 'fa-house' : week.icon} weekTitle={week.title} onClick={() => week.id <= unlockedWeek && (setSelectedWeekId(week.id), setView('week'), SoundSynth.play('pop'))} />
                         </div>
                       ))}
@@ -973,16 +1074,14 @@ const App = () => {
             )}
 
             {view === 'week' && selectedWeekId && <div className="min-h-screen bg-[#3f64e7] flex flex-col relative">
-                <div className="p-4 flex items-center justify-between text-white z-10 sticky top-0 bg-[#3f64e7]/80 backdrop-blur-md">
-                    <div className="flex items-center gap-4">
+                <div className="p-4 flex flex-wrap items-center justify-between gap-3 text-white z-10 sticky top-0 bg-[#3f64e7]/80 backdrop-blur-md">
+                    <div className="flex min-w-0 items-center gap-4">
                         <button onClick={() => setView('world')} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors active:scale-90"><i className="fa-solid fa-arrow-left"></i></button>
                         <h2 className="text-xl font-bold">{WEEKS.find(w=>w.id===selectedWeekId)?.title}</h2>
                     </div>
-                    {selectedWeekId === 1 && (
-                      <button onClick={() => setShowGlossary(true)} className="bg-yellow-400 text-indigo-900 px-4 py-2 rounded-2xl font-bold shadow-lg flex items-center gap-2 active:scale-95 transition-transform">
-                        <i className="fa-solid fa-book-sparkles"></i> {UI.glossary}
+                      <button onClick={() => setShowGlossary(true)} className="shrink-0 bg-yellow-400 text-indigo-900 px-4 py-2 rounded-2xl font-bold shadow-lg flex items-center gap-2 active:scale-95 transition-transform">
+                        <i className="fa-solid fa-book-sparkles" aria-hidden="true"></i> {UI.glossary}
                       </button>
-                    )}
                 </div>
 
                 <div className="flex-1 flex flex-col items-center gap-16 py-12 px-6 relative max-w-lg mx-auto w-full">
