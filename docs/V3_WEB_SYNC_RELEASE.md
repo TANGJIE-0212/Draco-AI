@@ -1,8 +1,8 @@
-# V3 Chinese web / latest WeChat alignment
+# V3 bilingual web / latest WeChat alignment
 
 ## Scope
 
-Port the approved WeChat homepage and learning cards into the Chinese V3 web experience. English remains on the existing components and sound synthesizer. Curriculum, progress storage and the original blue daily maps are unchanged.
+Port the approved WeChat homepage and learning cards into both Chinese and English V3 web experiences. Both web languages now share WorldMap, StudyCards, MapMusic and the same WAV feedback. Curriculum, progress storage and the original blue daily maps are unchanged.
 
 The web implementation is isolated in `web-sync/`; it does not import the native runtime or require the untracked WeChat project in production.
 
@@ -44,4 +44,12 @@ The web implementation is isolated in `web-sync/`; it does not import the native
 Source target: `TANGJIE-0212/Draco-AI`, branch `course-v3`.
 Site target: `TANGJIE-0212/TANGJIE-0212.github.io`, with `CNAME` = `daytoy.online`.
 
-Stage only V3 changes, not unrelated README/package edits or the untracked WeChat project. On the site, replace Chinese HTML entrypoints and add the new hashed bundles/audio. Retain existing assets and English HTML for rollback and avoid changing other site projects. Verify the actual deployment result before reporting the version live.
+Stage only V3 changes, not unrelated README/package edits or the untracked WeChat project. On the site, replace root, cn, zh and en HTML entrypoints and add the new hashed bundles. Retain all existing assets for rollback and avoid changing other site projects. Verify the actual deployment result before reporting the version live.
+
+## Bilingual follow-up — 2026-09-17
+
+- Supersedes the initial-release notes above that English retained its old UI. Both languages now use the same compact homepage, curved route, fixed-size flip cards, stable 103-term order and studied-card quiz.
+- English labels, categories, definitions, examples, feedback and accessibility captions are localized; the secondary term remains bilingual. The compact English title is “Draco AI”, using the existing Fredoka font; Chinese keeps JingNanBubble.
+- Ordinary lesson Continue no longer plays a pop cue. Native Continue was already silent; runtime regression assertions now enforce no sound or vibration on non-completion navigation. Correct/wrong and lesson completion cues remain; web lesson completion now uses the same complete WAV as native.
+- Both-language server-render checks, actual Continue handler execution (advance/review/complete), targeted TypeScript, Pages build, native 28-day event runtime and native map-audio/presentation/markdown/integrity suites passed.
+- Safari production-preview inspection: English green homepage and card front/back render with shared styling and English definitions. Initial-release mobile geometry checks remain applicable to the unchanged shared layout; no new WeChat simulator E2E or native upload is claimed.

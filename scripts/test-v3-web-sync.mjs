@@ -4,6 +4,10 @@ import path from 'node:path';
 import vm from 'node:vm';
 import ts from 'typescript';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import { buildSync } from 'esbuild';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
@@ -54,10 +58,58 @@ assert.match(css, /padding:32px 28px/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.match(css, /\.cn-cloud,\.cn-star \{ animation:none/);
 const app = read('index.tsx');
-assert.match(app, /showGlossary && \(IS_EN \? <GlossaryView/);
-assert.match(app, /view === 'world' && IS_EN/);
-assert.match(app, /if \(!IS_EN\) \{\s+playWebEffect/);
+assert.match(app, /showGlossary && <StudyCards language=\{IS_EN \? 'en' : 'zh'\}/);
+assert.match(app, /view === 'world' && <WorldMap language=\{IS_EN \? 'en' : 'zh'\}/);
+assert.match(app, /<MapMusic language=\{IS_EN \? 'en' : 'zh'\}/);
+assert.doesNotMatch(app, /view === 'world' && IS_EN/);
+assert.doesNotMatch(app, /createOscillator/);
 assert.match(app, /scene=\{view === 'week'/);
+
+// Execute the actual Continue handler through ordinary, review and completion paths.
+const ast = ts.createSourceFile('index.tsx', app, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+let continueHandler;
+function visit(node) {
+  if (ts.isVariableDeclaration(node) && node.name.getText(ast) === 'handleContinue') continueHandler = node.initializer.getText(ast);
+  ts.forEachChild(node, visit);
+}
+visit(ast);
+assert.ok(continueHandler);
+for (const mode of ['ordinary', 'review', 'complete']) {
+  const state = { stepIndex: mode === 'ordinary' ? 0 : 1, steps: [{}, {}], mistakes: mode === 'review' ? [{}] : [], isReviewMode: false, completed: false };
+  vm.runInNewContext(`(${continueHandler})()`, {
+    ...state,
+    SoundSynth: { play: () => assert.fail('Continue must not play an extra cue') },
+    setStepIndex: value => state.stepIndex = typeof value === 'function' ? value(state.stepIndex) : value,
+    setSteps: value => state.steps = value,
+    setMistakes: value => state.mistakes = value,
+    setIsReviewMode: value => state.isReviewMode = value,
+    onComplete: () => state.completed = true,
+  });
+  if (mode === 'ordinary') assert.equal(state.stepIndex, 1);
+  if (mode === 'review') { assert.equal(state.isReviewMode, true); assert.equal(state.stepIndex, 0); }
+  if (mode === 'complete') assert.equal(state.completed, true);
+}
+assert.match(app, /const handleLessonComplete = \(\) => \{\s+SoundSynth.play\('complete'\)/);
+assert.match(app, /if \(correct\) SoundSynth.play\('correct'\)/);
+assert.match(app, /SoundSynth.play\('wrong'\)/);
+
+// Render the same components in both languages; hidden backs must also be localized.
+const renderedModule = { exports: {} };
+const bundled = buildSync({ entryPoints: [path.join(root, 'web-sync/ChineseExperience.tsx')], bundle: true, write: false, format: 'cjs', platform: 'node', external: ['react'], loader: { '.css': 'empty' }, define: { 'import.meta.env.BASE_URL': '"/draco-ai/"' } }).outputFiles[0].text;
+vm.runInNewContext(bundled, { module: renderedModule, exports: renderedModule.exports, require: createRequire(import.meta.url), window: { innerHeight: 844 } });
+for (const language of ['zh', 'en']) {
+  const cards = renderToStaticMarkup(React.createElement(renderedModule.exports.StudyCards, { language, onClose() {} }));
+  assert.ok(cards.includes(ordered[0][language].term));
+  assert.ok(cards.includes(ordered[0][language].definition));
+  assert.ok(cards.includes(language === 'en' ? 'Flip it!' : '翻翻看'));
+  assert.ok(cards.includes(language === 'en' ? 'Test yourself' : '测一测'));
+  const world = renderToStaticMarkup(React.createElement(renderedModule.exports.WorldMap, { language, weeks: [1,2,3,4].map(id => ({ id, title: `Week ${id}` })), unlockedWeek: 1, completed: {}, error: null, onWeek() {}, onGlossary() {} }));
+  assert.equal((world.match(/class="cn-week-stop"/g) || []).length, 4);
+  assert.ok(world.includes(language === 'en' ? 'AI Glossary' : 'AI 名词本'));
+}
+const studySource = read('web-sync/ChineseExperience.tsx');
+assert.match(studySource, /entry\[language\]\.definition/);
+assert.doesNotMatch(studySource, /(?:current|entry|item)\.zh\.(?:term|definition|example)/);
 for (const name of fs.readdirSync(path.join(root, 'web-sync')).filter(n => /\.tsx?$/.test(n))) {
   assert.doesNotMatch(read(`web-sync/${name}`), /from ['"][^'"]*miniprogram/, 'web build must not import native runtime');
 }
@@ -80,5 +132,5 @@ playWebEffect('correct'); assert.equal(audios[1].volume, .45);
 document.hidden = true; [...listeners.keys()].forEach(fn => fn());
 assert.ok(audios[1].paused); assert.equal(listeners.size, 0);
 playWebEffect('wrong'); audios[2].onerror(); assert.ok(audios[2].released);
-console.log('PASS V3 sync: 103 curated/interleaved cards, fixed flip layout, English isolation, audio disposal.');
+console.log('PASS V3 sync: 103 curated/interleaved cards, bilingual shared rendering, fixed flip layout, silent Continue, audio disposal.');
 console.log(hasNative ? 'PASS native parity: icons, 12 decorations, six WAVs, route, font and ordering.' : 'Native parity checks skipped in web-only checkout (use --require-native in handoff workspace).');

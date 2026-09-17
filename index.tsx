@@ -6,7 +6,7 @@ import { WEEKS_EN, ALL_CURRICULUM_EN } from './curriculum-en';
 import { LessonStep, DayContent } from './types';
 import { loadProgress, saveProgress, progressPosition, type CompletedDays } from './course-progress';
 import { GLOSSARY, GLOSSARY_CATEGORIES, GLOSSARY_SOURCE_URL } from './glossary';
-import { ChineseWorld, ChineseStudyCards, MapMusic } from './web-sync/ChineseExperience';
+import { WorldMap, StudyCards, MapMusic } from './web-sync/ChineseExperience';
 import { playWebEffect } from './web-sync/audio';
 
 // --- 配置区 ---
@@ -77,49 +77,8 @@ const shuffle = <T,>(items: T[]): T[] => {
 
 // --- Audio System ---
 const SoundSynth = {
-  ctx: null as AudioContext | null,
-  init: () => {
-    if (!SoundSynth.ctx) {
-      SoundSynth.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    }
-    if (SoundSynth.ctx.state === 'suspended') {
-      SoundSynth.ctx.resume();
-    }
-  },
-  playTone: (freq: number, type: 'sine' | 'square' | 'triangle' | 'sawtooth', duration: number, startTime = 0) => {
-    if (!SoundSynth.ctx) SoundSynth.init();
-    const ctx = SoundSynth.ctx!;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime + startTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(ctx.currentTime + startTime);
-    osc.stop(ctx.currentTime + startTime + duration);
-  },
   play: (effect: 'pop' | 'correct' | 'wrong' | 'success' | 'complete' | 'click' | 'match' | 'flip') => {
-    if (!IS_EN) {
-      playWebEffect(effect === 'wrong' ? 'wrong' : effect === 'success' || effect === 'complete' ? 'complete' : effect === 'correct' || effect === 'match' || effect === 'flip' ? 'correct' : 'map-tap');
-      return;
-    }
-    SoundSynth.init();
-    switch (effect) {
-      case 'pop': SoundSynth.playTone(600 + Math.random() * 200, 'sine', 0.1); break;
-      case 'flip': SoundSynth.playTone(800, 'sine', 0.05); break;
-      case 'click': SoundSynth.playTone(400, 'sine', 0.05); break;
-      case 'match': SoundSynth.playTone(880, 'sine', 0.1); break;
-      case 'correct':
-        SoundSynth.playTone(523.25, 'sine', 0.1, 0);
-        SoundSynth.playTone(659.25, 'sine', 0.1, 0.1);
-        SoundSynth.playTone(783.99, 'sine', 0.2, 0.2);
-        break;
-      case 'wrong': SoundSynth.playTone(150, 'sawtooth', 0.3); SoundSynth.playTone(100, 'sawtooth', 0.3, 0.1); break;
-      case 'success': [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => SoundSynth.playTone(f, 'triangle', 0.3, i * 0.1)); break;
-      case 'complete': SoundSynth.playTone(440, 'sine', 0.1); break;
-    }
+    playWebEffect(effect === 'wrong' ? 'wrong' : effect === 'success' || effect === 'complete' ? 'complete' : effect === 'correct' || effect === 'match' || effect === 'flip' ? 'correct' : 'map-tap');
   }
 };
 
@@ -865,7 +824,7 @@ const LessonEngine = ({ weekId, dayId, onComplete, onExit }: { weekId: number, d
     };
 
     const handleContinue = () => {
-        SoundSynth.play('pop');
+        // Ordinary navigation is silent on web and WeChat; answer feedback stays audible.
         if (stepIndex < steps.length - 1) setStepIndex(prev => prev + 1);
         else {
             if (!isReviewMode && mistakes.length > 0) { setSteps([...mistakes]); setStepIndex(0); setMistakes([]); setIsReviewMode(true); }
@@ -977,6 +936,7 @@ const App = () => {
   };
 
   const handleLessonComplete = () => {
+    SoundSynth.play('complete');
     if (selectedWeekId && selectedDayId === currentCompletedDays + 1) {
         const nextDays = currentCompletedDays + 1;
         updateProgress({ ...completedDaysPerWeek, [selectedWeekId]: nextDays });
@@ -1007,79 +967,9 @@ const App = () => {
         {!showSplash && (
           <>
             {showConfetti && <ConfettiEffect />}
-            {showGlossary && (IS_EN ? <GlossaryView onClose={() => setShowGlossary(false)} /> : <ChineseStudyCards onClose={() => setShowGlossary(false)} />)}
-            {!IS_EN && <MapMusic active={!showGlossary && (view === 'world' || view === 'week')} scene={view === 'week' ? `week-${selectedWeekId}` : view} />}
-            {view === 'world' && !IS_EN && <ChineseWorld weeks={activeWeeks} unlockedWeek={unlockedWeek} completed={completedDaysPerWeek} onGlossary={() => setShowGlossary(true)} error={progressError} onWeek={week => { setSelectedWeekId(week); setView('week'); SoundSynth.play('pop'); }} />}
-
-            {view === 'world' && IS_EN && (
-              <div className="min-h-screen bg-[#8bc34a] bg-gradient-to-b from-[#8bc34a] to-[#689f38] relative overflow-x-hidden">
-                {/* 动态背景装饰层 */}
-                <div className="absolute inset-0 z-0 pointer-events-none map-grid opacity-30"></div>
-                
-                {/* 漂浮的云朵 - 分散布局 */}
-                {/* 云1：左上 */}
-                <i className="fa-solid fa-cloud absolute top-[12%] left-[10%] text-white/40 text-6xl animate-float-cloud z-0" style={{ animationDelay: '-5s' }}></i>
-                {/* 云2：中偏右 */}
-                <i className="fa-solid fa-cloud absolute top-[35%] left-[55%] text-white/20 text-4xl animate-float-cloud-slow z-0" style={{ animationDelay: '-18s' }}></i>
-                {/* 云3：中偏左 */}
-                <i className="fa-solid fa-cloud absolute top-[55%] left-[25%] text-white/30 text-8xl animate-float-cloud-slow z-0" style={{ animationDelay: '-10s' }}></i>
-                {/* 云4：底部偏右 */}
-                <i className="fa-solid fa-cloud absolute top-[82%] left-[65%] text-white/25 text-5xl animate-float-cloud z-0" style={{ animationDelay: '-22s' }}></i>
-                
-                {/* 闪烁的星光/宝藏光芒 - 全面分散 */}
-                <i className="fa-solid fa-star absolute top-[15%] left-[5%] text-yellow-200/40 text-xs animate-twinkle"></i>
-                <i className="fa-solid fa-star absolute top-[28%] right-[15%] text-yellow-200/30 text-sm animate-twinkle" style={{ animationDelay: '1.5s' }}></i>
-                <i className="fa-solid fa-star absolute top-[50%] left-[18%] text-yellow-200/50 text-xs animate-twinkle" style={{ animationDelay: '0.8s' }}></i>
-                <i className="fa-solid fa-star absolute top-[70%] right-[10%] text-yellow-200/40 text-sm animate-twinkle" style={{ animationDelay: '2.2s' }}></i>
-                <i className="fa-solid fa-star absolute bottom-[15%] left-[45%] text-yellow-200/50 text-xs animate-twinkle" style={{ animationDelay: '1.2s' }}></i>
-                <i className="fa-solid fa-star absolute top-[35%] right-[5%] text-yellow-200/30 text-xs animate-twinkle" style={{ animationDelay: '3s' }}></i>
-                <i className="fa-solid fa-star absolute top-[5%] right-[35%] text-yellow-200/20 text-xs animate-twinkle" style={{ animationDelay: '2.5s' }}></i>
-                <i className="fa-solid fa-star absolute bottom-[35%] left-[8%] text-yellow-200/35 text-sm animate-twinkle" style={{ animationDelay: '1.8s' }}></i>
-                
-                {/* 龙的阴影掠过 */}
-                <i className="fa-solid fa-dragon absolute text-black/5 text-[200px] animate-dragon-shadow"></i>
-
-                <div className="relative z-30 mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-5 pt-5 sm:pt-7 md:pb-8">
-                    <div className="flex w-full flex-col items-center gap-4">
-                      <div className="text-center">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-md game-font">{tr('AI 驯龙之路', 'Draco AI Learning Quest')}</h1>
-                        <p className="mt-1 text-sm sm:text-base font-semibold text-white/80">{tr('四周完成从 AI 原理到智能体工程的学习', 'Four weeks from AI fundamentals to agent engineering')}</p>
-                      </div>
-                      <div className="flex flex-wrap items-center justify-center gap-2">
-                        <nav className="flex rounded-full border-2 border-white/60 bg-white/20 p-1 text-sm font-bold text-white" aria-label={tr('语言切换', 'Language switcher')}>
-                          <a href={assetUrl("/cn/")} className={`rounded-full px-3 py-1.5 ${!IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>中文</a>
-                          <a href={assetUrl("/en/")} className={`rounded-full px-3 py-1.5 ${IS_EN ? 'bg-white text-indigo-800' : 'hover:bg-white/15'}`}>English</a>
-                        </nav>
-                        <button onClick={() => setShowGlossary(true)} className="bg-yellow-400 text-indigo-900 px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2 active:scale-95 transition-transform">
-                          <i className="fa-solid fa-book-sparkles" aria-hidden="true"></i> {UI.glossary}
-                        </button>
-                        <div className="bg-white/90 px-5 py-2 rounded-full shadow-lg border-2 border-yellow-200 flex items-center gap-3">
-                          <span role="status" className="text-orange-600 font-bold flex items-center gap-2 whitespace-nowrap text-lg sm:text-xl"><i className="fa-solid fa-dragon" aria-hidden="true"></i> {position.complete ? tr('冒险通关！', 'Quest complete!') : tr(`第 ${position.week} 周 · 第 ${position.day} 天`, `Week ${position.week} · Day ${position.day}`)}</span>
-                        </div>
-                        {progressError && <p role="alert" className="mt-4 max-w-xl rounded-xl bg-white px-4 py-3 text-sm font-semibold text-red-800">
-                          {progressError === 'invalid'
-                            ? tr('保存的进度无法读取，本次将从第一周开始。完成下一课后会重新保存。', 'Saved progress could not be read. This session starts at Week 1; completing a lesson will save new progress.')
-                            : tr('浏览器无法保存学习进度，关闭或刷新页面后可能丢失本次进度。', 'Your browser cannot save learning progress. Progress may be lost when you close or refresh this page.')}
-                        </p>}
-                      </div>
-                    </div>
-                    {import.meta.env.DEV && <div className="mt-4 flex w-full justify-center sm:justify-end">
-                      <button onClick={handleUnlockAll} className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold border border-white/50 shadow-sm active:scale-95 transition-transform">{tr('一键解锁', 'Unlock all')}</button>
-                    </div>}
-                </div>
-                
-                <div className="relative z-20 mx-auto w-full max-w-sm px-5 pb-14 sm:max-w-md md:pb-20 md:pt-8">
-                  <div className="absolute bottom-20 left-1/2 top-4 w-1 -translate-x-1/2 rounded-full bg-white/25"></div>
-                  <div className="relative grid grid-cols-1 gap-9">
-                      {activeWeeks.map((week, idx) => (
-                      <div key={week.id} className={`flex w-full ${idx % 2 === 0 ? 'justify-start pr-16' : 'justify-end pl-16'}`}>
-                        <LevelMarker isUnlocked={week.id <= unlockedWeek} isCompleted={(completedDaysPerWeek[week.id] || 0) >= 7} icon={week.icon === 'fa-magnifying-glass' ? 'fa-house' : week.icon} weekTitle={week.title} onClick={() => week.id <= unlockedWeek && (setSelectedWeekId(week.id), setView('week'), SoundSynth.play('pop'))} />
-                        </div>
-                      ))}
-                    </div>
-                </div>
-              </div>
-            )}
+            {showGlossary && <StudyCards language={IS_EN ? 'en' : 'zh'} onClose={() => setShowGlossary(false)} />}
+            <MapMusic language={IS_EN ? 'en' : 'zh'} active={!showGlossary && (view === 'world' || view === 'week')} scene={view === 'week' ? `week-${selectedWeekId}` : view} />
+            {view === 'world' && <WorldMap language={IS_EN ? 'en' : 'zh'} weeks={activeWeeks} unlockedWeek={unlockedWeek} completed={completedDaysPerWeek} onGlossary={() => setShowGlossary(true)} error={progressError} onWeek={week => { setSelectedWeekId(week); setView('week'); SoundSynth.play('pop'); }} />}
 
             {view === 'week' && selectedWeekId && <div className="min-h-screen bg-[#3f64e7] flex flex-col relative">
                 <div className="p-4 flex flex-wrap items-center justify-between gap-3 text-white z-10 sticky top-0 bg-[#3f64e7]/80 backdrop-blur-md">

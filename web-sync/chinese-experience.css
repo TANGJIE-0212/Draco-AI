@@ -6,6 +6,7 @@
 .study-inner { width:100%; max-width:576px; min-height:100%; margin:auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; }
 .study-header { display:flex; align-items:center; justify-content:space-between; width:100%; color:white; }
 .study-header h2 { font:700 24px/32px JingNanBubble,sans-serif; }
+.study-dialog[lang=en] .study-header h2,.cn-world[lang=en] .cn-map-header h1 { font-family:Fredoka,sans-serif; }
 .study-close { display:flex; align-items:center; justify-content:center; flex:none; width:48px; height:48px; border-radius:50%; }
 .study-close img { width:23px; height:30px; }
 .study-close:hover { background:#ffffff20; }
