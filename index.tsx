@@ -6,6 +6,8 @@ import { WEEKS_EN, ALL_CURRICULUM_EN } from './curriculum-en';
 import { LessonStep, DayContent } from './types';
 import { loadProgress, saveProgress, progressPosition, type CompletedDays } from './course-progress';
 import { GLOSSARY, GLOSSARY_CATEGORIES, GLOSSARY_SOURCE_URL } from './glossary';
+import { ChineseWorld, ChineseStudyCards, MapMusic } from './web-sync/ChineseExperience';
+import { playWebEffect } from './web-sync/audio';
 
 // --- 配置区 ---
 const APP_BASE = import.meta.env.BASE_URL;
@@ -99,6 +101,10 @@ const SoundSynth = {
     osc.stop(ctx.currentTime + startTime + duration);
   },
   play: (effect: 'pop' | 'correct' | 'wrong' | 'success' | 'complete' | 'click' | 'match' | 'flip') => {
+    if (!IS_EN) {
+      playWebEffect(effect === 'wrong' ? 'wrong' : effect === 'success' || effect === 'complete' ? 'complete' : effect === 'correct' || effect === 'match' || effect === 'flip' ? 'correct' : 'map-tap');
+      return;
+    }
     SoundSynth.init();
     switch (effect) {
       case 'pop': SoundSynth.playTone(600 + Math.random() * 200, 'sine', 0.1); break;
@@ -1001,9 +1007,11 @@ const App = () => {
         {!showSplash && (
           <>
             {showConfetti && <ConfettiEffect />}
-            {showGlossary && <GlossaryView onClose={() => setShowGlossary(false)} />}
+            {showGlossary && (IS_EN ? <GlossaryView onClose={() => setShowGlossary(false)} /> : <ChineseStudyCards onClose={() => setShowGlossary(false)} />)}
+            {!IS_EN && <MapMusic active={!showGlossary && (view === 'world' || view === 'week')} scene={view === 'week' ? `week-${selectedWeekId}` : view} />}
+            {view === 'world' && !IS_EN && <ChineseWorld weeks={activeWeeks} unlockedWeek={unlockedWeek} completed={completedDaysPerWeek} onGlossary={() => setShowGlossary(true)} error={progressError} onWeek={week => { setSelectedWeekId(week); setView('week'); SoundSynth.play('pop'); }} />}
 
-            {view === 'world' && (
+            {view === 'world' && IS_EN && (
               <div className="min-h-screen bg-[#8bc34a] bg-gradient-to-b from-[#8bc34a] to-[#689f38] relative overflow-x-hidden">
                 {/* 动态背景装饰层 */}
                 <div className="absolute inset-0 z-0 pointer-events-none map-grid opacity-30"></div>
