@@ -24,7 +24,7 @@ function useTitleFont() {
   }, []);
 }
 
-export function StudyCards({ onClose, language }: { onClose: () => void; language: Language }) {
+export function StudyCards({ onClose, language, returnFocus }: { onClose: () => void; language: Language; returnFocus?: React.RefObject<HTMLElement | null> }) {
   const tr = (zh: string, en: string) => language === 'en' ? en : zh;
   const otherLanguage = language === 'en' ? 'zh' : 'en';
   useTitleFont();
@@ -36,7 +36,7 @@ export function StudyCards({ onClose, language }: { onClose: () => void; languag
   const [answer, setAnswer] = useState<string | null>(null);
   const studied = useRef(new Set<string>());
   const lock = useRef(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const dialog = useRef<HTMLDivElement>(null);
   const frontAction = useRef<HTMLButtonElement>(null);
   const backAction = useRef<HTMLButtonElement>(null);
@@ -46,8 +46,10 @@ export function StudyCards({ onClose, language }: { onClose: () => void; languag
     const prior = document.activeElement as HTMLElement;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const dismiss = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); onClose(); } };
+    document.addEventListener('keydown', dismiss);
     dialog.current?.querySelector<HTMLButtonElement>('.study-close')?.focus();
-    return () => { clearTimeout(timer.current); document.body.style.overflow = overflow; prior?.focus(); };
+    return () => { clearTimeout(timer.current); document.removeEventListener('keydown', dismiss); document.body.style.overflow = overflow; queueMicrotask(() => { const target = returnFocus?.current ?? prior; if (target?.isConnected) target.focus({ preventScroll: true }); }); };
   }, []);
   useEffect(() => { if (scroll.current) scroll.current.scrollTop = 0; }, [index, quiz]);
   useEffect(() => { if (quiz) dialog.current?.querySelector<HTMLButtonElement>('.study-quiz-back')?.focus(); }, [quiz]);
@@ -78,7 +80,6 @@ export function StudyCards({ onClose, language }: { onClose: () => void; languag
     requestAnimationFrame(() => frontAction.current?.focus({ preventScroll: true }));
   };
   return <div ref={dialog} className="study-dialog" lang={language} role="dialog" aria-modal="true" aria-labelledby="study-title" onKeyDown={event => {
-    if (event.key === 'Escape') { event.stopPropagation(); onClose(); }
     if (event.key === 'Tab') {
       const controls = [...(dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled), [tabindex="0"]') || [])];
       const first = controls[0], last = controls.at(-1);
@@ -91,7 +92,7 @@ export function StudyCards({ onClose, language }: { onClose: () => void; languag
       {!quiz ? <>
         <p className="study-category">{glossary.categories[current.category][language]}</p>
         <div className={`study-card ${flipped ? 'is-flipped' : ''}`}>
-          <div className={`study-flipper ${animated ? 'is-animated' : ''}`}>
+          <div className={`study-flipper ${animated ? 'is-animated' : ''}`} onTransitionEnd={event => { if (event.target === event.currentTarget && event.propertyName === 'transform') { finishFlip(); backAction.current?.focus({ preventScroll: true }); } }}>
             <section className="study-face study-front" aria-hidden={flipped}>
               <div className="study-question"><h3>{current[language].term}</h3><p className="study-other">{current[otherLanguage].term}</p></div>
               <button ref={frontAction} className="study-action" disabled={flipped || busy} onClick={flip} aria-label={tr("翻翻看，翻转查看定义", "Flip the card to reveal the definition")}>{tr("翻翻看", "Flip it!")}</button>
@@ -110,7 +111,7 @@ export function StudyCards({ onClose, language }: { onClose: () => void; languag
         <div className="study-review"><button className="study-test" onClick={startQuiz}>{tr("测一测", "Test yourself")}</button></div>
       </> : <section className="study-quiz">
         <button className="study-quiz-back" onClick={backToCards}>{tr("返回学习卡", "Back to cards")}</button>
-        <h3>{tr("这是什么的定义？", "Which definition is correct?")}</h3><p className="study-quiz-term">{quiz.entry[language].term}</p>
+        <h3>{tr("哪个定义对应这个术语？", "Which definition matches this term?")}</h3><p className="study-quiz-term">{quiz.entry[language].term}</p>
         <div className="study-options">{quiz.options.map(option => <button key={option} aria-disabled={answer !== null} className={answer !== null && option === quiz.entry[language].definition ? 'is-correct' : ''} onClick={() => { if (answer !== null) return; setAnswer(option); playWebEffect(option === quiz.entry[language].definition ? 'correct' : 'wrong'); }}>{option}</button>)}</div>
         {answer !== null && <div className={`study-feedback ${answer === quiz.entry[language].definition ? 'is-correct' : 'is-wrong'}`}><h4 role="status">{answer === quiz.entry[language].definition ? tr('太棒了！你答对了', 'Great job!') : tr('没关系，再复习一下吧', 'No worries, let’s review')}</h4><p>{tr('定义：', 'Definition: ')}{quiz.entry[language].definition}</p><button className="study-another" onClick={startQuiz}>{tr("再来一题", "Try another")}</button></div>}
       </section>}

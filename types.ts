@@ -1,5 +1,7 @@
 
 export type LessonStep = {
+    explanation?: string;
+    requiresArtifact?: boolean;
     type: 'theory' | 'quiz' | 'boss' | 'match' | 'fill' | 'video' | 'practice' | 'interactive';
     content?: string;
     question?: string;

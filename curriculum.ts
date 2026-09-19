@@ -40,9 +40,10 @@ export const WEEKS: WeekInfo[] = [
   { id: 4, title: "第四周：召唤分身术（智能体）", color: "from-green-400 to-emerald-600", icon: "fa-robot", description: "智能体工程" },
 ];
 
-export const ALL_CURRICULUM: Record<number, DayContent[]> = {
+import { applyCourseFixes } from './course-fixes';
+export const ALL_CURRICULUM: Record<number, DayContent[]> = applyCourseFixes({
     1: [ w1d1Data, w1d2Data, w1d3Data, w1d4Data, w1d5Data, w1d6Data, w1d7Data ],
     2: [ w2d1Data, w2d2Data, w2d3Data, w2d4Data, w2d5Data, w2d6Data, w2d7Data ],
     3: [ w3d1Data, w3d2Data, w3d3Data, w3d4Data, w3d5Data, w3d6Data, w3d7Data ],
     4: [ w4d1Data, w4d2Data, w4d3Data, w4d4Data, w4d5Data, w4d6Data, w4d7Data ],
-};
+}, 'zh');

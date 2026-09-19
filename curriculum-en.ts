@@ -948,10 +948,11 @@ const normalizeDay = (week: number, day: DayContent): DayContent => {
   };
 };
 
+import { applyCourseFixes } from './course-fixes';
 export const ALL_CURRICULUM_EN: Record<number, DayContent[]> =
-  Object.fromEntries(
+  applyCourseFixes(Object.fromEntries(
     Object.entries(source).map(([week, days]) => [
       Number(week),
       days.map((day) => normalizeDay(Number(week), day)),
     ]),
-  );
+  ), 'en');

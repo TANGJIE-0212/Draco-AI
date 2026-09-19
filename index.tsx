@@ -7,7 +7,11 @@ import { LessonStep, DayContent } from './types';
 import { loadProgress, saveProgress, progressPosition, type CompletedDays } from './course-progress';
 import { GLOSSARY, GLOSSARY_CATEGORIES, GLOSSARY_SOURCE_URL } from './glossary';
 import { WorldMap, StudyCards, MapMusic } from './web-sync/ChineseExperience';
+import { concealedChoices, integerPercentages, canAdvance } from './miniprogram/course/learning-logic';
+import { BpeLab } from './web-sync/BpeLab';
+import { WorkUpload } from './web-sync/WorkUpload';
 import { playWebEffect } from './web-sync/audio';
+import { practiceDrafts } from './web-sync/practice-drafts';
 
 // --- 配置区 ---
 const APP_BASE = import.meta.env.BASE_URL;
@@ -48,7 +52,7 @@ const UI = {
   practice: tr('实战任务', 'Practice task'),
   written: tr('已写', 'Written'),
   chars: tr('字', 'characters'),
-  improveHint: tr('再补充角色目标、输入、步骤、输出格式或边界限制后即可提交。', 'Add the goal, input, steps, output format, or boundaries before checking.'),
+  improveHint: tr('请对照本题要求补充答案与理由，不必写与任务无关的内容。', 'Add the answer and reasoning required by this task; avoid unrelated padding.'),
   selfCheck: tr('开始自检', 'Start self-check'),
   selfCheckStandards: tr('自检标准', 'Self-check criteria'),
   reference: tr('查看参考答案', 'View reference answer'),
@@ -413,33 +417,36 @@ const ProgressBar = ({ current, total }: { current: number, total: number }) => 
 
 // --- Lesson Engine ---
 const MatchGame = ({ step, onCorrect }: { step: LessonStep, onCorrect: () => void }) => {
+    const [notice, setNotice] = useState('');
     const [leftSelected, setLeftSelected] = useState<string | null>(null);
     const [matched, setMatched] = useState<Set<string>>(new Set());
     const [shuffledRight, setShuffledRight] = useState<{id: string, text: string}[]>([]);
     useEffect(() => {
         if (step.pairs) {
             const rightItems = step.pairs.map(p => ({ id: p.left, text: p.right }));
-            setShuffledRight(rightItems.sort(() => Math.random() - 0.5));
+            setShuffledRight(concealedChoices(rightItems));
+            setMatched(new Set()); setLeftSelected(null); setNotice('');
         }
     }, [step]);
     const handleLeftClick = (id: string) => { if (matched.has(id)) return; SoundSynth.play('pop'); setLeftSelected(id); };
     const handleRightClick = (id: string) => {
-        if (matched.has(id)) return;
+        if (matched.has(id) || leftSelected === null) return;
         if (leftSelected === id) {
             SoundSynth.play('match');
             const newMatched = new Set(matched); newMatched.add(id); setMatched(newMatched); setLeftSelected(null);
-            if (newMatched.size === step.pairs?.length) setTimeout(onCorrect, 500);
-        } else { SoundSynth.play('wrong'); setLeftSelected(null); }
+            setNotice('');
+            if (newMatched.size === step.pairs?.length) onCorrect();
+        } else { SoundSynth.play('wrong'); setLeftSelected(null); setNotice(tr('这两项不匹配，请对照题干重选。已配好的会保留。', 'These do not match. Check the question and try another pair; completed pairs stay.')); }
     };
     return (
-        <div className="w-full flex gap-4 justify-between animate-slide-up">
+        <div className="w-full animate-slide-up"><h2 className="text-2xl font-bold mb-4"><InlineText text={step.question || ""} /></h2><p className="mb-3">{tr('先选左侧，再选右侧，完成全部配对。', 'Choose a left item, then its right match. Complete every pair.')}</p><p role="status">{notice}</p><div className="flex gap-4 justify-between">
             <div className="flex flex-col gap-3 w-1/2">{step.pairs?.map(pair => (
                 <button key={pair.left} onClick={() => handleLeftClick(pair.left)} disabled={matched.has(pair.left)} className={`p-4 rounded-xl border-2 text-sm sm:text-base font-bold transition-all ${matched.has(pair.left) ? 'bg-green-100 border-green-500 opacity-50' : leftSelected === pair.left ? 'bg-blue-100 border-blue-500 scale-105' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>{pair.left}</button>
             ))}</div>
             <div className="flex flex-col gap-3 w-1/2">{shuffledRight.map(item => (
                 <button key={item.id} onClick={() => handleRightClick(item.id)} disabled={matched.has(item.id)} className={`p-4 rounded-xl border-2 text-sm sm:text-base transition-all ${matched.has(item.id) ? 'bg-green-100 border-green-500 opacity-50' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>{item.text}</button>
             ))}</div>
-        </div>
+        </div></div>
     );
 };
 
@@ -473,12 +480,17 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
     const [selected, setSelected] = useState<string | null>(null);
     const [temperature, setTemperature] = useState(1);
     const [order, setOrder] = useState<string[]>([]);
+    const [visited, setVisited] = useState<string[]>([]);
+    const [sequenceChoices, setSequenceChoices] = useState<string[]>([]);
+    const visit = (label: string) => setVisited(values => [...new Set([...values, label])]);
 
     useEffect(() => {
       setProgress(0);
       setSelected(null);
       setTemperature(1);
       setOrder([]);
+      setVisited([]);
+      setSequenceChoices(concealedChoices(step.interactiveSequence ?? ['Tokenizer', 'Embedding', 'Attention', 'Logits', 'Softmax', 'Sampling']));
     }, [step]);
 
     const finish = () => {
@@ -499,82 +511,71 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
 
     if (step.interactiveKind === 'timeline') {
       const events = [
-        ['1950', '图灵测试', '把“机器能否思考”变成可观察的对话问题'],
-        ['1956', '达特茅斯会议', '人工智能成为有名称的研究领域'],
-        ['1997', '深蓝', '强力搜索与人工知识击败棋王'],
-        ['2016', 'AlphaGo', '神经网络、学习与搜索共同解决围棋'],
-        ['2017', 'Transformer', '注意力机制奠定大语言模型路线'],
-        ['2022', 'ChatGPT', '生成式 AI 通过自然语言走向大众']
+        ['1950', tr("图灵测试", "Turing Test"), tr("把“机器能否思考”变成可观察的对话问题", "Turn machine intelligence into an observable conversation question")],
+        ['1956', tr("达特茅斯会议", "Dartmouth workshop"), tr("人工智能成为有名称的研究领域", "AI emerges as a named research field")],
+        ['1997', tr("深蓝", "Deep Blue"), tr("强力搜索与人工知识击败棋王", "Search and human expertise defeat a chess champion")],
+        ['2016', 'AlphaGo', tr("神经网络、学习与搜索共同解决围棋", "Neural networks, learning, and search tackle Go")],
+        ['2017', 'Transformer', tr("注意力机制奠定大语言模型路线", "Attention shapes the path to large language models")],
+        ['2022', 'ChatGPT', tr("生成式 AI 通过自然语言走向大众", "Natural language brings generative AI to a broad audience")]
       ];
       return shell(<>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {events.map(([year, title, detail], index) => <button key={year} onClick={() => { setSelected(year); setProgress(Math.max(progress, index + 1)); SoundSynth.play('pop'); }} className={`min-h-28 rounded-2xl border-2 p-3 text-left transition-all ${selected === year ? 'border-orange-500 bg-orange-50 scale-[1.02]' : 'border-gray-200 bg-white'}`}><div className="text-2xl font-black text-indigo-700">{year}</div><div className="font-bold">{title}</div>{selected === year && <div className="mt-2 text-sm text-gray-600">{detail}</div>}</button>)}
+          {events.map(([year, title, detail], index) => <button key={year} onClick={() => { setSelected(year); visit(year); SoundSynth.play('pop'); }} className={`min-h-28 rounded-2xl border-2 p-3 text-left transition-all ${selected === year ? 'border-orange-500 bg-orange-50 scale-[1.02]' : 'border-gray-200 bg-white'}`}><div className="text-2xl font-black text-indigo-700">{year}</div><div className="font-bold">{title}</div>{selected === year && <div className="mt-2 text-sm text-gray-600">{detail}</div>}</button>)}
         </div>
-        {progress >= 4 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">时间线已读懂</button>}
-      </>, '按时间点击至少四个节点，观察 AI 如何从规则、搜索走向学习和生成。');
+        {visited.length >= 4 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{tr('完成探索','Finish exploring')}</button>}
+      </>, tr("探索至少四个不同节点，观察 AI 如何从规则、搜索走向学习和生成。", "Explore at least four different milestones, from rules and search to learning and generation."));
     }
 
     if (step.interactiveKind === 'bpe') {
-      const stages = [
-        ['人', '工', '智', '能'],
-        ['人工', '智', '能'],
-        ['人工', '智能']
-      ];
-      return shell(<>
-        <div className="rounded-2xl border-2 border-indigo-100 bg-white p-6">
-          <div className="mb-5 text-center text-sm font-bold text-gray-500">当前 Token 数：{stages[progress].length}</div>
-          <div className="flex flex-wrap justify-center gap-3">{stages[progress].map(token => <span key={token} className="rounded-xl border-2 border-indigo-300 bg-indigo-50 px-5 py-4 text-2xl font-black text-indigo-800">{token}</span>)}</div>
-        </div>
-        {progress < 2 ? <button onClick={() => { setProgress(progress + 1); SoundSynth.play('match'); }} className="w-full rounded-xl bg-orange-500 py-3 font-bold text-white">合并高频片段：{progress === 0 ? '人 + 工' : '智 + 能'}</button> : <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">完成：4 块变成 2 块</button>}
-      </>, '亲手完成两轮简化 BPE 合并，观察高频组合如何缩短 Token 序列。');
+      return shell(<BpeLab en={IS_EN} onComplete={finish} />, tr('选择相邻积木，按频次合并。', 'Choose adjacent tiles and merge by frequency.'));
     }
 
     if (step.interactiveKind === 'embedding') {
-      const concepts = [{name:'猫',x:18,y:22},{name:'狗',x:35,y:30},{name:'汽车',x:68,y:65},{name:'自行车',x:82,y:55}];
+      const concepts = [{name:tr('猫','Cat'),x:18,y:22},{name:tr('狗','Dog'),x:35,y:36},{name:tr('汽车','Car'),x:62,y:73},{name:tr('自行车','Bicycle'),x:80,y:48}];
       return shell(<>
         <div className="relative h-72 rounded-2xl border-2 border-indigo-100 bg-[radial-gradient(circle,_#c7d2fe_1px,_transparent_1px)] bg-[size:20px_20px]">
-          {concepts.map(item => <button key={item.name} onClick={() => { setSelected(item.name); setProgress(progress + 1); SoundSynth.play('pop'); }} style={{left:`${item.x}%`,top:`${item.y}%`}} className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 px-4 py-3 font-black shadow ${selected === item.name ? 'border-orange-500 bg-orange-100' : 'border-indigo-500 bg-white'}`}>{item.name}</button>)}
-          <div className="absolute bottom-3 left-3 text-xs text-gray-500">距离近：语义可能相关，不代表事实相同</div>
+          {concepts.map(item => <button key={item.name} onClick={() => { setSelected(item.name); visit(item.name); SoundSynth.play('pop'); }} style={{left:`${item.x}%`,top:`${item.y}%`}} className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 px-4 py-3 font-black shadow ${selected === item.name ? 'border-orange-500 bg-orange-100' : 'border-indigo-500 bg-white'}`}>{item.name}</button>)}
+          <div className="absolute bottom-3 left-3 text-xs text-gray-500">{tr('距离近：语义可能相关，不代表事实相同','Closeness suggests related meaning, not identical facts')}</div>
         </div>
-        {selected && <div className="rounded-xl bg-indigo-50 p-4 text-center font-bold">你选择了“{selected}”。观察它离同类概念更近。</div>}
-        {progress >= 3 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">我理解语义距离的边界</button>}
-      </>, '点击语义星图中的概念，观察同类词为何更接近，并记住“相关不等于正确”。');
+        {selected && <div className="rounded-xl bg-indigo-50 p-4 text-center font-bold">{tr('你选择了','Selected: ')}{selected}{tr('。观察示意图中的相对位置。','. Compare relative positions in this illustration.')}</div>}
+        {visited.length >= 3 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{tr('完成探索','Finish exploring')}</button>}
+      </>, tr('这张二维星图是教学示意，不是模型实测。探索至少三个不同概念，观察相对位置；相关不等于事实相同。','This two-dimensional map is an illustration, not a model measurement. Explore at least three concepts and compare their relative positions; related does not mean factually identical.'));
     }
 
     if (step.interactiveKind === 'attention') {
-      const labels = ['小明', '书', '小刚'];
+      const labels = [tr('小明','Alex'), tr('书','Book'), tr('小刚','Sam')];
       const values = [progress === 0 ? 34 : 12, progress === 0 ? 33 : 18, progress === 0 ? 33 : 70];
       return shell(<>
         <div className="rounded-2xl border-2 border-indigo-100 bg-white p-5 space-y-4">
-          <div className="text-lg font-bold">“小明把书递给小刚，因为 <span className="text-orange-600">他</span> 明天要演讲。”</div>
+          <div className="text-lg font-bold">{tr('小明把书递给小刚，因为','Alex handed Sam the book because ')}<span className="text-orange-600">{tr('他','he')}</span>{tr('明天要演讲。',' would give a talk tomorrow.')}</div>
           {labels.map((label,index)=><div key={label}><div className="mb-1 flex justify-between text-sm font-bold"><span>{label}</span><span>{values[index]}%</span></div><div className="h-4 rounded-full bg-gray-100"><div className="h-4 rounded-full bg-indigo-500 transition-all duration-500" style={{width:`${values[index]}%`}} /></div></div>)}
         </div>
-        {progress === 0 ? <button onClick={() => { setProgress(1); SoundSynth.play('pop'); }} className="w-full rounded-xl bg-orange-500 py-3 font-bold text-white">补充上下文：“小刚明天要演讲”</button> : <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">完成：上下文改变注意力重点</button>}
-      </>, '观察代词“他”对三个候选位置的注意力。补充上下文后，权重会重新分配。');
+        {progress === 0 ? <button onClick={() => { setProgress(1); SoundSynth.play('pop'); }} className="w-full rounded-xl bg-orange-500 py-3 font-bold text-white">{tr('补充上下文：小刚明天要演讲','Add context: Sam will give the talk tomorrow')}</button> : <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{tr('完成：上下文改变注意力重点','Finish: context changes the attention pattern')}</button>}
+      </>, tr("以下百分比为教学示意，不是模型实测。原句存在歧义；补充上下文后观察关注重点变化。", "These percentages are illustrative, not model measurements. The original is ambiguous; add context and observe the changed focus."));
     }
 
     if (step.interactiveKind === 'temperature') {
       const base = [60, 25, 10, 5];
       const adjusted = base.map(value => Math.pow(value / 100, 1 / temperature));
       const total = adjusted.reduce((sum, value) => sum + value, 0);
-      const probabilities = adjusted.map(value => Math.round(value / total * 100));
-      const labels = ['散步', '野餐', '写作业', '开飞船'];
+      const probabilities = integerPercentages(adjusted);
+      const labels = [tr('散步','Walk'), tr('野餐','Picnic'), tr('写作业','Study'), tr('开飞船','Fly a spaceship')];
       return shell(<>
         <div className="rounded-2xl border-2 border-indigo-100 bg-white p-5">
-          <div className="mb-4 flex justify-between font-bold"><span>稳定</span><span>Temperature：{temperature.toFixed(1)}</span><span>冒险</span></div>
+          <div className="mb-4 flex justify-between font-bold"><span>{tr("集中","Focused")}</span><span>Temperature：{temperature.toFixed(1)}</span><span>{tr("分散","Varied")}</span></div>
           <input aria-label="Temperature" type="range" min="0.4" max="1.8" step="0.1" value={temperature} onChange={event => { setTemperature(Number(event.target.value)); setProgress(1); }} className="w-full accent-orange-500" />
           <div className="mt-6 grid grid-cols-4 items-end gap-3 h-48">{labels.map((label,index)=><div key={label} className="flex h-full flex-col justify-end text-center"><div className="mb-2 text-sm font-black">{probabilities[index]}%</div><div className="mx-auto w-full max-w-16 rounded-t-lg bg-indigo-500 transition-all" style={{height:`${Math.max(8, probabilities[index] * 2.2)}px`}}/><div className="mt-2 text-xs sm:text-sm font-bold">{label}</div></div>)}</div>
         </div>
-        {progress > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">完成：温度改变分布，不增加知识</button>}
-      </>, '拖动冒险旋钮，观察 Softmax 概率变尖或变平。');
+        {progress > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{tr('完成：温度改变分布，不增加知识','Finish: temperature changes distributions, not knowledge')}</button>}
+      </>, tr("示例输入：“周末我们去公园___”。温度改变候选分布，不增加知识。拖动旋钮比较两种设置；整数百分比做了舍入分配。", "Toy input: “At the park this weekend, we will ___.” Move the slider to compare distributions. Temperature does not add knowledge; displayed integer percentages are apportioned by rounding."));
     }
 
     if (step.interactiveKind === 'evidence') {
-      const tools: Record<string,string> = {天气:'权威天气来源',算术:'计算器',校规:'学校原始文件',故事:'人工创意筛选'};
+      const tools: Record<string,string> = {[tr('天气','Weather')]:tr('权威天气来源','Authoritative weather source'),[tr('算术','Arithmetic')]:tr('计算器','Calculator'),[tr('校规','School rules')]:tr('学校原始文件','Original school document'),[tr('故事','Stories')]:tr('人工创意筛选','Human creative judgment')};
       return shell(<>
-        <div className="grid grid-cols-2 gap-3">{Object.entries(tools).map(([task,tool])=><button key={task} onClick={() => { setSelected(task); setProgress(progress + 1); SoundSynth.play('pop'); }} className={`rounded-2xl border-2 p-4 text-left ${selected === task ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}><div className="text-xl font-black">{task}</div>{selected === task && <div className="mt-2 text-sm text-gray-600">核验方式：{tool}</div>}</button>)}</div>
-        {progress >= 3 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">完成：不同问题连接不同证据</button>}
-      </>, '点击不同任务，为它选择真正可靠的证据或工具，而不是只让模型再猜一次。');
+        <div className="grid grid-cols-2 gap-3">{Object.entries(tools).map(([task,tool])=><button key={task} onClick={() => { setSelected(task); visit(task); SoundSynth.play('pop'); }} className={`rounded-2xl border-2 p-4 text-left ${selected === task ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}><div className="text-xl font-black">{task}</div>{selected === task && <div className="mt-2 text-sm text-gray-600">{tr('核验方式：','Verification: ')}{tool}</div>}</button>)}</div>
+        {visited.length >= 3 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{tr('完成：不同问题连接不同证据','Finish: match evidence to the task')}</button>}
+      </>, tr("探索至少三种不同任务，比较核验工具。后面的题目再由你独立选择。", "Explore at least three different tasks and compare their verification methods. Choose independently in the later questions."));
     }
 
     if (step.interactiveKind === 'compare') {
@@ -609,53 +610,67 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
         </div>
         <div className="rounded-xl bg-indigo-50 p-3 text-center text-sm font-bold text-indigo-800">{UI.found} {order.length}; {UI.remaining} {remaining.length}</div>
         {remaining.length === 0 && order.length > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{UI.diagnoseDone}</button>}
-      </>, step.interactiveInstruction || '找出所有真正会让系统失败的因素。误选不会扣分，可以继续诊断。');
+      </>, step.interactiveInstruction || tr('选出有问题的记录，留意其中正常的做法。','Select faulty records and distinguish valid behavior.'));
     }
 
     if (step.interactiveKind === 'sequence') {
       const target = step.interactiveSequence ?? [];
-      const choices = target.filter(item => !order.includes(item));
+      const choices = sequenceChoices;
       return shell(<>
         <div className="rounded-2xl border-2 border-indigo-100 bg-white p-5">
           <div className="mb-4 min-h-16 flex flex-wrap gap-2">{order.map((item,index)=><span key={item} className="rounded-xl bg-green-100 px-3 py-2 font-bold text-green-700">{index+1}. {item}</span>)}</div>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">{choices.map(item=><button key={item} onClick={() => {
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">{choices.map(item=><button key={item} disabled={order.includes(item)} onClick={() => {
             const nextIndex = order.length;
             if (item !== target[nextIndex]) { SoundSynth.play('wrong'); setOrder([]); }
             else { SoundSynth.play('match'); setOrder([...order, item]); }
-          }} className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 font-bold">{item}</button>)}</div>
+          }} className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 font-bold disabled:bg-green-100 disabled:text-green-700 disabled:opacity-60">{item}</button>)}</div>
         </div>
         {order.length === target.length && target.length > 0 && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{UI.sequenceDone}</button>}
       </>, step.interactiveInstruction || '按真实依赖顺序点击步骤，点错会重新开始。');
     }
 
     const target = ['Tokenizer', 'Embedding', 'Attention', 'Logits', 'Softmax', 'Sampling'];
-    const choices = target.filter(item => !order.includes(item));
+    const choices = sequenceChoices;
     const isCorrectOrder = order.every((item,index) => item === target[index]);
     return shell(<>
       <div className="rounded-2xl border-2 border-indigo-100 bg-white p-5">
         <div className="mb-4 min-h-16 flex flex-wrap gap-2">{order.map((item,index)=><span key={item} className={`rounded-xl px-3 py-2 font-bold ${item === target[index] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{index+1}. {item}</span>)}</div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{choices.map(item=><button key={item} onClick={() => { const next=[...order,item]; if(item !== target[next.length-1]) { SoundSynth.play('wrong'); setOrder([]); } else { SoundSynth.play('match'); setOrder(next); } }} className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 font-bold">{item}</button>)}</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{choices.map(item=><button key={item} disabled={order.includes(item)} onClick={() => { const next=[...order,item]; if(item !== target[next.length-1]) { SoundSynth.play('wrong'); setOrder([]); } else { SoundSynth.play('match'); setOrder(next); } }} className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 font-bold disabled:bg-green-100 disabled:text-green-700 disabled:opacity-60">{item}</button>)}</div>
       </div>
-      {order.length === target.length && isCorrectOrder && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">生产线排序完成</button>}
-    </>, '按真实生成顺序点击六个模块。点错会重新开始。');
+      {order.length === target.length && isCorrectOrder && <button onClick={finish} className="w-full rounded-xl bg-green-500 py-3 font-bold text-white">{tr('生产线排序完成','Pipeline complete')}</button>}
+    </>, tr("按真实生成顺序点击六个模块。点错会重新开始。", "Select the six modules in generation order. An incorrect choice restarts the sequence."));
   };
 
   const InlineText = ({ text }: { text: string }) => {
-    const parts = text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
-    return <>{parts.map((part, index) => part.startsWith('**') && part.endsWith('**')
+    const parts = text.split(/(`[^`]+`|\*\*[^*]+\*\*)/g).filter(Boolean);
+    return <>{parts.map((part, index) => part.startsWith('`') && part.endsWith('`')
+      ? <code key={index} className="rounded bg-indigo-50 px-1 text-indigo-700" style={{ overflowWrap: 'anywhere' }}>{part.slice(1, -1)}</code>
+      : part.startsWith('**') && part.endsWith('**')
       ? <strong key={index} className="font-black text-indigo-950">{part.slice(2, -2)}</strong>
       : <React.Fragment key={index}>{part}</React.Fragment>
     )}</>;
   };
 
   const TheoryContent = ({ content, isBoss }: { content?: string, isBoss?: boolean }) => {
-    const lines = (content || '').split('\n').map(line => line.trim());
+    const rawLines = (content || '').split('\n');
+    const lines = rawLines.map(line => line.trim());
     const blocks: React.ReactNode[] = [];
     let index = 0;
 
     while (index < lines.length) {
       const line = lines[index];
       if (!line) { index++; continue; }
+
+      const fence = line.match(/^(`{3,}|~{3,})/);
+      if (fence) {
+        const body: string[] = [];
+        const close = new RegExp(`^${fence[1][0]}{${fence[1].length},}$`);
+        index++;
+        while (index < lines.length && !close.test(lines[index])) body.push(rawLines[index++]);
+        if (index < lines.length) index++;
+        blocks.push(<pre key={`code-${index}`} className="rounded-2xl bg-indigo-50 p-4 text-left text-sm leading-relaxed text-indigo-950 whitespace-pre-wrap" style={{ overflowWrap: 'anywhere' }}><code>{body.join('\n')}</code></pre>);
+        continue;
+      }
 
       if (line.startsWith('|') && lines[index + 1]?.startsWith('|---')) {
         const tableRows: string[][] = [];
@@ -718,8 +733,11 @@ const FillBlank = ({ step, selectedIdx, showResult, isCorrect, onSelect }: { ste
     );
   };
 
-const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void }) => {
-    const [text, setText] = useState("");
+const PracticeBox = ({ step, lessonId, draftId, onPass }: { step: LessonStep, lessonId: string, draftId: string, onPass: () => void }) => {
+    const [artifactSaved, setArtifactSaved] = useState(false);
+    const [initialDraft] = useState(() => practiceDrafts.read(draftId));
+    const [text, setText] = useState(initialDraft.text);
+    const [draftError, setDraftError] = useState(initialDraft.error);
   const [showSelfCheck, setShowSelfCheck] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
     const minLen = step.minLength ?? 20;
@@ -735,19 +753,22 @@ const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void })
                     <i className="fa-solid fa-pen-ruler text-purple-600"></i>
           <span className="font-bold text-purple-700">{UI.practice}</span>
                 </div>
-                <div className="text-gray-800 whitespace-pre-wrap leading-relaxed">{step.task}</div>
+                <div className="text-gray-800 whitespace-pre-wrap leading-relaxed" style={{ overflowWrap: 'anywhere' }}>{step.task}</div>
             </div>
 
             <textarea
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                maxLength={10000}
+                onChange={(e) => { setText(e.target.value); setDraftError(!practiceDrafts.write(draftId, e.target.value)); }}
                 disabled={showSelfCheck}
                 placeholder={step.placeholder || tr(`在这里写下你的答案……（至少 ${minLen} 字）`, `Write your answer here (at least ${minLen} characters).`)}
                 className="w-full min-h-[160px] p-4 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none text-base leading-relaxed resize-y disabled:bg-gray-50"
             />
+            <p className={draftError ? 'text-sm text-red-700' : 'text-xs text-gray-500'} role={draftError ? 'alert' : undefined}>{draftError ? tr('草稿未能读取或保存，请复制当前内容后再退出。', 'Draft could not be loaded or saved. Copy your text before leaving.') : tr('内容仅保存在本机，可清空文本删除。', 'Saved on this device only. Clear the text to remove it.')}</p>
+            {step.requiresArtifact && <WorkUpload lesson={lessonId} en={IS_EN} onSaved={setArtifactSaved} />}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 text-sm text-gray-500">
               <div>
-                <span>{UI.written} <span className={charCount >= minLen ? 'text-green-600 font-bold' : 'text-orange-600 font-bold'}>{charCount}</span> / {minLen} {UI.chars}</span>
+                {step.requiresArtifact ? <span>{tr('作品说明（选填）', 'Work notes (optional)')}</span> : <span>{UI.written} <span className={charCount >= minLen ? 'text-green-600 font-bold' : 'text-orange-600 font-bold'}>{charCount}</span> / {minLen} {UI.chars}</span>}
                 {remainingChars > 0 && <div className="mt-1 text-orange-600">{UI.improveHint}</div>}
               </div>
                 {!showSelfCheck && (
@@ -766,12 +787,12 @@ const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void })
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-5 space-y-4 animate-pop">
                     <div>
                     <div className="font-bold text-green-700 mb-1"><i className="fa-solid fa-list-check mr-1"></i>{UI.selfCheckStandards}</div>
-                    <div className="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">{step.rubric}</div>
+                    <div className="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed" style={{ overflowWrap: 'anywhere' }}>{step.rubric}</div>
                     </div>
                   {step.referenceAnswer && (
                         <details className="bg-white/60 rounded-xl p-3">
                             <summary className="font-bold text-indigo-700 cursor-pointer"><i className="fa-solid fa-lightbulb mr-1"></i>{UI.reference}</summary>
-                      <div className="mt-2 text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">{step.referenceAnswer}</div>
+                      <div className="mt-2 text-gray-700 text-sm whitespace-pre-wrap leading-relaxed" style={{ overflowWrap: 'anywhere' }}>{step.referenceAnswer}</div>
                         </details>
                     )}
                   <label className="flex items-start gap-3 rounded-xl bg-white p-3 cursor-pointer">
@@ -780,7 +801,7 @@ const PracticeBox = ({ step, onPass }: { step: LessonStep, onPass: () => void })
                   </label>
                     <div className="flex gap-2 pt-2">
                     <button onClick={() => { setShowSelfCheck(false); setConfirmed(false); }} className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-2 rounded-xl font-bold active:scale-95">{UI.revise}</button>
-                    <button onClick={() => { SoundSynth.play('correct'); onPass(); }} disabled={!confirmed} className="flex-1 bg-green-500 text-white py-2 rounded-xl font-bold shadow disabled:opacity-40 active:scale-95">{UI.finishPractice}</button>
+                    <button onClick={() => { if (!confirmed || (step.requiresArtifact && !artifactSaved)) return; SoundSynth.play('correct'); onPass(); }} disabled={!confirmed || (step.requiresArtifact && !artifactSaved)} className="flex-1 bg-green-500 text-white py-2 rounded-xl font-bold shadow disabled:opacity-40 active:scale-95">{step.requiresArtifact && !artifactSaved ? tr('请先上传作品', 'Upload your work first') : UI.finishPractice}</button>
                     </div>
                 </div>
             )}
@@ -825,6 +846,8 @@ const LessonEngine = ({ weekId, dayId, onComplete, onExit }: { weekId: number, d
 
     const handleContinue = () => {
         // Ordinary navigation is silent on web and WeChat; answer feedback stays audible.
+        if (isReviewMode && showResult && !isCorrect) { setSelectedOption(null); setShowResult(false); return; }
+        if (!canAdvance(currentStep.type, showResult, isCorrect, isReviewMode)) return;
         if (stepIndex < steps.length - 1) setStepIndex(prev => prev + 1);
         else {
             if (!isReviewMode && mistakes.length > 0) { setSteps([...mistakes]); setStepIndex(0); setMistakes([]); setIsReviewMode(true); }
@@ -851,33 +874,38 @@ const LessonEngine = ({ weekId, dayId, onComplete, onExit }: { weekId: number, d
                 </div>
             </div>
 
-            <div className={`lesson-stage min-h-0 flex-1 flex flex-col items-center justify-start sm:justify-center px-4 py-3 sm:p-6 max-w-2xl mx-auto w-full overflow-y-auto overscroll-contain ${shake ? 'animate-shake' : ''}`}>
+            <div key={`${stepIndex}-${isReviewMode}`} className={`lesson-stage min-h-0 flex-1 flex flex-col items-center justify-start sm:justify-center px-4 py-3 sm:p-6 max-w-2xl mx-auto w-full overflow-y-auto overscroll-contain ${shake ? 'animate-shake' : ''}`}>
                 {currentStep.type === 'video' && <VideoPlayer url={currentStep.url!} />}
                 {currentStep.type === 'interactive' && <InteractiveLab step={currentStep} onComplete={() => { setIsCorrect(true); setShowResult(true); }} />}
                 {(currentStep.type === 'theory' || currentStep.type === 'boss') && <TheoryContent content={currentStep.content || currentStep.question} isBoss={currentStep.isBoss || currentStep.type === 'boss'} />}
-                {currentStep.type === 'quiz' && <div className="w-full"><h2 className="text-2xl font-bold mb-8">{currentStep.question}</h2><div className="space-y-3">{currentStep.options?.map((opt, i) => <button key={i} onClick={() => !showResult && setSelectedOption(i)} className={`w-full p-4 rounded-xl border-2 text-left font-medium transition-all ${showResult && i === currentStep.correct ? 'bg-green-100 border-green-500 text-green-700' : showResult && i === selectedOption ? 'bg-red-100 border-red-500 text-red-700' : !showResult && selectedOption === i ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'}`}>{opt}</button>)}</div></div>}
+                {currentStep.type === 'quiz' && <div className="w-full"><h2 className="text-2xl font-bold mb-8"><InlineText text={currentStep.question || ""} /></h2><div className="space-y-3">{currentStep.options?.map((opt, i) => <button key={i} onClick={() => !showResult && setSelectedOption(i)} className={`w-full p-4 rounded-xl border-2 text-left font-medium transition-all ${showResult && i === currentStep.correct ? 'bg-green-100 border-green-500 text-green-700' : showResult && i === selectedOption ? 'bg-red-100 border-red-500 text-red-700' : !showResult && selectedOption === i ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'}`}>{opt}</button>)}</div></div>}
                 {currentStep.type === 'match' && <MatchGame step={currentStep} onCorrect={() => { setIsCorrect(true); setShowResult(true); SoundSynth.play('correct'); }}/>}
                 {currentStep.type === 'fill' && (
                     <div className="w-full">
-                        {currentStep.question && <h2 className="text-2xl font-bold mb-6 text-gray-800">{currentStep.question}</h2>}
+                        {currentStep.question && <h2 className="text-2xl font-bold mb-6 text-gray-800"><InlineText text={currentStep.question || ""} /></h2>}
                         <FillBlank step={currentStep} selectedIdx={selectedOption} showResult={showResult} isCorrect={isCorrect} onSelect={setSelectedOption}/>
                     </div>
                 )}
                 {currentStep.type === 'practice' && (
-                    <PracticeBox step={currentStep} onPass={() => { setIsCorrect(true); setShowResult(true); handleContinue(); }} />
+                    <PracticeBox lessonId={`${IS_EN ? 'en' : 'zh'}:${weekId}-${dayId}`} draftId={`${IS_EN ? 'en' : 'zh'}:${weekId}-${dayId}:practice:${lessonData!.steps.filter(item => item.type === 'practice').indexOf(currentStep)}`} step={currentStep} onPass={() => { setIsCorrect(true); setShowResult(true); handleContinue(); }} />
                 )}
+                {showResult && (currentStep.type === 'quiz' || currentStep.type === 'fill') && <div className="w-full mt-5 p-4 rounded-2xl bg-indigo-50 space-y-2">
+                  <p className="font-bold">{tr('正确答案：', 'Correct answer: ')}{currentStep.type === 'quiz' ? currentStep.options?.[Number(currentStep.correct)] : currentStep.correct}</p>
+                  {currentStep.explanation && <p>{currentStep.explanation}</p>}
+                  {!isCorrect && <p>{isReviewMode ? tr('看完解析，再答一次。', 'Read the explanation, then try again.') : tr('继续学习，课末再试一次。', 'Continue learning, then try this again at the end.')}</p>}
+                </div>}
             </div>
             
             <div className={`lesson-footer shrink-0 px-4 py-3 sm:p-6 border-t ${showResult ? (isCorrect ? 'bg-green-100' : 'bg-red-100') : 'bg-white'}`}>
                 <div className="max-w-2xl mx-auto flex justify-between items-center">
-                    {showResult && currentStep.type !== 'practice' && <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? UI.correct : UI.retry}</div>}
+                    {showResult && currentStep.type !== 'practice' && <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? UI.correct : tr('请查看解析', 'See explanation')}</div>}
                     <div className="flex-1"></div>
                     {currentStep.type === 'practice' ? null
-                      : currentStep.type === 'interactive' && !showResult
+                      : (currentStep.type === 'interactive' || currentStep.type === 'match') && !showResult
                       ? null
                         : (currentStep.type === 'quiz' || currentStep.type === 'fill') && !showResult
                         ? <button onClick={handleCheck} disabled={selectedOption === null} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg disabled:opacity-50 active:scale-95 transition-transform">{UI.check}</button>
-                        : <button onClick={handleContinue} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform">{UI.continue}</button>}
+                        : <button onClick={handleContinue} className="bg-green-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform">{isReviewMode && !isCorrect ? tr('重新作答', 'Try again') : UI.continue}</button>}
                 </div>
             </div>
         </div>
@@ -977,9 +1005,6 @@ const App = () => {
                         <button onClick={() => setView('world')} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors active:scale-90"><i className="fa-solid fa-arrow-left"></i></button>
                         <h2 className="text-xl font-bold">{WEEKS.find(w=>w.id===selectedWeekId)?.title}</h2>
                     </div>
-                      <button onClick={() => setShowGlossary(true)} className="shrink-0 bg-yellow-400 text-indigo-900 px-4 py-2 rounded-2xl font-bold shadow-lg flex items-center gap-2 active:scale-95 transition-transform">
-                        <i className="fa-solid fa-book-sparkles" aria-hidden="true"></i> {UI.glossary}
-                      </button>
                 </div>
 
                 <div className="flex-1 flex flex-col items-center gap-16 py-12 px-6 relative max-w-lg mx-auto w-full">

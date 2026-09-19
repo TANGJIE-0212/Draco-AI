@@ -39,8 +39,8 @@
       "lesson": "第三周 · AI 如何看图",
       "language": "zh-CN",
       "scenes": [
-        {"id":"hook","kind":"opening","eyebrow":"模型怎样看图？","title":"它先把图片切成许多小块","body":"像素被切成图像块，再编码成视觉词元。","labels":[],"narration":"多模态模型并不是像人一样睁眼看图。它先把图片切成许多图像块，也就是 Patch，再把颜色、边缘和纹理编码成视觉词元，送进可以计算的向量空间。"},
-        {"id":"mechanism","kind":"rules","eyebrow":"视觉理解链路","title":"切块、编码、图文对齐","body":"视觉编码器提取特征，图文对齐把画面与词语联系起来。","labels":["像素到图像块","图像块到视觉词元","画面与文字对齐"],"narration":"图片从像素切成图像块，视觉编码器把每块转成特征向量，再通过图文对齐，让图像区域和文字含义建立联系。切块越细可能保留更多细节，但计算量也会增加。"},
+        {"id":"hook","kind":"opening","eyebrow":"模型怎样看图？","title":"以一种常见视觉架构为例","body":"部分视觉模型把图片切成块，再编码成视觉表示。","labels":[],"narration":"本课用一种常见的视觉Transformer说明看图过程：把图片切成图像块，也就是Patch，再形成可以计算的视觉表示。不是所有多模态模型都采用同一种架构。Patch大小通常由架构确定，不是成品工具通用的用户按钮。"},
+        {"id":"mechanism","kind":"rules","eyebrow":"视觉理解链路","title":"切块、编码、图文对齐","body":"视觉编码器提取特征，图文对齐把画面与词语联系起来。","labels":["像素到图像块","图像块到视觉词元","画面与文字对齐"],"narration":"视觉编码器提取图像特征，图文连接让这些特征支持语言回答。在固定图片尺寸的简化切块模型中，块越小，数量和计算需求通常越大，但不保证每个任务都更准确。用户可以提供清晰裁图，或使用工具实际支持的细节档位。"},
         {"id":"takeaway","kind":"challenge","eyebrow":"视觉幻觉","title":"看起来像，不等于真的看见","body":"模糊、裁切、遮挡和图表单位都可能让模型脑补。","labels":["画面可见的证据","模型根据常识的推断"],"reveal":"先观察，再推断","narration":"模型能做光学字符识别、识别物体和空间关系，也会在画面模糊、裁切或遮挡时根据常识脑补。使用视觉模型时，要把可见证据和模型推断分开。"}
       ]
     },
@@ -50,9 +50,9 @@
       "lesson": "第三周 · 生成图片、视频与声音",
       "language": "zh-CN",
       "scenes": [
-        {"id":"hook","kind":"challenge","eyebrow":"看图和画图是两套发动机","title":"生成图片，从噪声开始","body":"扩散模型像在电视雪花中逐步雕刻出画面。","labels":["视觉编码器：图片到向量","扩散模型：噪声到图片"],"reveal":"分析与生成方向不同","narration":"看图时，视觉编码器把图片压成向量；画图时，扩散模型从随机噪声出发，根据文字条件一步步去噪。它们是两套方向不同的发动机。"},
-        {"id":"mechanism","kind":"learning","eyebrow":"三个控制旋钮","title":"随机种子、去噪步数与引导强度","body":"随机起点、处理次数和提示词引导共同影响结果。","labels":["随机种子 Seed","去噪步数 Steps","引导强度 CFG"],"narration":"随机种子决定起点，去噪步数决定迭代次数，CFG 控制模型多强地跟随提示词。要判断哪个设置造成变化，其他条件保持不变，每次只改一个旋钮。"},
-        {"id":"takeaway","kind":"recap","eyebrow":"从图片到短片","title":"时间维度让一致性更难","body":"关键帧、动作、字幕和声音必须在时间轴上对齐。","labels":["参考图与视觉锚点","关键帧与动作方向","语音合成与识别","版权、隐私与 AI 标注"],"narration":"图片变成视频后，角色、背景和动作要保持连续。关键帧、语音合成、字幕和剪辑共同组成短片。最终作品还要事实可查、声画同步，并检查素材许可与隐私。"}
+        {"id":"hook","kind":"challenge","eyebrow":"看图和画图是两套发动机","title":"扩散：一种常见的生图方法","body":"扩散模型通过逐步去噪生成图像，部分模型在潜空间中处理。","labels":["视觉编码器：图片到向量","扩散模型：噪声到图片"],"reveal":"分析与生成方向不同","narration":"视觉编码器把现有图片变成特征。扩散生成则从随机噪声出发，在条件引导下逐步去噪，有些模型在潜空间中处理。这是一种常见的生图方法，不是所有工具唯一的算法。"},
+        {"id":"mechanism","kind":"learning","eyebrow":"三个控制旋钮","title":"随机种子、去噪步数与引导强度","body":"使用工具提供的控制，记录随机波动，不把参数当质量保证。","labels":["随机种子 Seed","去噪步数 Steps","引导强度 CFG"],"narration":"工具提供这些设置时，Seed控制随机起点，Steps控制去噪次数，CFG调整引导强度。换Seed可能改变构图和人物；相同Seed还需要相同模型和其他设置。数值更大不保证更好。固定其他条件，每次改一个可用设置并记录实际结果。"},
+        {"id":"takeaway","kind":"recap","eyebrow":"从图片到短片","title":"时间维度让一致性更难","body":"关键帧、动作、字幕和声音必须在时间轴上对齐。","labels":["参考图与视觉锚点","关键帧与动作方向","语音合成与识别","版权、隐私与 AI 标注"],"narration":"制作视频时，可以先规划开始、中间和结束画面。这是制作方法，不是所有视频模型的内部机制。生成后检查人物、道具和动作连续性。配音先听原音，再核对字幕，区分发音错与转写错。公开前核对事实、素材使用许可与隐私。"}
       ]
     },
     {
@@ -61,7 +61,7 @@
       "lesson": "第四周 · 智能体如何行动",
       "language": "zh-CN",
       "scenes": [
-        {"id":"hook","kind":"challenge","eyebrow":"对话不等于智能体","title":"从回答问题，到推进任务","body":"智能体不只是多说几轮，而是管理目标、状态并调用工具。","labels":["问一句，答一句","计划、行动、观察、更新"],"reveal":"自主循环必须有边界","narration":"聊天主要回答当前问题，工作流按固定步骤运行，智能体则围绕目标管理状态、选择工具并根据结果调整计划。它不是更会聊天，而是多了一个受控执行循环。"},
+        {"id":"hook","kind":"challenge","eyebrow":"对话不等于智能体","title":"从回答问题，到推进任务","body":"智能体不只是多说几轮，而是管理目标、状态并调用工具。","labels":["多轮对话与修改","计划、行动、观察、更新"],"reveal":"自主循环必须有边界","narration":"Chat可以进行多轮问答和修改。Workflow运行预先设计的步骤、分支和循环。Agent则能围绕目标，根据结果选择下一步行动。这些方式可以组合使用，多步任务不一定需要Agent，接了工具也不自动成为Agent。"},
         {"id":"mechanism","kind":"timeline","eyebrow":"PAOU 行动循环","title":"计划、行动、观察、更新","body":"每一步都写回状态，再判断继续、重试、求助还是停止。","labels":["计划下一步","调用允许的工具","观察返回结果","更新状态"],"narration":"PAOU 来自计划、行动、观察和更新四个英文词。智能体先规划下一步，再调用经过授权的工具，观察结构化结果，并更新任务状态。做一步，看一步，而不是盲目执行到底。"},
         {"id":"takeaway","kind":"recap","eyebrow":"任务状态","title":"知道做到哪，也知道何时完成","body":"目标、计划、当前任务、状态与完成条件缺一不可。","labels":["目标可验收","步骤有依赖","状态可恢复","完成有条件"],"narration":"一个可靠智能体要记录目标、计划、当前任务、状态和完成条件。模型说完成了并不算完成，只有可检查的条件全部满足，任务才真正结束。"}
       ]
@@ -72,8 +72,8 @@
       "lesson": "第四周 · 让智能体安全停止",
       "language": "zh-CN",
       "scenes": [
-        {"id":"hook","kind":"challenge","eyebrow":"能力越强，控制越重要","title":"工具、记忆和权限都要有边界","body":"智能体能行动，也必须知道什么不能做。","labels":["最小权限","有限记忆"],"reveal":"高风险动作由人确认","narration":"智能体能使用工具和保存记忆，但不应因此获得无限权限。只开放当前任务需要的功能，只保存经同意的非敏感信息，并写明保存期限和删除方式。"},
-        {"id":"mechanism","kind":"rules","eyebrow":"失败处理","title":"有限重试、防重复、人工确认","body":"不同错误需要不同处理，不能一律不断重试。","labels":["暂时错误：有限重试","无权限：立即停止","重复请求：只执行一次"],"narration":"网络暂时失败可以有限重试，没有权限必须停止。幂等性表示同一请求重复到达，也只产生一次效果。发送、付款、删除和公开等动作必须通过人在回路，也就是 HITL，由人最后确认。"},
+        {"id":"hook","kind":"recap","eyebrow":"能力越强，控制越重要","title":"工具、记忆和权限都要有边界","body":"智能体能行动，也必须知道什么不能做。","labels":["最小权限","有限记忆"],"reveal":"高风险动作由人确认","narration":"只开放当前任务需要且获准的工具，只保存经同意的必要信息，并写明用途与期限。信息到期就应立即停止检索使用，存储清理另按策略执行并核对结果；记录还在不等于仍可使用。"},
+        {"id":"mechanism","kind":"learning","eyebrow":"失败处理","title":"先核实状态，再决定重试","body":"结果未知、权限拒绝和已确认失败，要分别处理。","labels":["结果未知：先查原状态","403：停止并报告","重试：保留原键与预算"],"narration":"发送超时不代表消息没发出，先查原请求状态。相同编号已成功就返回原结果，pending就等待或查询。只有服务契约允许且安全时，才在原幂等键下有限重试。首次加两次额外重试，共三次请求。403权限拒绝要停止。本课付款、发送、删除和公开前，需确认具体内容与目标。"},
         {"id":"takeaway","kind":"recap","eyebrow":"红队测试","title":"故意刁难，才能发现失控路径","body":"资料缺失、指令注入和重复请求都要测试。","labels":["正常路径","资料冲突","越权请求","重复执行"],"narration":"上线前不能只测试顺利情况，还要故意提供缺失资料、冲突信息、越权命令和重复请求。真正可靠的智能体不是永远完成，而是在不该继续时安全停止并解释原因。"}
       ]
     },
@@ -127,8 +127,8 @@
       "lesson": "Week 3 · How AI Sees Images",
       "language": "en-US",
       "scenes": [
-        {"id":"hook","kind":"opening","eyebrow":"How does a model see?","title":"It first divides an image into patches","body":"Pixels become patches, then visual tokens.","labels":[],"narration":"A multimodal model does not see exactly as a person does. It divides an image into patches, then encodes color, edges, and texture into visual tokens that can be processed as vectors."},
-        {"id":"mechanism","kind":"rules","eyebrow":"The vision pipeline","title":"Patch, encode, align","body":"A vision encoder extracts features; alignment connects images and words.","labels":["Pixels to patches","Patches to visual tokens","Image-text alignment"],"narration":"The vision encoder converts image patches into feature vectors. Image-text alignment connects regions of the image with language concepts. Smaller patches may preserve detail, but they also increase computational cost."},
+        {"id":"hook","kind":"opening","eyebrow":"How does a model see?","title":"One common vision architecture","body":"Some vision models divide images into patches and encode visual representations.","labels":[],"narration":"This lesson illustrates one common vision-transformer approach: divide an image into patches and form computable visual representations. Not every multimodal model uses this architecture. Patch size is usually an architecture setting, not a universal user control."},
+        {"id":"mechanism","kind":"rules","eyebrow":"The vision pipeline","title":"Patch, encode, align","body":"A vision encoder extracts features; alignment connects images and words.","labels":["Pixels to patches","Patches to visual tokens","Image-text alignment"],"narration":"A vision encoder extracts image features, and connections to language support answers. At fixed image dimensions in a simple patch model, smaller patches mean more patches and often more computation, not guaranteed accuracy. Users can provide clear crops or use detail settings the tool actually supports."},
         {"id":"takeaway","kind":"challenge","eyebrow":"Visual hallucination","title":"Looking plausible is not the same as seeing","body":"Blur, cropping, occlusion, and chart units can mislead a model.","labels":["Visible evidence","Model inference"],"reveal":"Observe first, infer second","narration":"Models can perform optical character recognition and identify objects or spatial relationships. They can also fill missing visual evidence with a plausible guess. Separate what is visible from what the model inferred."}
       ]
     },
@@ -138,9 +138,9 @@
       "lesson": "Week 3 · Generating Images, Video, and Audio",
       "language": "en-US",
       "scenes": [
-        {"id":"hook","kind":"challenge","eyebrow":"Seeing and drawing use different engines","title":"Image generation begins with noise","body":"A diffusion model gradually shapes noise into an image.","labels":["Vision encoder: image to vector","Diffusion model: noise to image"],"reveal":"Analysis and generation move in opposite directions","narration":"A vision encoder compresses an existing image into features. A diffusion model starts with random noise and removes noise step by step under text guidance. These are different processes."},
-        {"id":"mechanism","kind":"learning","eyebrow":"Three control knobs","title":"Seed, steps, and guidance strength","body":"The random start, denoising iterations, and prompt guidance affect the result.","labels":["Seed","Denoising steps","CFG guidance"],"narration":"The seed controls the random starting point. Steps control the number of denoising iterations. Classifier-free guidance, or CFG, controls how strongly the image follows the prompt. Change one variable at a time to learn what caused a difference."},
-        {"id":"takeaway","kind":"recap","eyebrow":"From image to short video","title":"Time makes consistency harder","body":"Keyframes, motion, captions, and audio must align.","labels":["Reference image","Keyframes and motion","Speech and captions","Rights, privacy, disclosure"],"narration":"Once images become video, characters, objects, lighting, speech, and captions must remain consistent over time. A finished piece also needs factual checks, usable media rights, privacy protection, and clear AI disclosure."}
+        {"id":"hook","kind":"challenge","eyebrow":"Seeing and drawing use different engines","title":"Diffusion: one common generation method","body":"Diffusion generates through denoising, sometimes in latent space.","labels":["Vision encoder: image to vector","Diffusion model: noise to image"],"reveal":"Analysis and generation move in opposite directions","narration":"A vision encoder turns an existing image into features. Diffusion generation instead starts with noise and progressively denoises under conditioning, sometimes in latent space. This is a common method, not the only algorithm used by every image tool."},
+        {"id":"mechanism","kind":"learning","eyebrow":"Three control knobs","title":"Seed, steps, and guidance strength","body":"Use supported controls and record variation; parameters do not guarantee quality.","labels":["Seed","Denoising steps","CFG guidance"],"narration":"When offered, Seed controls the random start, Steps the denoising iterations, and CFG the guidance strength. A new seed can change composition and identity. Matching a seed also requires matching the model and other settings. Higher values do not guarantee better results. Change one supported control at a time and record actual observations."},
+        {"id":"takeaway","kind":"recap","eyebrow":"From image to short video","title":"Time makes consistency harder","body":"Keyframes, motion, captions, and audio must align.","labels":["Reference image","Keyframes and motion","Speech and captions","Rights, privacy, disclosure"],"narration":"Plan beginning, middle, and ending states for a shot. This is a production method, not every video model’s internal algorithm. Inspect characters, props, and action continuity. Listen to original narration before checking captions, distinguishing speech and transcription errors. Before publishing, verify facts, material permissions, and privacy."}
       ]
     },
     {
@@ -149,7 +149,7 @@
       "lesson": "Week 4 · How Agents Take Action",
       "language": "en-US",
       "scenes": [
-        {"id":"hook","kind":"challenge","eyebrow":"A chat is not automatically an agent","title":"From answering a question to advancing a task","body":"An agent manages goals, state, and tools.","labels":["One question, one answer","Plan, act, observe, update"],"reveal":"Autonomy needs boundaries","narration":"A chat answers the current question. A workflow follows fixed steps. An agent manages a goal, chooses allowed tools, observes results, and adjusts its plan. The difference is a controlled action loop, not simply a longer conversation."},
+        {"id":"hook","kind":"challenge","eyebrow":"A chat is not automatically an agent","title":"From answering a question to advancing a task","body":"An agent manages goals, state, and tools.","labels":["Multi-turn discussion and revision","Plan, act, observe, update"],"reveal":"Autonomy needs boundaries","narration":"Chat supports multi-turn discussion and revision. Workflows run predefined steps, branches, and loops. Agents can choose later actions toward a goal based on results. Products can combine these approaches. Multiple steps do not always require an agent, and tool access alone does not establish one."},
         {"id":"mechanism","kind":"timeline","eyebrow":"The PAOU loop","title":"Plan, act, observe, update","body":"Every step changes the recorded state.","labels":["Plan the next step","Use an allowed tool","Observe the result","Update the state"],"narration":"In the PAOU loop, an agent plans the next step, acts through an authorized tool, observes the structured result, and updates its state. It works one step at a time instead of blindly following the original plan."},
         {"id":"takeaway","kind":"recap","eyebrow":"Task state","title":"Know where you are and when you are done","body":"A goal, plan, current task, state, and completion rule work together.","labels":["Testable goal","Ordered dependencies","Recoverable state","Observable completion"],"narration":"A reliable agent tracks the goal, plan, current task, state, and completion criteria. The task is not complete because the model says so. It is complete when observable requirements are satisfied."}
       ]
@@ -160,8 +160,8 @@
       "lesson": "Week 4 · Keeping Agents Under Control",
       "language": "en-US",
       "scenes": [
-        {"id":"hook","kind":"challenge","eyebrow":"More capability requires more control","title":"Tools, memory, and permissions need boundaries","body":"An agent can act, but it must also know what it cannot do.","labels":["Least privilege","Limited memory"],"reveal":"People confirm high-risk actions","narration":"An agent may use tools and store memory, but it should not receive unlimited access. Enable only what the current task needs. Store only consented, non-sensitive information with a clear expiration and deletion rule."},
-        {"id":"mechanism","kind":"rules","eyebrow":"Failure handling","title":"Limited retries, deduplication, human approval","body":"Different failures require different responses.","labels":["Temporary error: retry briefly","No permission: stop","Duplicate request: execute once"],"narration":"A temporary network error may justify a limited retry. A permission error requires a stop. Idempotency means the same request arriving twice still causes only one effect. Sending, paying, deleting, and publishing require human-in-the-loop approval."},
+        {"id":"hook","kind":"recap","eyebrow":"More capability requires more control","title":"Tools, memory, and permissions need boundaries","body":"An agent can act, but it must also know what it cannot do.","labels":["Least privilege","Limited memory"],"reveal":"People confirm high-risk actions","narration":"Enable only necessary, authorized tools and retain only needed, consented information with a stated purpose and lifetime. Expired information must immediately be excluded from retrieval. Storage cleanup follows its policy and needs verification; a record still existing does not mean it may still be used."},
+        {"id":"mechanism","kind":"learning","eyebrow":"Failure handling","title":"Verify state before retrying","body":"Unknown outcomes, permission denial, and confirmed failure need different responses.","labels":["Unknown outcome: query original state","403: stop and report","Retries: retain key and budget"],"narration":"A send timeout does not prove no message was sent. Check the original request. If the same ID has succeeded, return its result; if pending, wait or query. Retry with the original idempotency key only when safe and permitted by the service contract. One initial attempt plus two retries is three requests. Stop on permission denial. This course requires approval of the actual content and target before payment, sending, deletion, or publication."},
         {"id":"takeaway","kind":"recap","eyebrow":"Red-team testing","title":"Challenge the system before real users do","body":"Test missing evidence, injection, permission abuse, and duplicate requests.","labels":["Happy path","Conflicting evidence","Unauthorized request","Repeated action"],"narration":"Do not test only the happy path. Deliberately try missing evidence, conflicting sources, unauthorized commands, and repeated requests. A reliable agent can stop safely and explain why it cannot continue."}
       ]
     }

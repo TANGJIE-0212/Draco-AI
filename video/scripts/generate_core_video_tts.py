@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 import json
 from pathlib import Path
 
@@ -63,9 +64,18 @@ async def generate_video(video):
 
 
 async def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--video-id', action='append', help='Regenerate only these videos, preserving other manifest entries')
+    args = parser.parse_args()
     content = json.loads(CONTENT_PATH.read_text(encoding="utf-8"))
-    manifest = {}
+    selected = set(args.video_id or [])
+    known = {video['id'] for video in content['videos']}
+    if selected - known:
+        parser.error('Unknown video IDs: ' + ', '.join(sorted(selected - known)))
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding='utf-8')) if selected and MANIFEST_PATH.exists() else {}
     for video in content["videos"]:
+        if selected and video['id'] not in selected:
+            continue
         video_id, timings = await generate_video(video)
         manifest[video_id] = timings
 

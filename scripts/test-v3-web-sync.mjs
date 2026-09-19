@@ -74,10 +74,12 @@ function visit(node) {
 }
 visit(ast);
 assert.ok(continueHandler);
+const {canAdvance} = load('miniprogram/course/learning-logic.ts');
 for (const mode of ['ordinary', 'review', 'complete']) {
   const state = { stepIndex: mode === 'ordinary' ? 0 : 1, steps: [{}, {}], mistakes: mode === 'review' ? [{}] : [], isReviewMode: false, completed: false };
   vm.runInNewContext(`(${continueHandler})()`, {
     ...state,
+    canAdvance, currentStep: {type:'theory'}, showResult:false, isCorrect:false,
     SoundSynth: { play: () => assert.fail('Continue must not play an extra cue') },
     setStepIndex: value => state.stepIndex = typeof value === 'function' ? value(state.stepIndex) : value,
     setSteps: value => state.steps = value,
@@ -90,6 +92,17 @@ for (const mode of ['ordinary', 'review', 'complete']) {
   if (mode === 'complete') assert.equal(state.completed, true);
 }
 assert.match(app, /const handleLessonComplete = \(\) => \{\s+SoundSynth.play\('complete'\)/);
+for(const kind of ['quiz','fill','match','interactive']) {
+  let progressed=false, reset=false, checked=true;
+  vm.runInNewContext(`(${continueHandler})()`, {
+    canAdvance,currentStep:{type:kind},showResult:kind==='quiz'||kind==='fill',isCorrect:false,isReviewMode:true,
+    stepIndex:1,steps:[{},{}],mistakes:[],
+    setSelectedOption:value=>{assert.equal(value,null);reset=true;},setShowResult:value=>{checked=value;},
+    setStepIndex:()=>{progressed=true;},onComplete:()=>{progressed=true;},
+  });
+  assert(!progressed,`${kind}: wrong review must not progress`);
+  if(kind==='quiz'||kind==='fill'){assert(reset);assert.equal(checked,false);}
+}
 assert.match(app, /if \(correct\) SoundSynth.play\('correct'\)/);
 assert.match(app, /SoundSynth.play\('wrong'\)/);
 
@@ -111,8 +124,11 @@ const studySource = read('web-sync/ChineseExperience.tsx');
 assert.match(studySource, /entry\[language\]\.definition/);
 assert.doesNotMatch(studySource, /(?:current|entry|item)\.zh\.(?:term|definition|example)/);
 for (const name of fs.readdirSync(path.join(root, 'web-sync')).filter(n => /\.tsx?$/.test(n))) {
-  assert.doesNotMatch(read(`web-sync/${name}`), /from ['"][^'"]*miniprogram/, 'web build must not import native runtime');
+  const imports = [...read(`web-sync/${name}`).matchAll(/from ['"]([^'"]*miniprogram[^'"]*)['"]/g)].map(match=>match[1]);
+  for (const imported of imports) assert.ok(['../miniprogram/course/learning-logic','../miniprogram/course/practice-drafts'].includes(imported),'Only platform-independent learning/storage adapters may be shared with native');
 }
+assert.doesNotMatch(read('miniprogram/course/learning-logic.ts'),/\b(?:wx|window|document|Page)\b/,'Shared learning rules must have no native or browser globals');
+assert.doesNotMatch(read('miniprogram/course/practice-drafts.ts'),/\b(?:wx|window|document|Page)\b/,'Shared draft rules must have no native or browser globals');
 
 const audios = [], listeners = new Map();
 class FakeAudio {

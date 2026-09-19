@@ -182,34 +182,44 @@
     {
       "id": "hook",
       "audio": "video/core/W3-Vision-ZH/scene-01-hook.mp3",
-      "durationSeconds": 13.728,
+      "durationSeconds": 19.32,
       "cues": [
         {
           "start": 0.1,
-          "end": 3.8,
-          "text": "多模态模型并不是像人一样睁眼看图。"
+          "end": 10.083,
+          "text": "本课用一种常见的视觉Transformer说明看图过程：把图片切成图像块，也就是Patch，再形成可以计算的视觉表示。"
         },
         {
-          "start": 3.75,
-          "end": 13.679,
-          "text": "它先把图片切成许多图像块，也就是 Patch，再把颜色、边缘和纹理编码成视觉词元，送进可以计算的向量空间。"
+          "start": 10.083,
+          "end": 13.821,
+          "text": "不是所有多模态模型都采用同一种架构。"
+        },
+        {
+          "start": 13.821,
+          "end": 19.262,
+          "text": "Patch大小通常由架构确定，不是成品工具通用的用户按钮。"
         }
       ]
     },
     {
       "id": "mechanism",
       "audio": "video/core/W3-Vision-ZH/scene-02-mechanism.mp3",
-      "durationSeconds": 15.336,
+      "durationSeconds": 20.904,
       "cues": [
         {
           "start": 0.1,
-          "end": 10.548,
-          "text": "图片从像素切成图像块，视觉编码器把每块转成特征向量，再通过图文对齐，让图像区域和文字含义建立联系。"
+          "end": 6.526,
+          "text": "视觉编码器提取图像特征，图文连接让这些特征支持语言回答。"
         },
         {
-          "start": 10.548,
-          "end": 15.274,
-          "text": "切块越细可能保留更多细节，但计算量也会增加。"
+          "start": 6.476,
+          "end": 15.464,
+          "text": "在固定图片尺寸的简化切块模型中，块越小，数量和计算需求通常越大，但不保证每个任务都更准确。"
+        },
+        {
+          "start": 15.464,
+          "end": 20.857,
+          "text": "用户可以提供清晰裁图，或使用工具实际支持的细节档位。"
         }
       ]
     },
@@ -235,56 +245,81 @@
     {
       "id": "hook",
       "audio": "video/core/W3-Generation-ZH/scene-01-hook.mp3",
-      "durationSeconds": 12.72,
+      "durationSeconds": 16.176,
       "cues": [
         {
           "start": 0.1,
-          "end": 9.845,
-          "text": "看图时，视觉编码器把图片压成向量；画图时，扩散模型从随机噪声出发，根据文字条件一步步去噪。"
+          "end": 3.752,
+          "text": "视觉编码器把现有图片变成特征。"
         },
         {
-          "start": 9.845,
-          "end": 12.679,
-          "text": "它们是两套方向不同的发动机。"
+          "start": 3.702,
+          "end": 11.452,
+          "text": "扩散生成则从随机噪声出发，在条件引导下逐步去噪，有些模型在潜空间中处理。"
+        },
+        {
+          "start": 11.452,
+          "end": 16.107,
+          "text": "这是一种常见的生图方法，不是所有工具唯一的算法。"
         }
       ]
     },
     {
       "id": "mechanism",
       "audio": "video/core/W3-Generation-ZH/scene-02-mechanism.mp3",
-      "durationSeconds": 14.088,
+      "durationSeconds": 22.416,
       "cues": [
         {
           "start": 0.1,
-          "end": 7.871,
-          "text": "随机种子决定起点，去噪步数决定迭代次数，CFG 控制模型多强地跟随提示词。"
+          "end": 8.276,
+          "text": "工具提供这些设置时，Seed控制随机起点，Steps控制去噪次数，CFG调整引导强度。"
         },
         {
-          "start": 7.821,
-          "end": 14.024,
-          "text": "要判断哪个设置造成变化，其他条件保持不变，每次只改一个旋钮。"
+          "start": 8.226,
+          "end": 14.869,
+          "text": "换Seed可能改变构图和人物；相同Seed还需要相同模型和其他设置。"
+        },
+        {
+          "start": 14.869,
+          "end": 17.417,
+          "text": "数值更大不保证更好。"
+        },
+        {
+          "start": 17.417,
+          "end": 22.369,
+          "text": "固定其他条件，每次改一个可用设置并记录实际结果。"
         }
       ]
     },
     {
       "id": "takeaway",
       "audio": "video/core/W3-Generation-ZH/scene-03-takeaway.mp3",
-      "durationSeconds": 16.128,
+      "durationSeconds": 22.56,
       "cues": [
         {
           "start": 0.1,
-          "end": 5.074,
-          "text": "图片变成视频后，角色、背景和动作要保持连续。"
+          "end": 5.038,
+          "text": "制作视频时，可以先规划开始、中间和结束画面。"
         },
         {
-          "start": 5.024,
-          "end": 9.929,
-          "text": "关键帧、语音合成、字幕和剪辑共同组成短片。"
+          "start": 4.988,
+          "end": 9.167,
+          "text": "这是制作方法，不是所有视频模型的内部机制。"
         },
         {
-          "start": 9.929,
-          "end": 16.06,
-          "text": "最终作品还要事实可查、声画同步，并检查素材许可与隐私。"
+          "start": 9.167,
+          "end": 13.274,
+          "text": "生成后检查人物、道具和动作连续性。"
+        },
+        {
+          "start": 13.274,
+          "end": 18.44,
+          "text": "配音先听原音，再核对字幕，区分发音错与转写错。"
+        },
+        {
+          "start": 18.44,
+          "end": 22.512,
+          "text": "公开前核对事实、素材使用许可与隐私。"
         }
       ]
     }
@@ -293,17 +328,27 @@
     {
       "id": "hook",
       "audio": "video/core/W4-Foundations-ZH/scene-01-hook.mp3",
-      "durationSeconds": 14.52,
+      "durationSeconds": 19.536,
       "cues": [
         {
           "start": 0.1,
-          "end": 10.238,
-          "text": "聊天主要回答当前问题，工作流按固定步骤运行，智能体则围绕目标管理状态、选择工具并根据结果调整计划。"
+          "end": 3.121,
+          "text": "Chat可以进行多轮问答和修改。"
         },
         {
-          "start": 10.238,
-          "end": 14.464,
-          "text": "它不是更会聊天，而是多了一个受控执行循环。"
+          "start": 3.071,
+          "end": 7.262,
+          "text": "Workflow运行预先设计的步骤、分支和循环。"
+        },
+        {
+          "start": 7.262,
+          "end": 11.857,
+          "text": "Agent则能围绕目标，根据结果选择下一步行动。"
+        },
+        {
+          "start": 11.857,
+          "end": 19.488,
+          "text": "这些方式可以组合使用，多步任务不一定需要Agent，接了工具也不自动成为Agent。"
         }
       ]
     },
@@ -351,39 +396,54 @@
     {
       "id": "hook",
       "audio": "video/core/W4-Safety-ZH/scene-01-hook.mp3",
-      "durationSeconds": 13.92,
+      "durationSeconds": 16.8,
       "cues": [
         {
           "start": 0.1,
-          "end": 5.764,
-          "text": "智能体能使用工具和保存记忆，但不应因此获得无限权限。"
+          "end": 7.574,
+          "text": "只开放当前任务需要且获准的工具，只保存经同意的必要信息，并写明用途与期限。"
         },
         {
-          "start": 5.714,
-          "end": 13.869,
-          "text": "只开放当前任务需要的功能，只保存经同意的非敏感信息，并写明保存期限和删除方式。"
+          "start": 7.524,
+          "end": 16.738,
+          "text": "信息到期就应立即停止检索使用，存储清理另按策略执行并核对结果；记录还在不等于仍可使用。"
         }
       ]
     },
     {
       "id": "mechanism",
       "audio": "video/core/W4-Safety-ZH/scene-02-mechanism.mp3",
-      "durationSeconds": 17.856,
+      "durationSeconds": 27.792,
       "cues": [
         {
           "start": 0.1,
-          "end": 4.836,
-          "text": "网络暂时失败可以有限重试，没有权限必须停止。"
+          "end": 4.764,
+          "text": "发送超时不代表消息没发出，先查原请求状态。"
         },
         {
-          "start": 4.786,
-          "end": 9.655,
-          "text": "幂等性表示同一请求重复到达，也只产生一次效果。"
+          "start": 4.714,
+          "end": 9.988,
+          "text": "相同编号已成功就返回原结果，pending就等待或查询。"
         },
         {
-          "start": 9.655,
-          "end": 17.798,
-          "text": "发送、付款、删除和公开等动作必须通过人在回路，也就是 HITL，由人最后确认。"
+          "start": 9.988,
+          "end": 15.369,
+          "text": "只有服务契约允许且安全时，才在原幂等键下有限重试。"
+        },
+        {
+          "start": 15.369,
+          "end": 19.107,
+          "text": "首次加两次额外重试，共三次请求。"
+        },
+        {
+          "start": 19.107,
+          "end": 22.0,
+          "text": "403权限拒绝要停止。"
+        },
+        {
+          "start": 22.0,
+          "end": 27.738,
+          "text": "本课付款、发送、删除和公开前，需确认具体内容与目标。"
         }
       ]
     },
@@ -666,39 +726,44 @@
     {
       "id": "hook",
       "audio": "video/core/W3-Vision-EN/scene-01-hook.mp3",
-      "durationSeconds": 12.456,
+      "durationSeconds": 17.28,
       "cues": [
         {
           "start": 0.1,
-          "end": 4.18,
-          "text": "A multimodal model does not see exactly as a person does."
+          "end": 8.445,
+          "text": "This lesson illustrates one common vision-transformer approach: divide an image into patches and form computable visual representations."
         },
         {
-          "start": 4.13,
-          "end": 12.402,
-          "text": "It divides an image into patches, then encodes color, edges, and texture into visual tokens that can be processed as vectors."
+          "start": 8.395,
+          "end": 11.998,
+          "text": "Not every multimodal model uses this architecture."
+        },
+        {
+          "start": 11.998,
+          "end": 17.23,
+          "text": "Patch size is usually an architecture setting, not a universal user control."
         }
       ]
     },
     {
       "id": "mechanism",
       "audio": "video/core/W3-Vision-EN/scene-02-mechanism.mp3",
-      "durationSeconds": 14.376,
+      "durationSeconds": 20.208,
       "cues": [
         {
           "start": 0.1,
-          "end": 4.266,
-          "text": "The vision encoder converts image patches into feature vectors."
+          "end": 5.687,
+          "text": "A vision encoder extracts image features, and connections to language support answers."
         },
         {
-          "start": 4.216,
-          "end": 8.971,
-          "text": "Image-text alignment connects regions of the image with language concepts."
+          "start": 5.637,
+          "end": 14.743,
+          "text": "At fixed image dimensions in a simple patch model, smaller patches mean more patches and often more computation, not guaranteed accuracy."
         },
         {
-          "start": 8.971,
-          "end": 14.314,
-          "text": "Smaller patches may preserve detail, but they also increase computational cost."
+          "start": 14.743,
+          "end": 20.147,
+          "text": "Users can provide clear crops or use detail settings the tool actually supports."
         }
       ]
     },
@@ -729,66 +794,86 @@
     {
       "id": "hook",
       "audio": "video/core/W3-Generation-EN/scene-01-hook.mp3",
-      "durationSeconds": 12.36,
+      "durationSeconds": 16.176,
       "cues": [
         {
           "start": 0.1,
-          "end": 4.204,
-          "text": "A vision encoder compresses an existing image into features."
+          "end": 3.923,
+          "text": "A vision encoder turns an existing image into features."
         },
         {
-          "start": 4.154,
-          "end": 9.951,
-          "text": "A diffusion model starts with random noise and removes noise step by step under text guidance."
+          "start": 3.873,
+          "end": 11.091,
+          "text": "Diffusion generation instead starts with noise and progressively denoises under conditioning, sometimes in latent space."
         },
         {
-          "start": 9.951,
-          "end": 12.304,
-          "text": "These are different processes."
+          "start": 11.091,
+          "end": 16.115,
+          "text": "This is a common method, not the only algorithm used by every image tool."
         }
       ]
     },
     {
       "id": "mechanism",
       "audio": "video/core/W3-Generation-EN/scene-02-mechanism.mp3",
-      "durationSeconds": 16.608,
+      "durationSeconds": 23.136,
       "cues": [
         {
           "start": 0.1,
-          "end": 3.187,
-          "text": "The seed controls the random starting point."
+          "end": 7.195,
+          "text": "When offered, Seed controls the random start, Steps the denoising iterations, and CFG the guidance strength."
         },
         {
-          "start": 3.137,
-          "end": 6.593,
-          "text": "Steps control the number of denoising iterations."
+          "start": 7.145,
+          "end": 10.564,
+          "text": "A new seed can change composition and identity."
         },
         {
-          "start": 6.593,
-          "end": 12.537,
-          "text": "Classifier-free guidance, or CFG, controls how strongly the image follows the prompt."
+          "start": 10.564,
+          "end": 15.049,
+          "text": "Matching a seed also requires matching the model and other settings."
         },
         {
-          "start": 12.537,
-          "end": 16.544,
-          "text": "Change one variable at a time to learn what caused a difference."
+          "start": 15.049,
+          "end": 18.407,
+          "text": "Higher values do not guarantee better results."
+        },
+        {
+          "start": 18.407,
+          "end": 23.088,
+          "text": "Change one supported control at a time and record actual observations."
         }
       ]
     },
     {
       "id": "takeaway",
       "audio": "video/core/W3-Generation-EN/scene-03-takeaway.mp3",
-      "durationSeconds": 15.48,
+      "durationSeconds": 24.48,
       "cues": [
         {
           "start": 0.1,
-          "end": 7.905,
-          "text": "Once images become video, characters, objects, lighting, speech, and captions must remain consistent over time."
+          "end": 4.008,
+          "text": "Plan beginning, middle, and ending states for a shot."
         },
         {
-          "start": 7.855,
-          "end": 15.417,
-          "text": "A finished piece also needs factual checks, usable media rights, privacy protection, and clear AI disclosure."
+          "start": 3.958,
+          "end": 8.591,
+          "text": "This is a production method, not every video model’s internal algorithm."
+        },
+        {
+          "start": 8.591,
+          "end": 12.708,
+          "text": "Inspect characters, props, and action continuity."
+        },
+        {
+          "start": 12.708,
+          "end": 19.056,
+          "text": "Listen to original narration before checking captions, distinguishing speech and transcription errors."
+        },
+        {
+          "start": 19.056,
+          "end": 24.424,
+          "text": "Before publishing, verify facts, material permissions, and privacy."
         }
       ]
     }
@@ -797,27 +882,32 @@
     {
       "id": "hook",
       "audio": "video/core/W4-Foundations-EN/scene-01-hook.mp3",
-      "durationSeconds": 16.44,
+      "durationSeconds": 20.688,
       "cues": [
         {
           "start": 0.1,
-          "end": 2.771,
-          "text": "A chat answers the current question."
+          "end": 3.42,
+          "text": "Chat supports multi-turn discussion and revision."
         },
         {
-          "start": 2.721,
-          "end": 5.441,
-          "text": "A workflow follows fixed steps."
+          "start": 3.37,
+          "end": 7.61,
+          "text": "Workflows run predefined steps, branches, and loops."
         },
         {
-          "start": 5.441,
-          "end": 11.544,
-          "text": "An agent manages a goal, chooses allowed tools, observes results, and adjusts its plan."
+          "start": 7.61,
+          "end": 11.74,
+          "text": "Agents can choose later actions toward a goal based on results."
         },
         {
-          "start": 11.544,
-          "end": 16.385,
-          "text": "The difference is a controlled action loop, not simply a longer conversation."
+          "start": 11.74,
+          "end": 14.559,
+          "text": "Products can combine these approaches."
+        },
+        {
+          "start": 14.559,
+          "end": 20.625,
+          "text": "Multiple steps do not always require an agent, and tool access alone does not establish one."
         }
       ]
     },
@@ -865,49 +955,64 @@
     {
       "id": "hook",
       "audio": "video/core/W4-Safety-EN/scene-01-hook.mp3",
-      "durationSeconds": 14.256,
+      "durationSeconds": 19.464,
       "cues": [
         {
           "start": 0.1,
-          "end": 5.479,
-          "text": "An agent may use tools and store memory, but it should not receive unlimited access."
+          "end": 7.66,
+          "text": "Enable only necessary, authorized tools and retain only needed, consented information with a stated purpose and lifetime."
         },
         {
-          "start": 5.429,
-          "end": 8.468,
-          "text": "Enable only what the current task needs."
+          "start": 7.61,
+          "end": 11.998,
+          "text": "Expired information must immediately be excluded from retrieval."
         },
         {
-          "start": 8.468,
-          "end": 14.191,
-          "text": "Store only consented, non-sensitive information with a clear expiration and deletion rule."
+          "start": 11.998,
+          "end": 19.4,
+          "text": "Storage cleanup follows its policy and needs verification; a record still existing does not mean it may still be used."
         }
       ]
     },
     {
       "id": "mechanism",
       "audio": "video/core/W4-Safety-EN/scene-02-mechanism.mp3",
-      "durationSeconds": 17.184,
+      "durationSeconds": 31.224,
       "cues": [
         {
           "start": 0.1,
-          "end": 4.021,
-          "text": "A temporary network error may justify a limited retry."
+          "end": 3.579,
+          "text": "A send timeout does not prove no message was sent."
         },
         {
-          "start": 3.971,
-          "end": 6.752,
-          "text": "A permission error requires a stop."
+          "start": 3.529,
+          "end": 5.882,
+          "text": "Check the original request."
         },
         {
-          "start": 6.752,
-          "end": 11.961,
-          "text": "Idempotency means the same request arriving twice still causes only one effect."
+          "start": 5.882,
+          "end": 11.507,
+          "text": "If the same ID has succeeded, return its result; if pending, wait or query."
         },
         {
-          "start": 11.961,
-          "end": 17.12,
-          "text": "Sending, paying, deleting, and publishing require human-in-the-loop approval."
+          "start": 11.507,
+          "end": 17.316,
+          "text": "Retry with the original idempotency key only when safe and permitted by the service contract."
+        },
+        {
+          "start": 17.316,
+          "end": 21.471,
+          "text": "One initial attempt plus two retries is three requests."
+        },
+        {
+          "start": 21.471,
+          "end": 23.799,
+          "text": "Stop on permission denial."
+        },
+        {
+          "start": 23.799,
+          "end": 31.176,
+          "text": "This course requires approval of the actual content and target before payment, sending, deletion, or publication."
         }
       ]
     },
